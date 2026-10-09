@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
+All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**. Pending changes live as fragments in [changes/](changes/README.md) until the next release.
 
 ## 2026-10-09: Test vector suite version in one place
 
