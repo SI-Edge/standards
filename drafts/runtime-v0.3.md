@@ -118,18 +118,18 @@ Selfkin is not a tool dialect. The cut is the composition of Core, Envelope, Pri
 
 ## 9. Multi-Device Continuity
 
-- **[R2]** A user's devices **MAY** form one runtime mesh with shared identity, policy, memory, and Adaptation Profile. If they do, sync **MUST** be end-to-end encrypted with keys only the owner's devices hold, and **SHOULD** be peer-to-peer where possible, as defined in SK-COM (form F1). *Rationale: one assistant across many devices, without giving up sovereignty.*
-- **[R1]** Each device **MUST** be individually revocable. *Rationale: losing one device must not compromise the others.*
+- **[R2]** A user's devices **MAY** form one runtime mesh with shared identity, policy, memory, and Adaptation Profile. If they do, sync **MUST** be end-to-end encrypted with keys only the owner's devices hold, **MUST** follow the transport and cryptography rules of SK-COM §A4 and the negotiation rules of SK-COM §B7, and **SHOULD** be peer-to-peer where possible (form F1, SK-COM §A1). *Rationale: one assistant across many devices, without giving up sovereignty; R2 already requires communication at C2 (§21), so this names the rules that apply.*
+- **[R1]** Each device **MUST** be individually revocable, and revocations **MUST** be applied as defined in SK-COM §A2. *Rationale: losing one device must not compromise the others, and every runtime must apply a revocation within the same bound.*
 - **[R2]** Policy **MUST** be able to restrict data by device (for example "health data never syncs to the VPS"). *Rationale: devices differ in trust and jurisdiction.*
 
 ## 10. Device Identity, Attestation, and Key Recovery
 
-- **[R1]** Each device **MUST** have a cryptographic identity whose private key never leaves the device and **MUST** be rotatable and revocable by the owner. The key **SHOULD** be hardware-backed (TPM 2.0, a secure enclave, or a TEE). *Rationale: the owner controls trust.*
-- **[R3]** Device keys **MUST** be hardware-backed. *Rationale: attested profiles need keys that cannot be copied.*
+- **[R1]** Each device **MUST** have a cryptographic identity: the device signing key of SK-COM §A2, whose private key never leaves the device. The key **MUST** be rotatable and revocable by the owner, and **SHOULD** be hardware-backed (TPM 2.0, a secure enclave, or a TEE). *Rationale: the owner controls trust, and the runtime and its peers rely on one and the same device key.*
+- **[R3]** Device keys **MUST** be hardware-backed, as SK-COM §A2 requires at C3. *Rationale: attested profiles need keys that cannot be copied.*
 - **[R1]** The Core **MUST** be signed and verified at startup. *Rationale: an unsigned Core cannot be trusted with every interaction.*
 - **[R3]** The device **MUST** support measured boot and remote attestation of the Core. *Rationale: peers and providers can verify what they talk to.*
 - **[R1]** Peers and providers **MUST NOT** require remote attestation from a runtime that does not claim R3. *Rationale: verified trust without excluding DIY hardware.*
-- **[R1]** The owner key **MUST** be distinct from device keys and **SHOULD** be held on a separate device or hardware token, or protected by a recovery scheme (for example threshold or social recovery), so that losing one device does not lose ownership. *Rationale: ownership must survive the loss of any single device.*
+- **[R1]** The owner key **MUST** be distinct from device keys and **SHOULD** be held on a separate device or hardware token, or protected by a recovery scheme (for example threshold or social recovery), so that losing one device does not lose ownership. The owner key binds devices and agents through owner-signed statements (SK-COM §A2). *Rationale: ownership must survive the loss of any single device.*
 - **[R1]** The runtime **MUST** document a recovery path for the loss of all devices (for example restoring the §8 backup with an owner-held recovery secret). If the owner declines recovery, the runtime **MUST** warn at onboarding that data cannot be recovered. *Rationale: honest trade-off between security and loss.*
 - **[R2]** When a device is revoked, the remaining mesh **MUST** rotate shared sync and group keys so the revoked device cannot read later data. *Rationale: revocation must cut off future access, not only new sessions.*
 - **[R2]** The runtime **MUST** support a documented owner-key rotation that re-issues device and agent statements and notifies paired peers (SK-COM §A2). *Rationale: a compromised owner key must be replaceable without starting over.*
@@ -151,7 +151,7 @@ Selfkin is not a tool dialect. The cut is the composition of Core, Envelope, Pri
 
 ## 12. Remote Models and Control Plane
 
-- **[R1]** Connections to a Control Plane or remote model **MUST** be initiated outbound by the device and mutually authenticated (mTLS with TLS 1.3, or SSH), with no open inbound port required. Peer-to-peer and mesh connections are governed by SK-COM. *Rationale: small attack surface, works behind NAT.*
+- **[R1]** Connections to a Control Plane or remote model **MUST** be initiated outbound by the device and mutually authenticated (mTLS with TLS 1.3, or SSH), with no open inbound port required. Peer-to-peer and mesh connections are governed by SK-COM §A4 and §B7. *Rationale: small attack surface, works behind NAT.*
 - **[R1]** Capabilities, the egress-policy hash, and the conformance profile **MUST** be negotiated on connect. *Rationale: limits agreed up front.*
 - **[R1]** Every control-plane request **MUST** pass local permission checks, and the user **MUST** be able to detach instantly, falling back to local mode. *Rationale: a remote planner is an untrusted caller, and being able to leave is part of ownership.*
 
@@ -180,7 +180,7 @@ Selfkin is not a tool dialect. The cut is the composition of Core, Envelope, Pri
 ## 15. Credentials and Secrets
 
 - **[R1]** Credentials **MUST** stay on the device in an OS or hardware-backed keystore, and **MUST NOT** be included in any model context. Tools use secrets by reference, executed by the Core. *Rationale: a model that never sees a secret cannot leak it.*
-- **[R3]** Credentials **MUST** be held in a hardware-backed keystore. *Rationale: attested profiles need non-exportable secrets.*
+- **[R3]** Credentials **MUST** be held in a hardware-backed keystore (TPM 2.0, a secure enclave, or a TEE, as for device keys in SK-COM §A2). *Rationale: attested profiles need non-exportable secrets.*
 - **[R1]** Delegated access **SHOULD** use scoped, expiring, sender-bound tokens following the OAuth 2.0 Security Best Current Practice (RFC 9700), or OAuth 2.1 (an IETF Internet-Draft, cited as work in progress). *Rationale: least privilege.*
 
 ## 16. Permissions, Approval, and Kill Switch
@@ -255,6 +255,8 @@ BCP 14 (RFC 2119, RFC 8174); Agent2Agent (A2A) protocol specification; Solid Pro
 
 ---
 *Prototype profile and vertical slice (2026-10-09, proposal): profile R0 (prototype) and the [R0] tag (§0, §21), boundary to MCP, A2A, and Solid (§2.1, non-normative), Core-rendered and Core-signed effective tier display that cannot hide C0 (§5), session record with one privacy report per egress in a Core-signed envelope (§13), self-assessment is not a badge (§21). No existing R1 to R3 rule text changed. Through the existing tag rule, the new [R0] rules in §5, §13 and §21 also bind R1 to R3; this is a disclosed normative addition. The new [R0] rules: §5 tagged rules 10 (effective tier display that cannot hide a C0 hop or a P0 provider) and 11 (tier display signed by the Core key, not higher than the effective tier); §13 tagged rules 9 (session record with one matching privacy report per egress), 10 (session record in an envelope signed by the Core key) and 11 (refusal codes for checkers); §21 rule "A self-assessment is not a badge". The three [R0] rules under "Profile R0 (prototype)" in §21 bind only a runtime that claims R0.*
+
+*SK-COM pointers (2026-10-09, clarification): mesh sync, device revocation, device keys, owner-signed statements, and peer connections point to SK-COM §A2, §A4, and §B7 (§9, §10, §12, §15). No new requirement; the signature algorithm waits on #63.*
 
 *Schema alignment revision (2026-10-09): module kinds including `hardware` and the sideloaded definition (§1), manifest contents and compatibility range syntax (§3), performance classes (§4), `x-` owner residency tags, tag intersection, and registered data classes (§11), privacy reports moved to R1 with defined contents (§13), SBOMs moved to R1 (§17).*
 
