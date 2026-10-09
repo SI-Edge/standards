@@ -6,7 +6,7 @@ The project is called **Selfkin** (previously "SI Edge"). The document names "Se
 
 - **No certification program exists.** No one is authorised to certify products as conforming to any document or profile.
 - Before v1.0, any claim of conformance is a **self-assessment** and must use neutral wording such as "Self-assessed against Selfkin Runtimes draft v0.3, profile R2" or "self-assessed against SK-PRV profile P2".
-- Do not use the project names, profile names (R1 to R3, C1 to C3, P0 to P3), or any logo as a seal, badge, or marketing claim.
+- Do not use the project names, profile names (R0 to R3, C1 to C3, P0 to P3), or any logo as a seal, badge, or marketing claim.
 - The CC BY 4.0 and Apache-2.0 licenses cover the text and code. They do not grant rights to use the project names as marks.
 
 ## No "Ready" Style Marks

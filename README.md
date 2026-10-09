@@ -42,7 +42,7 @@ Profiles group into tiers:
 
 A session's **effective tier** is the lowest tier of the runtime, of every communication hop, and of every provider in its path. For example, an R3 runtime that calls a P1 provider runs that call at tier 1, and a hop through a legacy endpoint runs at tier 0. Runtimes show the effective tier to the user: the Core renders and signs the display, and it cannot hide a C0 hop or a P0 provider (SK-RT §5). A self-assessment is not a badge and never raises the effective tier.
 
-**R0 (prototype)** is the profile a prototype can claim: the Core decides, a signed Selfkin Envelope carries the session record, every egress has a Privacy Gateway report, the Core renders the effective tier, secrets stay local, and the runtime is labelled "prototype, not for production". It sits at tier 0, so it claims no sovereignty, no P2 or P3 treatment, and no way to hide C0. R1 to R3 are unchanged (SK-RT §21).
+**R0 (prototype)** is the profile a prototype can claim: the Core decides, a signed Selfkin Envelope carries the session record, every egress has a Privacy Gateway report, the Core renders the effective tier, secrets stay local, and the runtime is labelled "prototype, not for production". It sits at tier 0, so it claims no sovereignty, no P2 or P3 treatment, and no way to hide C0. No existing R1 to R3 rule text changed; the new [R0] rules also bind R1 to R3 (SK-RT §0, §21).
 
 **Boundary.** Selfkin is not a tool dialect. The cut is the composition of Core, Envelope, Privacy Gateway, and effective tier. MCP and A2A may run under a module or a legacy adapter. They do not replace the Core, the gateway, or the tier display. Selfkin in turn does not replace MCP, A2A, or Solid (SK-RT §2.1).
 
