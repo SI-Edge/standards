@@ -40,8 +40,16 @@ Before any document reaches v1.0, the project intends to:
 
 1. add maintainers from more than one organisation and jurisdiction;
 2. decide on a long-term home (an open working group, a foundation, or an existing standards organisation);
-3. adopt a written intellectual-property and patent policy suitable for an open standard;
+3. confirm or replace the interim royalty-free [Patent Policy](PATENT-POLICY.md) after review by counsel (an interim policy is in force for the draft phase);
 4. clarify the trademark status of the project names (see [TRADEMARKS.md](TRADEMARKS.md)).
+
+## Intellectual Property
+
+- **Copyright:** specification text is licensed under CC BY 4.0 ([LICENSE](LICENSE)); schemas, test suites, and code under Apache-2.0 ([LICENSE-CODE](LICENSE-CODE)).
+- **Patents:** all Contributions are made under the royalty-free [Patent Policy](PATENT-POLICY.md): contributors promise not to assert their essential patent claims against implementations, with defensive termination only. Maintainers do not merge normative Contributions from contributors who have said they cannot agree to it.
+- **Disclosures:** known patents that may affect a Specification are recorded in its open questions (see [PATENT-POLICY.md](PATENT-POLICY.md) section 5).
+- **Changes:** the Patent Policy changes only through an RFC, and a change never reduces a commitment already made.
+- The interim Patent Policy is **not legal advice** and must be reviewed by counsel before any document reaches v1.0.
 
 ## Code of Conduct
 

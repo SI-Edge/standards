@@ -13,7 +13,7 @@
 
 ## Checklist
 
-- [ ] Every commit is signed off (`git commit -s`, DCO)
+- [ ] Every commit is signed off (`git commit -s`, DCO), which also confirms agreement to the [Patent Policy](../PATENT-POLICY.md)
 - [ ] New or changed rules have a profile tag and a one-line rationale
 - [ ] Cross-references, [TERMINOLOGY.md](../TERMINOLOGY.md), and profile tables are consistent
 - [ ] [CHANGELOG.md](../CHANGELOG.md) updated

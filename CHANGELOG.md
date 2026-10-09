@@ -2,6 +2,19 @@
 
 All notable changes to the SI Edge drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Interim patent policy
+
+Repository and process change. No normative text changed.
+
+### Added
+- [PATENT-POLICY.md](PATENT-POLICY.md): interim royalty-free patent policy modelled on the W3C Patent Policy royalty-free commitments and the Open Web Foundation Agreement 1.0. Contributors make an irrevocable, worldwide, royalty-free non-assert covenant (and a royalty-free license on request) for their Essential Claims that read on their own Contributions, with defensive termination only. Includes disclosure guidance, scope after merge, and the founding maintainer's commitment for existing content. Draft, not legal advice, to be reviewed by counsel before v1.0.
+
+### Changed
+- [GOVERNANCE.md](GOVERNANCE.md): new Intellectual Property section; the path to neutral maintainership now refers to confirming or replacing the interim policy after counsel review.
+- [CONTRIBUTING.md](CONTRIBUTING.md): new Patent Policy section; the DCO sign-off also confirms agreement to the policy.
+- [README.md](README.md): License section and repository file list mention the Patent Policy.
+- Pull request template: the sign-off checkbox refers to the Patent Policy.
+
 ## 2026-10-09: Schema alignment revision
 
 Resolutions of the questions found while writing the v0.1 schemas, folded into the drafts with the stricter choice in each case (owner-approved). Draft version numbers are unchanged. Details and traceability: [schemas/OPEN-QUESTIONS.md](schemas/OPEN-QUESTIONS.md).

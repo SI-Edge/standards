@@ -62,12 +62,14 @@ python tools/validate/validate.py
 - [SECURITY.md](SECURITY.md): how to report security or privacy flaws in the specifications
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md): Contributor Covenant 2.1
 - [TRADEMARKS.md](TRADEMARKS.md): status of names, third-party marks, no endorsement
+- [PATENT-POLICY.md](PATENT-POLICY.md): interim royalty-free patent policy for contributions
 
 ## License
 
 - Specification text (everything under `drafts/` and the Markdown documentation) is licensed under the **Creative Commons Attribution 4.0 International License** (CC BY 4.0). See [LICENSE](LICENSE).
 - Schemas, test suites, and reference code added to this repository are licensed under the **Apache License, Version 2.0**. See [LICENSE-CODE](LICENSE-CODE).
 - Contributions are accepted under the same licenses with a DCO sign-off (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+- **Patents:** contributors make a royalty-free non-assert commitment for their essential patent claims, with defensive termination only. See the interim [Patent Policy](PATENT-POLICY.md) (draft, not legal advice, to be reviewed by counsel before v1.0).
 - The licenses do not grant rights to use the project names as marks; see [TRADEMARKS.md](TRADEMARKS.md).
 
 ## Next Steps / Roadmap
