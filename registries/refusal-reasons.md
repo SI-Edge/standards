@@ -24,7 +24,7 @@ Reason codes for the refusal object ([schemas/refusal.schema.json](../schemas/re
 | `approval-denied` | The human declined | SK-COM §A6 |
 | `approval-timeout` | No human decision in time | SK-COM §A6 |
 | `rate-limited` | Per-peer or per-credential rate limit reached | SK-COM §A7, SK-PRV §9 |
-| `budget-exceeded` | Message, compute, or money budget exhausted | SK-COM §A7 |
+| `budget-exceeded` | Message, compute, or money budget, or a right's `max_uses`, exhausted at the presented token or any link of its chain | SK-COM §A7 |
 | `residency-unsupported` | Destination cannot honour a residency tag | SK-PRV §6, SK-RT §11 |
 | `residency-unknown-tag` | Residency tag not recognised | SK-PRV §6, SK-RT §11 |
 | `data-class-forbidden` | Egress policy forbids a data class for this destination | SK-RT §11 |

@@ -2,6 +2,16 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Budget and `max_uses` accounting along delegation chains (proposal, #24, #22)
+
+Normative change, open for comments.
+
+### Changed
+
+- SK-COM §A7: receivers count `budget` and `max_uses` per link (by `iss` and `id`) along the whole chain; each executed envelope is charged to the presented token and every ancestor, and is refused with `budget-exceeded` if any limit would be exceeded. Refused envelopes and unexecuted `idem_key` repeats are not charged. Token `id` values are not reused, and counters are kept until each link's `exp` plus `max_clock_skew`.
+- `schemas/capability-token.schema.json`: `budget` and `max_uses` descriptions; `registries/refusal-reasons.md`: `budget-exceeded` covers `max_uses` and ancestor links.
+- `test-vectors/` 0.2.1: `envelope.receive.006` to `.008` are normative; new sequences `envelope.receive.009` to `.012` for sibling tokens, shared `max_uses`, unexecuted repeats, and reissued child tokens.
+
 ## 2026-10-09: Signing input for `dcbor`, chain links, and future `iat` (proposal, #10, #17, #47)
 
 Normative change, open for comments.
