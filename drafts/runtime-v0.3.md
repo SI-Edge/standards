@@ -24,7 +24,8 @@
 - **Router Model:** a small local decision model ("System One", after the fast, intuitive mode of thinking in dual-process theory) that picks models and tools.
 - **Control Plane:** a remote service that plans, orchestrates, or runs inference for the runtime (§12).
 - **Provider:** any remote service the runtime calls, as defined in SIE-PRV.
-- **Module:** any installable unit (feature, function, model, device adapter, UI kit, legacy adapter) that ships with a signed manifest.
+- **Module:** any installable unit that ships with a signed manifest. Kinds: `feature`, `function`, `model`, `device-adapter` (software that connects to an external device or device API through its own protocol), `hardware` (installed or attached hardware discovered by the runtime, §4), `ui-kit`, and `legacy-adapter`.
+- **Sideloaded module:** a module installed from outside the owner's chosen registries, including any self-signed module.
 - **Capability:** an action exposed by the OS, an app, a module, or hardware.
 - **Privacy Gateway:** the Core component that all outbound calls to cloud services pass through (§13). **Full gateway mode** is defined in §13.
 - **Adaptation Profile:** the user-controlled description of how the runtime should communicate and work with them (§7).
@@ -48,8 +49,8 @@
 ## 3. Modularity and Extensions
 
 - **[R1]** Every feature, function, model, device adapter, UI kit, and legacy adapter outside the Core **MUST** be packaged as a module. *Rationale: one model for extending, auditing, and removing anything.*
-- **[R1]** Each module **MUST** ship a signed manifest declaring: identity and publisher, version, compatibility range (runtime version and conformance profile), capabilities provided and required, permissions, data classes accessed, egress destinations and residency needs, resource needs, and an SBOM reference. *Rationale: the owner and the Core know the blast radius before installing.*
-- **[R1]** The Core **MUST** show the owner who signed each manifest. Sideloaded modules **MAY** be self-signed, but **MUST** be labelled `sideloaded` in Trusted UI. *Rationale: open installation without hiding who vouches for the code.*
+- **[R1]** Each module **MUST** ship a signed manifest declaring: identity and publisher, version, kind (§1), compatibility range (a range of SIE-RT versions such as `>=0.3 <0.4`, and the minimum runtime profile), capabilities provided and required, permissions, data classes accessed, egress destinations and residency needs, resource and hardware needs, and an SBOM reference (§17). The machine-readable definition is [schemas/module-manifest.schema.json](../schemas/module-manifest.schema.json); signatures follow SIE-COM §A5.1 and extensions SIE-COM §A5.2. *Rationale: the owner and the Core know the blast radius before installing.*
+- **[R1]** The Core **MUST** show the owner who signed each manifest (the `signer` in its signature block). Sideloaded modules (§1) **MAY** be self-signed, and **MUST** be labelled `sideloaded` in Trusted UI by the Core. *Rationale: open installation without hiding who vouches for the code.*
 - **[R1]** Installation **MUST** require owner consent to the manifest's permissions. Any later expansion of permissions **MUST** require consent again. *Rationale: no silent privilege creep.*
 - **[R1]** Modules **MUST** run sandboxed and limited to their manifest. Access beyond the manifest **MUST** be denied and logged. *Rationale: least privilege, enforced in practice.*
 - **[R1]** Removing a module **MUST** revoke its capabilities and tokens, and **SHOULD** offer to delete its data. *Rationale: uninstalling has to actually remove access.*
@@ -61,8 +62,8 @@
 
 ## 4. Hardware Discovery and Compatibility
 
-- **[R1]** The runtime **SHOULD** detect installed and attached hardware (sensors, cameras, microphones, GPUs/NPUs, peripherals, vehicles, robots) and offer each item as a module. *Rationale: the runtime should use the device it actually runs on.*
-- **[R1]** Each item **MUST** be described by a **capability descriptor**: type, functions, performance class, safety constraints, and whether it is attested. *Rationale: the router needs facts it can compare across devices.*
+- **[R1]** The runtime **SHOULD** detect installed and attached hardware (sensors, cameras, microphones, GPUs/NPUs, peripherals, vehicles, robots) and offer each item as a module of kind `hardware`. *Rationale: the runtime should use the device it actually runs on.*
+- **[R1]** Each item **MUST** be described by a **capability descriptor**: type, functions, performance class (`constrained`, `standard`, or `high`), safety constraints, and whether it is attested. *Rationale: the router needs facts it can compare across devices.*
 - **[R1]** Enabling any hardware module **MUST** require owner consent, and sensors and actuators **MUST** be gated individually with visible indicators while active. *Rationale: hardware is the most sensitive capability.*
 - **[R1]** When hardware is missing or fails, the runtime **MUST** degrade gracefully: use another local option, offer a mesh device (with consent), or explain the limitation. *Rationale: the interface must not break silently.*
 - **[R1]** Actuator modules (cars, robots) **MUST** declare safe-stop behaviour and **SHOULD** follow applicable sector safety standards (for example ISO 26262 for road vehicles, ISO 10218 or ISO 13482 for robots). *Rationale: physical consequences need physical safeguards.*
@@ -132,7 +133,9 @@
 
 **Residency tags.** Residency tags express the owner's policy about where data may be processed and stored. They are a policy choice and are stricter than the default rules of the Swiss nFADP and the EU GDPR, which allow transfers abroad under conditions such as adequacy decisions or appropriate safeguards. Tags can help an owner meet those rules; they are not a statement of what the law requires.
 
-- **[R2]** Runtimes **MUST** support at least these tags: `CH` (processing and storage only in Switzerland), `EU` (only in EU and EEA member states), and `CH-EU` (in Switzerland or in EU and EEA member states). Owners **MAY** define additional tags. *Rationale: shared, unambiguous meanings across runtimes and providers.*
+- **[R2]** Runtimes **MUST** support at least these tags: `CH` (processing and storage only in Switzerland), `EU` (only in EU and EEA member states), and `CH-EU` (in Switzerland or in EU and EEA member states). Owners **MAY** define additional tags; owner-defined tags **MUST** start with `x-` (lowercase letters, digits, and hyphens, at most 64 characters), so they never collide with future standard tags. *Rationale: shared, unambiguous meanings across runtimes and providers.*
+- **[R2]** When several tags apply to the same data, they combine by intersection: the data may be processed and stored only where every tag allows. *Rationale: adding a tag must never widen where data may go.*
+- **[R1]** Data classes used in egress policy, manifests, envelopes, and privacy reports **MUST** come from the data-class registry ([registries/data-classes.md](../registries/data-classes.md)) or start with `x-`. *Rationale: runtimes, modules, and providers must mean the same thing by "health data".*
 - **[R2]** A destination that cannot confirm it honours a tag, and any tag the runtime does not recognise, **MUST** be treated as not allowed (fail closed). *Rationale: unknown means no.*
 
 ## 12. Remote Models and Control Plane
@@ -149,8 +152,8 @@
 - **[R1]** The Router **SHOULD** prefer local inference for tasks containing sensitive data classes, and owner policy **MAY** require it. *Rationale: the best protection is not sending data at all.*
 - **[R1]** Runtimes **MUST** treat every provider as P0 (SIE-PRV §11) unless they have verified its profile as defined in SIE-PRV §12. Verification is REQUIRED at R3 and OPTIONAL below. *Rationale: trust is verified, not assumed.*
 - **[R1]** For P0 providers the runtime **MUST** use full gateway mode, or let the user explicitly choose their own API key or account. Under that choice it **MUST** label clearly that the provider can link requests to that account. *Rationale: informed choice, never silent exposure.*
-- **[R2]** Runtimes **MUST** provide **verifiable minimisation**: for each call the Gateway logs the exact outbound payload, or a reproducible hash plus redaction map, under the log protections in §11. Redaction maps **MUST NOT** leave the device. *Rationale: honesty, backed by evidence.*
-- **[R2]** Each call **MUST** produce a user-visible **privacy report**: provider, provider profile (P0 to P3), relay used, data classes and fields sent after redaction, what was redacted, network identity exposed (relay or direct), account linkage, and the provider's declared retention window. *Rationale: the user can judge each call.*
+- **[R1]** Each call **MUST** produce a user-visible **privacy report** ([schemas/privacy-report.schema.json](../schemas/privacy-report.schema.json)): provider, provider profile (claimed, effective, and whether verified, with any downgrade), gateway mode, relay used, network identity exposed (relay or direct), account linkage, data classes and field names sent after redaction, data classes and field names redacted or pseudonymised, minimisation steps applied, a hash of the exact outbound payload, residency tags, the provider's declared retention window (an ISO 8601 duration, or `undeclared`), and the model identity when the provider returns one. Reports **MUST** list field names and data classes, never values, and **MUST NOT** contain redaction maps. *Rationale: the user can judge each call, from the same profile at which the Gateway is required.*
+- **[R2]** Runtimes **MUST** provide **verifiable minimisation**: for each call the Gateway logs the exact outbound payload, or a reproducible hash plus redaction map, under the log protections in §11, and the privacy report's payload hash **MUST** match that log entry. Redaction maps **MUST NOT** leave the device. *Rationale: honesty, backed by evidence.*
 - **[R2]** The Gateway **SHOULD** resolve DNS through the relay or an encrypted resolver and **SHOULD** pad or batch requests where practical. *Rationale: metadata reveals behaviour even when content is protected.*
 
 *Note (non-normative): this standard does not claim that zero personal data leaves the device. Content itself can identify a person. The goal is minimisation that the user can verify.*
@@ -176,7 +179,7 @@
 
 - **[R1]** Core and module updates **MUST** be signed, verified, consented to by policy, and possible to roll back. *Rationale: the supply chain is an attack surface, and a bad update must not lock the user out.*
 - **[R1]** Rollback **MUST NOT** install a version that is revoked or marked `sunset` (SIE-COM §B8). *Rationale: rollback must not become a downgrade attack.*
-- **[R2]** Packages **MUST** ship SBOMs (SPDX or CycloneDX). *Rationale: you cannot audit what you cannot list.*
+- **[R1]** Packages **MUST** ship SBOMs (SPDX or CycloneDX), referenced with a digest from the module manifest (§3). *Rationale: you cannot audit what you cannot list, and the manifest already requires the reference at R1.*
 
 *Note (non-normative): module publishers and remote providers may need to document how their offerings map to EU AI Act obligations, using the Act's own roles (such as provider and deployer). This standard does not provide compliance with the Act.*
 
@@ -206,8 +209,8 @@
 
 | Profile | Name | Requires |
 |---|---|---|
-| **R1** | Basic | Every rule tagged [R1]. In summary: Core/model separation, local mode, untrusted-content handling (§2); signed manifests, sandboxing, model hashes (§3); consented hardware (§4); Trusted UI, accessibility, legacy fallback (§5); capability manifests (§6); minimal onboarding and Adaptation Profile (§7); local exportable memory and backup (§8); device keys, signed Core, key recovery (§10); default-local data (§11); outbound control plane (§12); Privacy Gateway with full gateway mode (§13); local secrets (§15); approvals and kill switch (§16); signed updates without unsafe rollback (§17); shared-device protections (§19); communication at C1 |
-| **R2** | Sovereign | R1 + every rule tagged [R2]: open registries with revocation (§3), Trusted UI anti-spoofing (§5), memory import (§8), E2E mesh (§9), mesh re-keying and owner-key rotation (§10), egress policy, protected logs, residency tags (§11), verifiable minimisation and privacy reports (§13), routing records (§14), SBOMs (§17); communication at C2 |
+| **R1** | Basic | Every rule tagged [R1]. In summary: Core/model separation, local mode, untrusted-content handling (§2); signed manifests, sandboxing, model hashes (§3); consented hardware (§4); Trusted UI, accessibility, legacy fallback (§5); capability manifests (§6); minimal onboarding and Adaptation Profile (§7); local exportable memory and backup (§8); device keys, signed Core, key recovery (§10); default-local data and registered data classes (§11); outbound control plane (§12); Privacy Gateway with full gateway mode and per-call privacy reports (§13); local secrets (§15); approvals and kill switch (§16); signed updates without unsafe rollback, SBOMs (§17); shared-device protections (§19); communication at C1 |
+| **R2** | Sovereign | R1 + every rule tagged [R2]: open registries with revocation (§3), Trusted UI anti-spoofing (§5), memory import (§8), E2E mesh (§9), mesh re-keying and owner-key rotation (§10), egress policy, protected logs, residency tags (§11), verifiable minimisation (§13), routing records (§14); communication at C2 |
 | **R3** | Attested | R2 + every rule tagged [R3]: reproducible builds (§3), hardware-backed keys, measured boot and remote attestation (§10), provider profile verification (§13), hardware-backed secrets (§15), resource reporting (§18); communication at C3 |
 
 - Before v1.0, any claim of conformance is a **self-assessment** only. It **MUST NOT** be presented as a certification, and it **SHOULD** be published together with the evidence for each rule. *Rationale: there is no certification program, and claims must not imply one.*
@@ -216,7 +219,7 @@
 
 ## 22. Open Questions
 
-1. Who governs the module manifest schema and the capability descriptor vocabulary?
+1. Who governs the module manifest schema and the capability descriptor vocabulary (hardware types and function names are not yet registered)?
 2. How can adaptation profiles be portable across runtimes without becoming a fingerprinting vector?
 3. Which redaction and pseudonymisation methods are good enough to count as "verifiable minimisation"?
 4. How can Trusted UI channels be defined for very different form factors (watch, car, robot, terminal, voice-only)?
@@ -229,4 +232,6 @@
 BCP 14 (RFC 2119, RFC 8174); TLS 1.3 (RFC 8446); Oblivious HTTP (RFC 9458); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); Model Context Protocol specification; TPM 2.0 (TCG); WCAG 2.2 (W3C); OpenTelemetry; SPDX; CycloneDX; SLSA; Swiss Federal Act on Data Protection (nFADP); EU General Data Protection Regulation (GDPR); EU AI Act (Regulation (EU) 2024/1689).
 
 ---
+*Schema alignment revision (2026-10-09): module kinds including `hardware` and the sideloaded definition (§1), manifest contents and compatibility range syntax (§3), performance classes (§4), `x-` owner residency tags, tag intersection, and registered data classes (§11), privacy reports moved to R1 with defined contents (§13), SBOMs moved to R1 (§17).*
+
 *v0.3 changes: added modularity (§3), hardware discovery (§4), generated UI with Trusted UI (§5), onboarding and adaptation (§7), key recovery (§10), Private Cloud Calls with full gateway mode (§13), efficiency (§18), people and shared devices (§19); profile tags on every rule; conformance profiles linked to C and P profiles. Full history in [CHANGELOG.md](../CHANGELOG.md).*

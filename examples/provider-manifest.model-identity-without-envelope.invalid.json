@@ -15,8 +15,7 @@
   },
   "models": [],
   "model_identity": {
-    "carrier": "header",
-    "header": "SI-Model"
+    "carrier": "envelope"
   },
   "tools": [
     "search.web"
@@ -46,6 +45,9 @@
   },
   "retention": {
     "content_window": "PT24H",
+    "purpose": [
+      "abuse-handling"
+    ],
     "logs_exclude_content": true,
     "logs_no_persistent_ids": true
   },

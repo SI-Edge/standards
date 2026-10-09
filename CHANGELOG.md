@@ -2,6 +2,34 @@
 
 All notable changes to the SI Edge drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Schema alignment revision
+
+Resolutions of the questions found while writing the v0.1 schemas, folded into the drafts with the stricter choice in each case (owner-approved). Draft version numbers are unchanged. Details and traceability: [schemas/OPEN-QUESTIONS.md](schemas/OPEN-QUESTIONS.md).
+
+### SI Edge-to-Edge Communication v0.1 (SIE-COM)
+- Pairing messages use reserved `si.pairing.*` intents and carry no `instructions` (§A3).
+- Envelope table rewritten: exactly one `aud`; `attestation_ref` always present and `null` unless the session is at C3; `cap_token` optional only for pairing and refusals; `idem_key` required with `instructions`; `data` and `payload_type` together; nonce and timestamp formats; provenance entry format; new optional `ext` (§A5). Residency tags combine by intersection.
+- New §A5.1 Canonical Encoding and Signatures (`sig` excluded from signed bytes, `canon` member, `dcbor` mandatory to implement) and §A5.2 Versions and Extensions (`ext` with `x-` members; other unknown members rejected).
+- §A6: SI capability token format, 1 hour maximum lifetime, binding to the envelope, precise narrowing rules, other token formats, owner attribution for cross-owner checks.
+- §A7: refusal object with registered reason codes, no free text.
+- §B1, §B5: legacy labels on `provenance` entries. §B7: canonical encodings negotiated. Two new open questions (§D).
+
+### SI Edge Runtimes v0.3 (SIE-RT)
+- Module kinds defined, including new `hardware` and `device-adapter` definitions; single definition of sideloaded modules (§1, §3).
+- Manifest contents include kind and a compatibility range syntax (§3); performance classes (§4).
+- `x-` owner residency tags, tag intersection, registered data classes (§11).
+- Privacy reports moved from R2 to R1 with defined contents (names, never values; no redaction maps); verifiable minimisation stays at R2 (§13).
+- SBOMs moved from R2 to R1 (§17); profile table updated (§21).
+
+### SI Edge Ready Provider v0.1 (SIE-PRV)
+- Retention window format and purpose (§3); the SI Envelope itself is required at P2, equivalent mappings no longer count (§6); residency refusal codes (§6); model identity carrier (§7); manifest schema link (§8); refusal object (§9); audit validity bound (§10); P0 manifests allowed (§11); new open question on streaming (§13).
+
+### Repository
+- New `registries/`: data classes, intents, refusal reasons.
+- New `schemas/refusal.schema.json`; all schemas gain the `ext` object; `v` fixed to `0.1`; data classes and intents restricted to the registries; module compatibility range syntax; provider `model_identity`.
+- Validator enforces the 1 hour token lifetime; tests check that registries and schemas agree and that no Markdown file uses em-dashes or en-dashes.
+- More examples (62 in total) and TERMINOLOGY updates (module kinds, canonical encoding, extensions, capability token, refusal, intent, data class, registry, `x-` residency tags, tier integers).
+
 ## 2026-10-09: v0.1 JSON Schemas, examples, and validator
 
 Roadmap step 1 (first part). No normative text changed.

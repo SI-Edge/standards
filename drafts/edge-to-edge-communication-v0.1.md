@@ -50,6 +50,7 @@
 - Local discovery **MAY** use mDNS, BLE, NFC, or QR codes. Remote discovery **MAY** use a rendezvous or relay service. *Rationale: use proven mechanisms.*
 - **[C1]** Discovery advertisements (F5) **MUST** reveal as little as possible (no owner name, agent list, or capabilities in clear text) and **MUST NOT** carry payload data. *Rationale: broadcasts reach everyone nearby and cannot be end-to-end encrypted.*
 - **[C1]** Pairing **MUST** require explicit owner consent on at least one side, and on both sides for F1 and F2. *Rationale: no silent trust relationships.*
+- **[C1]** Pairing messages **MUST** use an `intent` from the reserved `si.pairing.*` namespace ([registries/intents.md](../registries/intents.md)) and **MUST NOT** carry `instructions`. Together with refusals (§A7), they are the only envelopes that **MAY** omit `cap_token`. *Rationale: before pairing there is no capability to present, so pairing must not be able to request actions.*
 - **[C1]** Pairing **MUST** include out-of-band verification: a short authentication string, a QR scan, or NFC proximity. *Rationale: defeats man-in-the-middle attacks at the moment trust is set up.*
 - **[C1]** A pairing record **MUST** state the forms and capabilities it allows, and it **SHOULD** expire unless renewed. *Rationale: trust should be specific and time-bound.*
 
@@ -65,40 +66,67 @@
 
 ## A5. Message Envelope
 
-**[C1]** Every message **MUST** use a common, signed **SI Envelope** with a versioned schema and a canonical encoding (for example deterministic CBOR, RFC 8949 §4.2, or JSON Canonicalization Scheme, RFC 8785). The only exceptions are F5 advertisements (A3) and F7 media frames after stream setup (A4). *Rationale: one structure to verify, log, and enforce.*
+**[C1]** Every message **MUST** use a common, signed **SI Envelope** with a versioned schema and a canonical encoding (§A5.1). The only exceptions are F5 advertisements (A3) and F7 media frames after stream setup (A4); the form F5 therefore never appears in an envelope. *Rationale: one structure to verify, log, and enforce.*
+
+The machine-readable definition is [schemas/envelope.schema.json](../schemas/envelope.schema.json). Where the schema and this text disagree, this text wins.
 
 Fields:
 
 | Field | Required | Purpose |
 |---|---|---|
-| `v` | Always | Schema version |
-| `form` | Always | F1 to F9 |
+| `v` | Always | Schema version as `MAJOR.MINOR` (§A5.2) |
+| `form` | Always | F1 to F9, except F5 |
 | `sender_agent` / `sender_device` | Always | Agent and device identity |
-| `aud` | Always | Intended recipient (agent, device, or provider identity) |
+| `aud` | Always | Exactly one intended recipient: an agent, device, or provider identity, or the identifier of an MLS group the sender belongs to |
 | `session` | Always | Session or conversation identifier |
 | `seq` | Always | Sequence number within the session |
-| `attestation_ref` | At C3; otherwise may be empty | Reference to the device's attestation or profile claim |
-| `cap_token` | Always, except pairing messages | Capability token authorising this message |
-| `intent` | Always | Declared purpose, from a registered vocabulary |
-| `instructions` | When an action is requested | Requested action, structured, signed by the sender |
+| `attestation_ref` | Always; `null` unless the session was negotiated at C3 | Reference to the device's attestation or profile claim. **MUST NOT** be `null` in a session negotiated at C3 (§B7) |
+| `cap_token` | Always, except pairing messages (§A3) and refusals (§A7) | Capability token authorising this message (§A6) |
+| `intent` | Always | Declared purpose, from the intent registry ([registries/intents.md](../registries/intents.md)) |
+| `instructions` | When an action is requested | Requested action, structured (`action`, optional `resource`, `params`, `consequential`). Authenticated by `sig`; there is no separate signature (§A5.1) |
 | `data` | When there is content | Payload content, always treated as untrusted data |
-| `payload_type` | When `data` is present | Media or schema type |
-| `residency` | Always | Residency tags (SIE-RT §11) and data classes |
-| `idem_key` | For state-changing messages | Idempotency key so retries do not repeat an action |
-| `nonce` / `issued` / `expires` | Always | Replay protection and freshness |
-| `provenance` | Always; empty if there is no prior hop | Chain of prior senders, delegations, and proxies (F6, F8, B5) |
+| `payload_type` | When `data` is present, and only then | Media type or schema URI of `data` |
+| `residency` | Always | Residency tags (SIE-RT §11) and data classes ([registries/data-classes.md](../registries/data-classes.md)) of the content |
+| `idem_key` | Whenever `instructions` is present; **MAY** be used on other messages | Idempotency key so retries do not repeat an action |
+| `nonce` / `issued` / `expires` | Always | Replay protection and freshness. `nonce` has at least 128 bits of randomness. Timestamps are RFC 3339 with an explicit offset (CBOR tag 1 in CBOR) |
+| `provenance` | Always; empty if there is no prior hop | Prior hops, oldest first (F6, F8, B5). Each entry has `role` (`origin`, `delegator`, `proxy`, `relay`, `store-and-forward`, or `legacy-endpoint`), `id`, and optional `device`, `method`, `labels`, and `at` |
 | `model_ref` | When a model produced content | Which agent and model produced the content |
-| `sig` | Always | Signature by the agent key, over the canonical form |
+| `ext` | Optional | Extensions (§A5.2) |
+| `sig` | Always | Signature block by the agent key (§A5.1) |
 
 - **[C1]** Receivers **MUST** reject envelopes that are unsigned, expired, replayed, not addressed to them (`aud`), out of sequence beyond a configured window, or of an unknown major version. *Rationale: fail closed.*
 - **[C1]** `instructions` and `data` **MUST** be separate fields, and the receiving Core **MUST NOT** grant any authority based on text inside `data`. *Rationale: a structural mitigation for prompt injection. It is not a complete defence, because a model reading `data` can still be steered; SIE-RT §2 requires policy checks on every resulting action.*
+- **[C1]** Every envelope that carries `instructions` **MUST** carry an `idem_key`. *Rationale: any requested action may change state, so retries must be safe by default.*
+- **[C1]** `data` and `payload_type` **MUST** appear together or not at all. *Rationale: untrusted content must always be typed before it is parsed.*
+- **[C1]** In a session negotiated at C3, receivers **MUST** reject envelopes whose `attestation_ref` is `null`. *Rationale: the negotiated profile is bound to the session by the signed transcript (§B7), so the receiver knows when attestation is required.*
+- **[C1]** Residency tags in one envelope combine by intersection: the content may go only where every tag allows. An empty tag list means the owner set no residency restriction for this content; all other egress rules still apply. *Rationale: several tags must never widen where data may go.*
+
+### A5.1 Canonical Encoding and Signatures
+
+- **[C1]** A signature **MUST** be computed over the canonical encoding of the signed object with its `sig` member removed. The `sig` block contains `alg` (JOSE or COSE algorithm name), `kid` (signing key), `canon`, `value`, and, for manifests, `signer`. `canon` names the encoding: `dcbor` (deterministic CBOR, RFC 8949 §4.2) or `jcs` (JSON Canonicalization Scheme, RFC 8785). *Rationale: both sides must hash exactly the same bytes.*
+- **[C1]** Every runtime **MUST** be able to produce and verify `dcbor` signatures. Senders **MUST** use `dcbor` unless the receiver announced `jcs` support during negotiation (§B7). *Rationale: one mandatory-to-implement encoding guarantees interoperability.*
+- **[C1]** `instructions` have no separate signature; they are authenticated only as part of the signed envelope. *Rationale: one signature, one verification path.*
+- The same rules apply to every signed SI object: capability tokens (§A6), module manifests (SIE-RT §3), and Provider Manifests (SIE-PRV §8).
+
+### A5.2 Versions and Extensions
+
+- **[C1]** `v` is `MAJOR.MINOR`. Senders **MUST NOT** use members defined in a minor version higher than the one negotiated (§B7). *Rationale: a receiver must understand every standard member it is given.*
+- **[C1]** Receivers **MUST** reject envelopes that contain members which are neither defined for the negotiated version nor inside `ext`. *Rationale: fail closed.*
+- **[C1]** Extensions **MUST** be placed in the `ext` object, with member names that start with `x-`. Receivers **MUST** ignore `ext` members they do not understand. `ext` content **MUST NOT** grant authority, relax policy, or change the meaning of standard members. *Rationale: room to experiment without weakening the core.*
+- These rules apply to every SI schema object (capability tokens, module manifests, privacy reports, refusals, Provider Manifests). *Rationale: one extension rule for the whole ecosystem.*
 
 ## A6. Authorization
 
 - **[C1]** Authorization **MUST** be capability-based. A token grants specific actions on specific resources, for a specific audience and time window. *Rationale: least privilege, with no ambient authority.*
+- **[C1]** An SI capability token has the members `v`, `id`, `iss` (issuer), `sub` (holder), `aud` (exactly one audience), `iat`, optional `nbf`, `exp`, `cnf` (proof-of-possession key binding), `rights` (each an `action` on a `resource`, with optional `constraints`), optional `budget`, `chain`, optional `ext`, and `sig` ([schemas/capability-token.schema.json](../schemas/capability-token.schema.json)). *Rationale: one token format that every runtime can verify.*
+- **[C1]** A token's `exp` **MUST** be no more than 1 hour after its `iat`. Owner policy **MAY** set a shorter maximum. Longer tasks **MUST** obtain fresh tokens. *Rationale: a testable bound for "short-lived".*
+- **[C1]** When a token authorises an envelope, its `sub` **MUST** equal the envelope's `sender_agent`, its `aud` **MUST** equal the envelope's `aud`, and its rights **MUST** cover the action in `instructions`. *Rationale: a token is useful only to its holder, toward its audience, for its actions.*
+- **[C1]** Other attenuable token formats **MAY** be used, wrapped as `{format, token}` in `cap_token`. The receiver **MUST** verify attenuation natively for that format, and **MUST** refuse with `unsupported-token-format` if it cannot. *Rationale: alternative formats must not bypass attenuation.*
 - **[C1]** Tokens **MUST** be short-lived and sender-bound (proof of possession, for example DPoP, RFC 9449, or mTLS-bound tokens, RFC 8705). They **SHOULD** follow the OAuth 2.0 Security BCP (RFC 9700) or OAuth 2.1 (an IETF Internet-Draft, work in progress), or use an attenuable token format. *Rationale: a stolen token alone is useless.*
 - **[C1]** Below C2, F6 delegation **MUST NOT** cross owners. *Rationale: cross-owner delegation needs verifiable chains.*
 - **[C2]** Delegation (F6) **MUST** only attenuate. Each hop can narrow scope, lifetime, or budget but never widen them, and the full chain **MUST** be verifiable end to end. *Rationale: delegating a task must never escalate privilege.*
+- **[C2]** A delegated token narrows its parent only if all of the following hold, and receivers **MUST** reject it otherwise: (a) its `iss` equals the parent's `sub`; (b) its `aud` equals the parent's `aud`; (c) its `exp` is not later than the parent's; (d) every right has the same `action` as a parent right and a `resource` that is equal to the parent's or lies below a parent resource ending in `/*`; (e) every constraint and budget limit the parent sets is present and not higher, and constrained data classes are a subset; (f) the full chain is carried in `chain`, root first, with at most 16 links. *Rationale: precise rules make attenuation testable.*
+- **[C1]** The owners of `iss` and `sub` are determined from owner-signed statements (§A2); a chain whose links cannot be attributed to owners **MUST** be treated as crossing owners. *Rationale: the cross-owner rule above needs a way to tell owners apart.*
 - **[C1]** Consequential actions requested by another owner (F2, or F6 across owners) **MUST** get human approval on the receiving side, unless the owner has pre-authorised a narrow policy for them. *Rationale: a stranger's agent must not act on your behalf by default.*
 - **[C1]** Every request **MUST** also pass the receiving runtime's local permission checks. Tokens never override local policy. *Rationale: the receiver's owner decides.*
 
@@ -107,7 +135,7 @@ Fields:
 - **[C1]** All peer content **MUST** be treated as untrusted data. It **MUST NOT** change the receiving agent's system instructions, permissions, or memory without passing local policy. *Rationale: other agents may be compromised or adversarial.*
 - **[C1]** Runtimes **MUST** enforce per-peer rate limits and budgets (messages, compute, money). *Rationale: limits denial-of-service and runaway loops between agents.*
 - Runtimes **MAY** maintain local reputation scores for peers, and **SHOULD NOT** depend on one central reputation authority. *Rationale: useful signal without a single point of control.*
-- **[C1]** Refusals **MUST** use a standard, machine-readable response (`refused`, with a reason code from a registered list). A refusal **MUST NOT** include memory, Adaptation Profile data, or other content that was not already in the request. *Rationale: predictable negotiation without accidental disclosure.*
+- **[C1]** Refusals **MUST** use the refusal object ([schemas/refusal.schema.json](../schemas/refusal.schema.json)) with a reason code from [registries/refusal-reasons.md](../registries/refusal-reasons.md) or a private `x-` code. It is sent as the `data` of an envelope with intent `si.refused` and `payload_type` `application/vnd.si-edge.refusal+json`; such an envelope **MUST NOT** carry `instructions`. A refusal **MUST NOT** include free text, memory, Adaptation Profile data, or other content that was not already in the request. *Rationale: predictable negotiation without accidental disclosure.*
 - **[C1]** Negotiations that commit the owner (purchases, agreements, sharing data) **MUST** produce a signed summary for the human. *Rationale: owners need a clear record of what their agent agreed to.*
 
 ## A8. Privacy
@@ -147,7 +175,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 ## B1. General Rules
 
-- **[C1]** Every legacy endpoint **MUST** be labelled `legacy` and `unattested` in the envelope, the logs, and the interface. Any endpoint without verified attestation **MUST** be labelled `unattested`. *Rationale: users have to see where trust is weaker.*
+- **[C1]** Every legacy endpoint **MUST** be labelled `legacy` and `unattested` in the envelope (on its `provenance` entry, role `legacy-endpoint`, §A5), the logs, and the interface. Any endpoint without verified attestation **MUST** be labelled `unattested`. *Rationale: users have to see where trust is weaker.*
 - **[C1]** An adapter **MUST** generate a permission manifest for each legacy endpoint before first use, and the owner **MUST** approve it. *Rationale: same consent model as native capabilities.*
 - **[C1]** Egress policy and approvals **MUST** be enforced by the SI runtime on the adapter side, since a legacy endpoint cannot enforce them. *Rationale: enforcement lives where trust lives.*
 - When several methods are possible, runtimes **SHOULD** prefer, in order: native, Method 3, Method 2, Method 4, Method 1, Method 5. *Rationale: prefer structured, enforceable paths over brittle ones.*
@@ -181,7 +209,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 **When to use:** the endpoint cannot run anything new, such as old IoT, HTTP APIs, Bluetooth peripherals, Matter, Modbus, and other legacy protocols.
 - A nearby SI runtime acts as a **proxy**. It translates legacy protocols into capabilities and wraps every exchange in the SI Envelope on the SI side. *Rationale: brings legacy endpoints under one policy.*
-- **[C1]** The proxy **MUST** be treated as holding the trust for its legacy endpoints. Its identity **MUST** appear in every envelope's `provenance`, and the legacy endpoint **MUST** be labelled `legacy` and `unattested`. *Rationale: trust must be explicit about who actually vouches.*
+- **[C1]** The proxy **MUST** be treated as holding the trust for its legacy endpoints. Its identity **MUST** appear in every envelope's `provenance` with role `proxy`, and the legacy endpoint **MUST** appear there with role `legacy-endpoint` and the labels `legacy` and `unattested`. *Rationale: trust must be explicit about who actually vouches.*
 - **[C1]** The proxy **MUST** isolate each legacy endpoint (separate credentials, and a separate network segment where possible) and **MUST** keep legacy credentials in its own keystore. *Rationale: one weak device must not compromise others.*
 - **[C1]** Consequential and physical actions through a proxy **MUST** require approval unless pre-authorised. *Rationale: legacy devices have weak safety interlocks.*
 - **Profile:** the proxy runtime can hold any R and C profile, but the legacy endpoint stays C0. *Rationale: a proxy cannot attest for what it does not control.*
@@ -195,7 +223,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 ## B7. Negotiation, Version Fallback, and Downgrade Protection
 
-- **[C1]** Peers **MUST** negotiate envelope version, crypto suites, forms, and profile at session start, and **MUST** select the highest profile both support and owner policy allows. *Rationale: always use the best available security.*
+- **[C1]** Peers **MUST** negotiate envelope version, crypto suites, canonical encodings (§A5.1), forms, and profile at session start, and **MUST** select the highest profile both support and owner policy allows. *Rationale: always use the best available security.*
 - **[C1]** The negotiation transcript **MUST** be signed and bound to the session keys. *Rationale: prevents an attacker from forcing legacy mode.*
 - **[C1]** A runtime **MUST** remember a peer's highest previously seen profile and **MUST** refuse, or require owner approval, before dropping below it. The owner **MAY** reset a pin, and a peer that announces a planned profile change in a signed statement **MAY** be re-pinned after owner approval. *Rationale: trust on first use with downgrade pinning, and a way out for legitimate changes.*
 - **[C1]** Falling back to a legacy method **MUST** be shown to the user explicitly (for example "Legacy connection: unattested"). *Rationale: no silent loss of security.*
@@ -224,12 +252,17 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 # D. Open Questions
 
-1. Who maintains the `intent` vocabulary and refusal reason codes, and how should they evolve?
+1. [registries/](../registries/) now holds minimal intent, data-class, and refusal-reason registries. Who should maintain them after v1.0, and how should application domains grow?
 2. Which post-quantum hybrid constructions (for example X25519MLKEM768) should become mandatory for C3, and when?
 3. How can reputation work across owners without creating a central authority or a way to track people?
 4. How should proxies prove correct translation for legacy protocols that have no integrity protection?
 5. How should liability and approval work when an agent-to-agent negotiation spans owners in different jurisdictions (for example CH and a non-EU country)?
+6. What is the format of an F5 discovery advertisement (fields, size limits, rotation of identifiers)?
+7. How are F7 streams to several recipients set up when `aud` names one MLS group, and which streaming paths provide relay separation comparable to Oblivious HTTP?
 
 # E. References
 
-BCP 14 (RFC 2119, RFC 8174); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); deterministic CBOR (RFC 8949 §4.2); JSON Canonicalization Scheme (RFC 8785); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
+BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); deterministic CBOR (RFC 8949 §4.2); JSON Canonicalization Scheme (RFC 8785); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
+
+---
+*Schema alignment revision (2026-10-09): pairing intents and refusals (§A3, §A7), envelope field formats, `attestation_ref` always present, `idem_key` with `instructions`, intersection of residency tags (§A5), canonical encoding and signatures (§A5.1), versions and the `ext` extension rule (§A5.2), token format, 1 hour maximum lifetime, envelope binding, and precise narrowing rules (§A6), provenance labels for legacy endpoints (§B1, §B5). Full history in [CHANGELOG.md](../CHANGELOG.md).*

@@ -14,6 +14,10 @@
     "self_assessment": "https://search.example.com/si/self-assessment-p1.html"
   },
   "models": [],
+  "model_identity": {
+    "carrier": "header",
+    "header": "SI-Model"
+  },
   "tools": [
     "search.web"
   ],

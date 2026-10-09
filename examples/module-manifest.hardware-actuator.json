@@ -42,7 +42,7 @@
       "robot.arm.move",
       "robot.arm.grip"
     ],
-    "performance_class": "light-duty",
+    "performance_class": "standard",
     "safety": {
       "actuator": true,
       "safe_stop": "Cuts motor power and holds position with brakes within 100 ms.",

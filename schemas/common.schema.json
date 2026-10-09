@@ -5,9 +5,8 @@
   "description": "Shared definitions used by the other SI Edge v0.1 schemas: identifiers, timestamps, durations, digests, signatures, residency tags (SIE-RT section 11, TERMINOLOGY.md), and conformance profile tags (SIE-RT section 21, SIE-COM Part C, SIE-PRV section 11). Status: Draft, not for implementation.",
   "$defs": {
     "schemaVersion": {
-      "description": "Schema version as MAJOR.MINOR. These schemas describe major version 0 (SIE-COM section A5: receivers reject unknown major versions).",
-      "type": "string",
-      "pattern": "^0\\.[0-9]+$"
+      "description": "Schema version of this document as MAJOR.MINOR. These schemas describe version 0.1. Members defined in a higher minor version are rejected unless that version was negotiated (SIE-COM section A5.2).",
+      "const": "0.1"
     },
     "identifier": {
       "description": "Identity of an owner, device, agent, provider, module, or registry, expressed as a URI (for example a DID, SIE-COM section A2).",
@@ -45,7 +44,7 @@
       "pattern": "^[A-Za-z0-9_-]+$"
     },
     "nonce": {
-      "description": "Random nonce, unpadded base64url, at least 128 bits (22 characters). The lower bound is a conservative choice, see schemas/OPEN-QUESTIONS.md.",
+      "description": "Random nonce with at least 128 bits of randomness, unpadded base64url (at least 22 characters) (SIE-COM section A5).",
       "type": "string",
       "minLength": 22,
       "maxLength": 128,
@@ -54,17 +53,35 @@
     "digest": {
       "description": "Cryptographic hash of an artifact.",
       "type": "object",
-      "required": ["alg", "value"],
+      "required": [
+        "alg",
+        "value"
+      ],
       "additionalProperties": false,
       "properties": {
-        "alg": { "enum": ["sha-256", "sha-384", "sha-512", "sha3-256", "sha3-512"] },
-        "value": { "$ref": "#/$defs/base64url" }
+        "alg": {
+          "enum": [
+            "sha-256",
+            "sha-384",
+            "sha-512",
+            "sha3-256",
+            "sha3-512"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/base64url"
+        }
       }
     },
     "signature": {
-      "description": "Signature over the canonical encoding (deterministic CBOR, RFC 8949 section 4.2, or JCS, RFC 8785) of the enclosing object with the sig member removed (SIE-COM section A5). The signature only proves who signed; trust in the key is established by identity statements (SIE-COM section A2).",
+      "description": "Signature block (SIE-COM section A5.1). The signature is computed over the canonical encoding named in canon (dcbor: deterministic CBOR, RFC 8949 section 4.2; jcs: JSON Canonicalization Scheme, RFC 8785) of the enclosing object with the sig member removed. dcbor is mandatory to implement. The signature only proves who signed; trust in the key comes from identity statements (SIE-COM section A2).",
       "type": "object",
-      "required": ["alg", "kid", "canon", "value"],
+      "required": [
+        "alg",
+        "kid",
+        "canon",
+        "value"
+      ],
       "additionalProperties": false,
       "properties": {
         "alg": {
@@ -83,43 +100,176 @@
         },
         "canon": {
           "description": "Canonical encoding the signature was computed over.",
-          "enum": ["dcbor", "jcs"]
+          "enum": [
+            "dcbor",
+            "jcs"
+          ]
         },
-        "value": { "$ref": "#/$defs/base64url" }
+        "value": {
+          "$ref": "#/$defs/base64url"
+        }
       }
     },
     "residencyTag": {
-      "description": "Residency tag (SIE-RT section 11). CH: Switzerland only. EU: EU and EEA member states only. CH-EU: Switzerland, or EU and EEA member states. Owner-defined tags use the x- prefix (conservative choice, see schemas/OPEN-QUESTIONS.md). Any tag a runtime or provider does not recognise MUST be treated as not allowed (fail closed); this schema only checks syntax.",
+      "description": "Residency tag (SIE-RT section 11). CH: Switzerland only. EU: EU and EEA member states only. CH-EU: Switzerland, or EU and EEA member states. Owner-defined tags MUST start with x- (SIE-RT section 11). Several tags on one item combine by intersection. Any tag a runtime or provider does not recognise MUST be treated as not allowed (fail closed); this schema only checks syntax.",
       "type": "string",
       "anyOf": [
-        { "enum": ["CH", "EU", "CH-EU"] },
-        { "pattern": "^x-[a-z0-9][a-z0-9-]{0,62}$" }
+        {
+          "enum": [
+            "CH",
+            "EU",
+            "CH-EU"
+          ]
+        },
+        {
+          "pattern": "^x-[a-z0-9][a-z0-9-]{0,62}$"
+        }
       ]
     },
     "dataClass": {
-      "description": "Data class label used by egress policy (SIE-RT section 11, section 13). No registered vocabulary exists yet (schemas/OPEN-QUESTIONS.md); lowercase dotted names such as health, contacts, location.precise are used in examples.",
+      "description": "Data class from registries/data-classes.md: a registered top-level class, optionally followed by dot-separated subclasses, or a private class starting with x- (SIE-RT section 11).",
       "type": "string",
-      "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z0-9_-]+)*$",
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^((identity|contacts|communications|calendar|location|health|biometric|finance|documents|media|home|device|query|usage|adaptation|memory|secrets)(\\.[a-z0-9_-]+)*|x-[a-z0-9][a-z0-9-]*(\\.[a-z0-9_-]+)*)$"
     },
-    "runtimeProfile": { "enum": ["R1", "R2", "R3"] },
+    "runtimeProfile": {
+      "enum": [
+        "R1",
+        "R2",
+        "R3"
+      ]
+    },
     "communicationProfile": {
       "description": "C0 is a legacy hop, not a conformance profile (SIE-COM Part C).",
-      "enum": ["C0", "C1", "C2", "C3"]
+      "enum": [
+        "C0",
+        "C1",
+        "C2",
+        "C3"
+      ]
     },
-    "providerProfile": { "enum": ["P0", "P1", "P2", "P3"] },
+    "providerProfile": {
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ]
+    },
     "trustLabel": {
       "description": "Labels shown in Trusted UI (TERMINOLOGY.md).",
-      "enum": ["legacy", "unattested", "sideloaded"]
+      "enum": [
+        "legacy",
+        "unattested",
+        "sideloaded"
+      ]
     },
     "money": {
       "type": "object",
-      "required": ["amount", "currency"],
+      "required": [
+        "amount",
+        "currency"
+      ],
       "additionalProperties": false,
       "properties": {
-        "amount": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$", "description": "Decimal amount as a string to avoid floating point errors." },
-        "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "description": "ISO 4217 currency code." }
+        "amount": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal amount as a string to avoid floating point errors."
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code."
+        }
       }
+    },
+    "versionString": {
+      "description": "A MAJOR.MINOR version string, used in lists of supported versions.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "intent": {
+      "description": "Intent from registries/intents.md (SIE-COM section A5): one of the reserved si.* control intents, a registered application domain followed by at least one label, or a private x- intent.",
+      "type": "string",
+      "maxLength": 128,
+      "anyOf": [
+        {
+          "enum": [
+            "si.pairing.request",
+            "si.pairing.response",
+            "si.pairing.confirm",
+            "si.pairing.reject",
+            "si.negotiate",
+            "si.refused",
+            "si.ack",
+            "si.revocation",
+            "si.statement",
+            "si.stream.setup",
+            "si.stream.rekey",
+            "si.summary",
+            "si.sync"
+          ]
+        },
+        {
+          "pattern": "^(task|scheduling|messaging|telemetry|control|negotiation|purchase|payment|share|query|notify|handoff)(\\.[a-z0-9_-]+)+$"
+        },
+        {
+          "pattern": "^x-[a-z0-9][a-z0-9-]*(\\.[a-z0-9_-]+)+$"
+        }
+      ]
+    },
+    "refusalReason": {
+      "description": "Refusal reason code from registries/refusal-reasons.md, or a private x- code (SIE-COM section A7).",
+      "type": "string",
+      "anyOf": [
+        {
+          "enum": [
+            "malformed",
+            "bad-signature",
+            "unsupported-version",
+            "sunset-version",
+            "unsupported-form",
+            "unsupported-intent",
+            "unsupported-token-format",
+            "unauthorized",
+            "expired",
+            "replayed",
+            "wrong-audience",
+            "out-of-sequence",
+            "revoked",
+            "policy-denied",
+            "approval-denied",
+            "approval-timeout",
+            "rate-limited",
+            "budget-exceeded",
+            "residency-unsupported",
+            "residency-unknown-tag",
+            "data-class-forbidden",
+            "profile-too-low",
+            "legacy-forbidden",
+            "proof-required",
+            "unavailable"
+          ]
+        },
+        {
+          "pattern": "^x-[a-z0-9][a-z0-9-]{0,62}$"
+        }
+      ]
+    },
+    "ext": {
+      "description": "Extensions (SIE-COM section A5.2). Member names start with x-. Receivers ignore members they do not understand. Extensions never grant authority, relax policy, or change the meaning of standard members, and are covered by the signature like every other member.",
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {
+        "pattern": "^x-[a-z0-9][a-z0-9.-]{0,62}$"
+      }
+    },
+    "runtimeRange": {
+      "description": "Range of SIE-RT versions as space-separated comparators, for example >=0.3 <0.4 (SIE-RT section 3).",
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^(>=|<=|>|<|=)?[0-9]+\\.[0-9]+( (>=|<=|>|<|=)[0-9]+\\.[0-9]+)*$"
     }
   }
 }

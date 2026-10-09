@@ -13,6 +13,9 @@
     "self_assessment": "https://models.example.net/si/self-assessment-p2.html"
   },
   "si_request_header": "SI-Request",
+  "model_identity": {
+    "carrier": "envelope"
+  },
   "models": [
     {
       "id": "example-large",

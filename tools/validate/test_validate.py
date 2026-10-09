@@ -19,6 +19,7 @@ Run from the repository root:
 
 from __future__ import annotations
 
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -87,6 +88,41 @@ class SchemaTests(unittest.TestCase):
             self.assertFalse(checker.is_valid(bad), bad)
 
 
+def registry_codes(name: str) -> list[str]:
+    """First-column codes of every table row in registries/<name>."""
+    codes = []
+    for line in (validate.REPO / "registries" / name).read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^\| `([^`]+)` \|", line)
+        if match:
+            codes.append(match.group(1))
+    return codes
+
+
+class RegistryTests(unittest.TestCase):
+    """Registries and schemas must list the same codes."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.common = validate.load_schemas()["common"]["$defs"]
+
+    def test_refusal_reasons_match(self):
+        enum = self.common["refusalReason"]["anyOf"][0]["enum"]
+        self.assertEqual(sorted(registry_codes("refusal-reasons.md")), sorted(enum))
+
+    def test_si_intents_and_domains_match(self):
+        codes = registry_codes("intents.md")
+        si = [c for c in codes if c.startswith("si.")]
+        domains = [c for c in codes if not c.startswith("si.")]
+        self.assertEqual(sorted(si), sorted(self.common["intent"]["anyOf"][0]["enum"]))
+        pattern = self.common["intent"]["anyOf"][1]["pattern"]
+        self.assertEqual(sorted(domains), sorted(re.match(r"^\^\(([^)]*)\)", pattern).group(1).split("|")))
+
+    def test_data_classes_match(self):
+        pattern = self.common["dataClass"]["pattern"]
+        classes = re.match(r"^\^\(\(([^)]*)\)", pattern).group(1).split("|")
+        self.assertEqual(sorted(registry_codes("data-classes.md")), sorted(classes))
+
+
 class SemanticTests(unittest.TestCase):
     def test_resource_coverage(self):
         self.assertTrue(validate.resource_covers("urn:a:b/*", "urn:a:b/c"))
@@ -102,8 +138,8 @@ class SemanticTests(unittest.TestCase):
 
 class RepositoryStyleTests(unittest.TestCase):
     def test_no_em_or_en_dashes(self):
-        roots = [validate.REPO / d for d in ("schemas", "examples", "tools")]
-        roots += [validate.REPO / "README.md", validate.REPO / "CHANGELOG.md"]
+        roots = [validate.REPO / d for d in ("schemas", "examples", "tools", "registries", "drafts")]
+        roots += sorted(validate.REPO.glob("*.md"))
         for root in roots:
             paths = [root] if root.is_file() else [p for p in root.rglob("*") if p.is_file()]
             for path in paths:

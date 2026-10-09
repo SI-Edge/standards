@@ -44,7 +44,7 @@
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$"
     },
     "kind": {
-      "description": "Module kind (SIE-RT section 1, section 3, section 4).",
+      "description": "Module kind (SIE-RT section 1, section 3, section 4). hardware: installed or attached hardware discovered by the runtime, described by a capability descriptor. device-adapter: software that connects to an external device or device API through its own protocol.",
       "enum": [
         "feature",
         "function",
@@ -86,10 +86,8 @@
       "additionalProperties": false,
       "properties": {
         "runtime": {
-          "description": "Supported SI runtime standard versions as a range expression, for example >=0.3 <0.4.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "description": "Supported SIE-RT standard versions (SIE-RT section 3).",
+          "$ref": "common.schema.json#/$defs/runtimeRange"
         },
         "min_profile": {
           "description": "Lowest runtime conformance profile the module is designed for.",
@@ -266,7 +264,7 @@
       }
     },
     "sbom": {
-      "description": "SBOM reference (SPDX or CycloneDX). Shipping SBOMs is REQUIRED at R2 (SIE-RT section 17); the reference is always required in the manifest (SIE-RT section 3).",
+      "description": "SBOM reference (SPDX or CycloneDX), REQUIRED at R1 (SIE-RT section 3, section 17).",
       "type": "object",
       "required": [
         "format",
@@ -313,8 +311,11 @@
         }
       }
     },
+    "ext": {
+      "$ref": "common.schema.json#/$defs/ext"
+    },
     "sig": {
-      "description": "Manifest signature. signer is required so the Core can show who signed (SIE-RT section 3). Self-signed sideloaded modules are allowed and are labelled sideloaded by the Core, not by the manifest.",
+      "description": "Manifest signature (SIE-COM section A5.1). signer is required so the Core can show who signed (SIE-RT section 3). Modules installed from outside the owner's chosen registries, including self-signed ones, are labelled sideloaded by the Core, not by the manifest.",
       "allOf": [
         {
           "$ref": "common.schema.json#/$defs/signature"
@@ -478,7 +479,8 @@
       "properties": {
         "type": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9_.-]*$"
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "description": "Hardware type. No registered vocabulary yet (schemas/OPEN-QUESTIONS.md)."
         },
         "functions": {
           "type": "array",
@@ -489,9 +491,12 @@
           "uniqueItems": true
         },
         "performance_class": {
-          "description": "No vocabulary defined yet (schemas/OPEN-QUESTIONS.md).",
-          "type": "string",
-          "maxLength": 64
+          "description": "Performance class (SIE-RT section 4): constrained (microcontrollers, simple sensors), standard (typical consumer device), high (dedicated accelerators or industrial hardware).",
+          "enum": [
+            "constrained",
+            "standard",
+            "high"
+          ]
         },
         "safety": {
           "type": "object",

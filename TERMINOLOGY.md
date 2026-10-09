@@ -15,9 +15,12 @@ Shared terms for all SI Edge drafts. Where a draft defines a term normatively, t
 | **User** | A person who interacts with the runtime; may differ from the owner | SIE-RT §1, §19 |
 | **Router Model** | Small local decision model that picks models and tools | SIE-RT §1 |
 | **Control Plane** | Remote service that plans, orchestrates, or runs inference for the runtime | SIE-RT §1, §12 |
-| **Module** | Installable unit with a signed manifest | SIE-RT §3 |
+| **Module** | Installable unit with a signed manifest. Kinds: `feature`, `function`, `model`, `device-adapter`, `hardware`, `ui-kit`, `legacy-adapter` | SIE-RT §1, §3 |
+| **Hardware module** | Module of kind `hardware`: installed or attached hardware, described by a capability descriptor | SIE-RT §1, §4 |
+| **Device adapter** | Module of kind `device-adapter`: software that connects to an external device or device API through its own protocol | SIE-RT §1 |
+| **Sideloaded module** | Module installed from outside the owner's chosen registries, including any self-signed module | SIE-RT §1, §3 |
 | **Capability** | An action exposed by the OS, an app, a module, or hardware | SIE-RT §1, §6 |
-| **Capability descriptor** | Description of a hardware item: type, functions, performance class, safety constraints, attestation | SIE-RT §4 |
+| **Capability descriptor** | Description of a hardware item: type, functions, performance class (`constrained`, `standard`, `high`), safety constraints, attestation | SIE-RT §4 |
 | **Trusted UI** | Fixed interface components rendered only by the Core through a channel others cannot imitate | SIE-RT §5 |
 | **Adaptation Profile** | User-controlled description of how the runtime communicates and works with them | SIE-RT §7 |
 | **Privacy Gateway** | Core component that all outbound cloud calls pass through | SIE-RT §13 |
@@ -26,6 +29,13 @@ Shared terms for all SI Edge drafts. Where a draft defines a term normatively, t
 | **Egress** | Any data that leaves the device | SIE-RT §1 |
 | **Consequential Action** | Irreversible, costs money, communicates externally, changes access rights, or moves something physically | SIE-RT §1 |
 | **SI Envelope** | Common signed message structure with versioned schema and canonical encoding | SIE-COM §A5 |
+| **Canonical encoding** | Byte-exact encoding a signature is computed over: `dcbor` (deterministic CBOR, mandatory to implement) or `jcs` (JSON Canonicalization Scheme), named in `sig.canon` | SIE-COM §A5.1 |
+| **Extension (`ext`)** | Object for non-standard members with `x-` names; ignored if not understood, never grants authority. Unknown members outside `ext` are rejected | SIE-COM §A5.2 |
+| **Capability token** | Signed, sender-bound grant of rights for one audience, valid at most 1 hour, that can only narrow on delegation | SIE-COM §A6 |
+| **Refusal** | Code-only machine-readable answer to a refused request, sent with intent `si.refused` | SIE-COM §A7 |
+| **Intent** | Declared purpose of an envelope from the intent registry | SIE-COM §A5, [registries/intents.md](registries/intents.md) |
+| **Data class** | Label for a kind of personal data, from the data-class registry or `x-` prefixed | SIE-RT §11, [registries/data-classes.md](registries/data-classes.md) |
+| **Registry** | Shared list of codes (data classes, intents, refusal reasons); private codes start with `x-` | [registries/](registries/README.md) |
 | **Form (F1 to F9)** | Classification of a message by communication pattern | SIE-COM §A1 |
 | **Legacy endpoint** | Device, app, or OS that does not itself sign and verify SI Envelopes | SIE-COM Part B |
 | **Shim** | Lightweight software that lets an endpoint speak the envelope without a full runtime | SIE-COM §B4 |
@@ -46,7 +56,9 @@ Defined normatively in SIE-RT §11. Residency tags are an **owner policy choice*
 | `CH` | Switzerland only |
 | `EU` | EU and EEA member states only |
 | `CH-EU` | Switzerland, or EU and EEA member states |
-| other | Owner-defined. Any tag a runtime or provider does not recognise is treated as not allowed |
+| `x-...` | Owner-defined, for example `x-home-only`. Any tag a runtime or provider does not recognise is treated as not allowed |
+
+Several tags on the same data combine by **intersection**: the data may be processed and stored only where every tag allows. An empty tag list means the owner set no residency restriction; all other egress rules still apply.
 
 ## Profile Tiers
 
@@ -57,8 +69,8 @@ Defined normatively in SIE-RT §11. Residency tags are an **owner policy choice*
 | 2 Sovereign | R2 | C2 | P2 |
 | 3 Attested | R3 | C3 | P3 |
 
-A session's effective tier is the lowest tier of the runtime, every communication hop, and every provider in its path.
+A session's effective tier is the lowest tier of the runtime, every communication hop, and every provider in its path. Machine-readable documents give the tier as the integer 0 to 3 (for example `effective_tier` in a privacy report).
 
 ## Labels Shown in Trusted UI
 
-`legacy` (legacy endpoint), `unattested` (no verified attestation), `sideloaded` (module signed outside the owner's registries).
+`legacy` (legacy endpoint), `unattested` (no verified attestation), `sideloaded` (module installed from outside the owner's chosen registries, including self-signed modules). In envelopes, `legacy` and `unattested` appear on the legacy endpoint's `provenance` entry (SIE-COM §A5).

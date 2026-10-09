@@ -5,7 +5,7 @@
   "sub": "did:example:alice-phone#agent-assistant",
   "aud": "did:example:bob-homeserver#agent-calendar",
   "iat": "2026-10-09T08:05:00Z",
-  "exp": "2026-10-09T12:00:00Z",
+  "exp": "2026-10-09T09:05:00Z",
   "cnf": {
     "jkt": "NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs"
   },

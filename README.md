@@ -18,6 +18,7 @@ A **personal SI** is an advanced AI agent runtime that runs on hardware the user
 | **SI Edge Ready Provider v0.1** (SIE-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3** |
 | Terminology | [TERMINOLOGY.md](TERMINOLOGY.md) | Shared glossary, residency tags, profile tiers |
 | Threat model | [THREAT-MODEL.md](THREAT-MODEL.md) | Adversaries, assets, and the rules that address them |
+| Registries | [registries/](registries/README.md) | Data classes, intents, and refusal reasons shared by all drafts |
 | History: Edge Devices v0.1 (superseded) | [drafts/history/runtime-v0.1.md](drafts/history/runtime-v0.1.md) | First draft, focused on remote attach |
 | History: Edge Runtimes v0.2 (superseded) | [drafts/history/runtime-v0.2.md](drafts/history/runtime-v0.2.md) | Runtime-as-interface reframing |
 
@@ -41,7 +42,8 @@ A session's **effective tier** is the lowest tier of the runtime, of every commu
 
 ## Schemas and Tooling
 
-- [schemas/](schemas/): JSON Schema 2020-12 files for the SI Envelope, capability token, module manifest, privacy report, and Provider Manifest, with a [map to the draft sections](schemas/README.md) and the [open questions](schemas/OPEN-QUESTIONS.md) found while writing them. The schemas follow the drafts; where they disagree, the draft wins.
+- [schemas/](schemas/): JSON Schema 2020-12 files for the SI Envelope, capability token, module manifest, privacy report, refusal, and Provider Manifest, with a [map to the draft sections](schemas/README.md) and the [open questions](schemas/OPEN-QUESTIONS.md) that remain. The schemas follow the drafts; where they disagree, the draft wins.
+- [registries/](registries/README.md): minimal data-class, intent, and refusal-reason vocabularies, kept in sync with the schemas by the tests.
 - [examples/](examples/): valid and deliberately invalid examples for every schema, with the reason each invalid one fails.
 - [tools/validate/](tools/validate/): a small Python validator (JSON Schema plus semantic checks such as capability attenuation) and its tests. A GitHub Actions workflow is ready in [tools/validate/ci/](tools/validate/ci/) and runs them on every push and pull request once moved to `.github/workflows/`.
 - CBOR (non-normative): a CBOR encoding follows the same data model, encoded as deterministic CBOR (RFC 8949 section 4.2). A normative CBOR profile is future work.
@@ -70,7 +72,7 @@ python tools/validate/validate.py
 
 ## Next Steps / Roadmap
 
-1. **Envelope schema:** publish the SI Envelope, module manifest, capability descriptor, open memory format, and Provider Manifest as JSON Schema plus a deterministic CBOR profile. *Started in v0.1 of [schemas/](schemas/): envelope, capability token, module manifest (with capability descriptor), privacy report, and Provider Manifest. Still open: open memory format, normative CBOR profile.*
+1. **Envelope schema:** publish the SI Envelope, module manifest, capability descriptor, open memory format, and Provider Manifest as JSON Schema plus a deterministic CBOR profile. *Started in v0.1 of [schemas/](schemas/): envelope, capability token, module manifest (with capability descriptor), privacy report, refusal, and Provider Manifest, aligned with the drafts. Still open: open memory format, normative CBOR profile.*
 2. **Reference implementation:** a minimal Core prototype with a local router model, MCP tool layer, Privacy Gateway, Trusted UI components, and one proxy module for a legacy device. Start on a PC and a VPS, then add a phone.
 3. **Test suite:** conformance tests for R1, C1, and P1 first, including downgrade, prompt-injection, and Trusted UI spoofing tests.
 4. **Governance:** the RFC process in [GOVERNANCE.md](GOVERNANCE.md), an open module registry template, and neutral maintainership before v1.0.

@@ -37,7 +37,7 @@
 
 - **[P1]** Providers **MUST NOT** train on, fine-tune on, or build profiles from SI requests or their responses. *Rationale: requests come from people's personal devices.*
 - **[P1]** Providers **MUST NOT** retain SI request or response content after the response is delivered, except for a short retention window strictly for abuse handling or legal duty. *Rationale: data that is not kept cannot leak.*
-- **[P1]** Any retention window **MUST** be declared in the manifest. *Rationale: runtimes show it in the privacy report, and owners can block providers that retain anything (SIE-RT §11).*
+- **[P1]** Any retention window **MUST** be declared in the manifest as an ISO 8601 duration (`PT0S` for none). A non-zero window **MUST** state its purpose: abuse handling, legal duty, or both. *Rationale: runtimes show it in the privacy report, and owners can block providers that retain anything (SIE-RT §11).*
 - **[P3]** The declared retention window **MUST** be covered by attestation or audit evidence. *Rationale: retention claims need proof.*
 - **[P1]** Operational logs for SI requests **MUST** exclude content and **MUST NOT** contain persistent user identifiers. *Rationale: metadata can identify people too.*
 
@@ -56,14 +56,14 @@
 
 ## 6. Envelope and Residency Support
 
-- **[P2]** Providers **MUST** accept the SI Envelope ([SIE-COM §A5](edge-to-edge-communication-v0.1.md#a5-message-envelope)), or an equivalent mapping that preserves its fields, signature, and separation of instructions from data. *Rationale: one protocol across the ecosystem.*
+- **[P2]** Providers **MUST** accept the SI Envelope itself ([SIE-COM §A5](edge-to-edge-communication-v0.1.md#a5-message-envelope)), including its canonical encoding and signature rules (SIE-COM §A5.1). Equivalent mappings do not satisfy this rule. *Rationale: one protocol across the ecosystem, and a mapping cannot be verified the same way.*
 - **[P2]** Providers **MUST** honour residency tags with the meanings defined in [SIE-RT §11](runtime-v0.3.md#11-data-sovereignty-egress-and-residency): data tagged `CH`, `EU`, or `CH-EU` is processed and stored only in the corresponding regions. *Rationale: residency travels with the data.* Residency tags are an owner policy choice that is stricter than the default transfer rules of the Swiss nFADP and the EU GDPR; they are not a statement of what those laws require.
-- **[P2]** If a provider cannot honour a tag, or does not recognise it, it **MUST** refuse with a machine-readable reason, not process the request elsewhere. *Rationale: fail closed.*
+- **[P2]** If a provider cannot honour a tag, or does not recognise it, it **MUST** refuse with the refusal object (§9) and the reason `residency-unsupported` or `residency-unknown-tag`, not process the request elsewhere. Several tags combine by intersection (SIE-RT §11). *Rationale: fail closed.*
 - **[P2]** Providers **MUST** respect the envelope's `expires`, `aud`, and `idem_key` fields. *Rationale: reliability and replay protection.*
 
 ## 7. Transparency and Model Identity
 
-- **[P1]** Every response **MUST** carry a model identity (model name, version, and region) and the provider's currently claimed profile. Below P3 this is a declaration that the runtime cannot verify. *Rationale: runtimes record which model saw what (SIE-RT §14).*
+- **[P1]** Every response **MUST** carry a model identity (model name, version, and region) and the provider's currently claimed profile. Providers that accept the SI Envelope carry it in the response envelope's `model_ref`; others carry it in a response header named in the manifest (`model_identity`). Below P3 this is a declaration that the runtime cannot verify. *Rationale: runtimes record which model saw what (SIE-RT §14).*
 - **[P2]** Providers **MUST** publish periodic transparency reports covering legal requests, retention practice, incidents, and changes to policy. *Rationale: accountability over time.*
 - **[P1]** Material changes to model or policy **MUST** be announced in the manifest before they take effect. *Rationale: runtimes can re-evaluate trust.*
 
@@ -71,7 +71,7 @@
 
 ## 8. Capability and Pricing Discovery
 
-- **[P1]** Providers **MUST** publish a signed **Provider Manifest** at a well-known location. It covers capabilities (models, modalities, context limits, tools), pricing, accepted credentials, retention, regions, residency support, attestation endpoints, identified-mode linking, and the claimed profile with a link to the self-assessment. *Rationale: runtimes can compare and choose automatically.*
+- **[P1]** Providers **MUST** publish a signed **Provider Manifest** ([schemas/provider-manifest.schema.json](../schemas/provider-manifest.schema.json)) at a well-known location. Signatures follow SIE-COM §A5.1 and extensions SIE-COM §A5.2. It covers capabilities (models, modalities, context limits, tools), pricing, accepted credentials, retention, regions, residency support, attestation endpoints, identified-mode linking, how model identity is carried (§7), and the claimed profile with a link to the self-assessment. *Rationale: runtimes can compare and choose automatically.*
 - **[P1]** The manifest **MUST** be versioned. **[P2]** It **MUST** be logged in a public transparency log. *Rationale: makes silent edits detectable.*
 - **[P1]** Fetching the manifest **MUST NOT** require authentication or identify the runtime. *Rationale: discovery itself must not track anyone.*
 
@@ -79,12 +79,12 @@
 
 - **[P2]** Rate limits **MUST** be enforced per anonymous credential or per token batch, not per person or device. *Rationale: abuse control without surveillance.*
 - **[P1]** Providers **MAY** require extra proof (for example a fresh anonymous credential, proof-of-work, or reduced quota) when they detect abuse, and **MUST NOT** require deanonymisation for normal use. *Rationale: proportionate responses.*
-- **[P1]** Refusals **MUST** use the standard machine-readable refusal format ([SIE-COM §A7](edge-to-edge-communication-v0.1.md#a7-agent-to-agent-safety)) and **MUST NOT** include identifying information. *Rationale: predictable behaviour without leaking anything.*
+- **[P1]** Refusals **MUST** use the standard refusal object ([SIE-COM §A7](edge-to-edge-communication-v0.1.md#a7-agent-to-agent-safety), [schemas/refusal.schema.json](../schemas/refusal.schema.json)) with a code from [registries/refusal-reasons.md](../registries/refusal-reasons.md), in an `si.refused` envelope or, without envelope support, as an HTTP response body with media type `application/vnd.si-edge.refusal+json`, and **MUST NOT** include identifying information. *Rationale: predictable behaviour without leaking anything.*
 
 ## 10. Independent Audit
 
 - Before v1.0 there is no certification program, no accreditation of auditors, and no certificates issued under this standard.
-- **[P2]** A P2 or P3 self-assessment **MUST** be supported by an independent third-party audit report, renewed at least every two years, with a public summary linked from the manifest. *Rationale: self-declarations are not enough for higher trust.*
+- **[P2]** A P2 or P3 self-assessment **MUST** be supported by an independent third-party audit report, renewed at least every two years (its stated validity ends no later than two years after issue), with a public summary linked from the manifest. *Rationale: self-declarations are not enough for higher trust.*
 - **[P2]** The auditor **MUST** be independent of the provider and **SHOULD** publish its method. *Rationale: credible evidence.*
 - **[P2]** Audit statements **SHOULD** be issued as Verifiable Credentials referenced from the manifest, with published revocation status. *Rationale: runtimes can check them automatically.*
 
@@ -92,7 +92,7 @@
 
 | Profile | Name | Requires |
 |---|---|---|
-| **P0** | Unverified | No claims, or claims the runtime has not verified. The runtime uses full gateway mode or the user's explicit identified-mode choice (SIE-RT §13) |
+| **P0** | Unverified | No claims, or claims the runtime has not verified. A provider **MAY** publish a manifest that claims P0. The runtime uses full gateway mode or the user's explicit identified-mode choice (SIE-RT §13) |
 | **P1** | Private | Every rule tagged [P1]: anonymous mode (§2), no training and declared short retention (§3), no tracking and relay acceptance (§4), model identity per response (§7), signed versioned manifest (§8), proportionate abuse handling (§9). Self-assessed |
 | **P2** | Sovereign | P1 + every rule tagged [P2]: anonymous credentials and unlinkable billing (§2), Oblivious HTTP gateway (§4), SI Envelope and residency enforcement (§6), transparency reports (§7), logged manifest (§8), per-credential rate limits (§9), independent audit (§10) |
 | **P3** | Attested | P2 + every rule tagged [P3]: attested or audited retention (§3), attested confidential inference bound to the session (§5) |
@@ -111,10 +111,14 @@
 
 1. Which anonymous credential schemes are mature enough to require at P2?
 2. How can unlinkable billing satisfy tax and anti-fraud obligations in CH and the EU?
-3. What retention window, if any, is justifiable for abuse handling, and how should it be attested?
+3. What retention window, if any, is justifiable for abuse handling, and how should it be attested? (The format is now fixed; a maximum is not.)
 4. How should attestation work for models served across many machines or accelerators?
 5. Who could accredit auditors in future, and how can that ecosystem avoid capture by large providers?
+6. Oblivious HTTP (§4) covers non-streaming requests only. Which private path should P2 require for streaming responses?
 
 ## 14. References
 
 BCP 14 (RFC 2119, RFC 8174); Privacy Pass (RFC 9576, RFC 9577, RFC 9578); Oblivious HTTP (RFC 9458); MASQUE (IETF working group); W3C Verifiable Credentials Data Model 2.0; Swiss nFADP; EU GDPR; EU AI Act (Regulation (EU) 2024/1689).
+
+---
+*Schema alignment revision (2026-10-09): retention window format and purpose (§3), full SI Envelope required at P2 with no equivalent mappings, residency refusal codes (§6), model identity carrier (§7), manifest schema link (§8), refusal object (§9), audit validity bound (§10), P0 manifests allowed (§11). Full history in [CHANGELOG.md](../CHANGELOG.md).*

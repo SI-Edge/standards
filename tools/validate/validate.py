@@ -50,7 +50,9 @@ SCHEMA_NAMES = (
     "module-manifest",
     "privacy-report",
     "provider-manifest",
+    "refusal",
 )
+MAX_TOKEN_LIFETIME = timedelta(hours=1)  # SIE-COM section A6
 
 
 # ---------------------------------------------------------------- loading
@@ -170,6 +172,8 @@ def check_token(token: dict, where: str = "token") -> list[str]:
         label = where if index == len(links) - 1 else f"{where}.chain[{index}]"
         if parse_time(link["exp"]) <= parse_time(link["iat"]):
             problems.append(f"{label}: exp must be later than iat")
+        elif parse_time(link["exp"]) - parse_time(link["iat"]) > MAX_TOKEN_LIFETIME:
+            problems.append(f"{label}: lifetime exceeds the 1 hour maximum (SIE-COM section A6)")
         if "nbf" in link and parse_time(link["nbf"]) >= parse_time(link["exp"]):
             problems.append(f"{label}: nbf must be earlier than exp")
     for index in range(1, len(links)):
@@ -244,6 +248,7 @@ SEMANTIC = {
     "module-manifest": check_module_manifest,
     "provider-manifest": check_provider_manifest,
     "privacy-report": check_privacy_report,
+    "refusal": lambda document: [],
 }
 
 
