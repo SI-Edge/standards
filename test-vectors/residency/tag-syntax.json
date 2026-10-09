@@ -1,5 +1,4 @@
 {
-  "suite": "0.3.0",
   "category": "residency",
   "description": "Residency tag syntax (SK-RT 11): CH, EU, CH-EU, or owner tags starting with x- (lowercase letters, digits, hyphens, at most 64 characters).",
   "vectors": [

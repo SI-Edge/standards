@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+// Change fragments start at ### so they slot under a dated ## entry in CHANGELOG.md.
+{
+  "config": {
+    "MD001": false
+  }
+}

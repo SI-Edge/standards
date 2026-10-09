@@ -1,5 +1,4 @@
 {
-  "suite": "0.3.0",
   "category": "envelope",
   "description": "Sequences of envelopes at one receiver (operation receive): replay, expiry, audience, idem_key, usage counting, and store-and-forward delivery. State carries over from step to step.",
   "vectors": [

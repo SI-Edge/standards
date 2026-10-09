@@ -1,5 +1,4 @@
 {
-  "suite": "0.3.0",
   "category": "tokens",
   "description": "Rule (e) of SK-COM A6: every constraint and budget limit the parent sets is present and not higher; data classes are a subset. Money amounts are exact decimals.",
   "vectors": [

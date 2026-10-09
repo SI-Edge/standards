@@ -1,5 +1,4 @@
 {
-  "suite": "0.3.0",
   "category": "envelope",
   "description": "Timestamp rule for envelopes (SK-COM A5, A5.1). Static checks; signatures are placeholders.",
   "vectors": [
