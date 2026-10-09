@@ -14,7 +14,11 @@ Maintainers review and merge changes, triage issues, and keep the drafts consist
 
 - **Small changes** (typos, links, clarifications that do not change meaning) are merged by a maintainer after review.
 - **Substantial changes** (new or changed normative rules, profile requirements, new documents) go through a proposal issue and, where requested, an RFC using [rfcs/0000-template.md](rfcs/0000-template.md).
-- RFCs are open for comment for at least 14 days. Maintainers aim for consensus. If consensus is not reached, the maintainers decide and record the reasoning in the RFC.
+- Normative proposals (proposal pull requests and RFCs) are open for comment before they are merged:
+  - While the specifications are v0.x, the comment window is 48 hours.
+  - From v1.0, it is 14 days.
+  - At any version, it is 14 days for a proposal on which anyone other than the project leads (currently roenu) comments or reviews during the window.
+- Maintainers aim for consensus. If consensus is not reached, the maintainers decide and record the reasoning in the proposal or RFC.
 - Accepted RFCs are numbered and merged into `rfcs/`, and the drafts and [CHANGELOG.md](CHANGELOG.md) are updated.
 
 ## Document Status Labels
