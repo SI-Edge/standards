@@ -140,9 +140,8 @@
       "expected": {
         "value": false
       },
-      "status": "provisional",
-      "open_issue": "#60",
-      "note": "Owner tag of 65 characters, one over the maximum. Provisional until the schema fix in PR #60 is merged"
+      "status": "normative",
+      "note": "Owner tag of 65 characters, one over the maximum"
     },
     {
       "id": "residency.syntax.008",

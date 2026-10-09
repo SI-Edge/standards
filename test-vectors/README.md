@@ -67,6 +67,16 @@ The validator runs `resource-covers`, `token-check`, `envelope-check`, and `resi
 
 ## Status and Versioning
 
-Phase 1 covers rules already in the drafts. The resource-matching vectors, and two binding vectors that depend on them, are provisional until the matching rule proposed for #23 and #48 is merged. The 65-character owner tag vector is provisional until the schema fix in #60 is merged; `open_issue` may name an issue or a pull request. Receive sequences about how a repeated `idem_key` is answered (#22) and how usage is counted (#24) are provisional; replay, expiry, audience, and at-most-once execution are normative. Later phases add `dcbor` and chain signatures (#10, #17), root issuers and `cnf` (#19, #20), and more stateful receiver checks such as sequence windows, clock skew, nonce retention, and chain-wide budget counting (#21, #22, #24).
+Phase 1 covers rules already in the drafts: 138 vectors, 113 normative and 25 provisional.
+
+| Category | Normative | Provisional |
+|---|---|---|
+| Resource matching | 0 | 19 (#23) |
+| Tokens | 44 | 0 |
+| Envelope (single) | 24 | 2 (#23) |
+| Envelope (receive sequences) | 4 | 4 (#22, #24) |
+| Residency | 24 | 0 |
+| Signatures | 17 | 0 |
+ The resource-matching vectors, and two binding vectors that depend on them, are provisional until the matching rule proposed for #23 and #48 is merged. `open_issue` may name an issue or a pull request. Receive sequences about how a repeated `idem_key` is answered (#22) and how usage is counted (#24) are provisional; replay, expiry, audience, and at-most-once execution are normative. Later phases add `dcbor` and chain signatures (#10, #17), root issuers and `cnf` (#19, #20), and more stateful receiver checks such as sequence windows, clock skew, nonce retention, and chain-wide budget counting (#21, #22, #24).
 
 The suite follows semantic versioning in `VERSION`: patch for new vectors, minor for new operations or fields, major for changed expectations. A vector whose expectation changes gets a new `id`; old ids are never reused. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.
