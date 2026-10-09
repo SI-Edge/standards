@@ -44,7 +44,7 @@
 - **[R1]** Everything outside the Core **MUST** be packaged as a module (§3), and the Core **SHOULD** be kept as small as practical. *Rationale: a small trusted base is easier to audit and keeps the system fast.*
 - **[R1]** All model outputs, tool outputs, web content, provider responses, and peer content **MUST** be treated as untrusted data. An action proposed on the basis of untrusted content **MUST** pass Core policy checks and, if consequential, approval (§16). *Rationale: prompt injection can arrive through any content a model reads; this is a mitigation, not a guarantee.*
 
-**Example connectors (non-normative).** Hosted models, in alphabetical order: Claude (Anthropic), Gemini (Google), GPT models (OpenAI), Grok (xAI), Llama (Meta), Mistral (Mistral AI). Also: self-hosted open-weight models served locally (for example with llama.cpp, Ollama, or vLLM) and MCP-compatible tool servers. Alphabetical order is not a ranking. No vendor is endorsed or required. Examples are illustrative only, and any connector that implements the provider interface is equally conforming.
+**Example connectors (non-normative).** Hosted models, in alphabetical order: Claude (Anthropic), Command models (Cohere), Gemini (Google), GPT models (OpenAI), Llama (Meta), Mistral (Mistral AI). Also: self-hosted open-weight models served locally (for example with llama.cpp, Ollama, or vLLM) and MCP-compatible tool servers. Alphabetical order is not a ranking. No vendor is endorsed or required. Examples are illustrative only, and any connector that implements the provider interface is equally conforming.
 
 ## 3. Modularity and Extensions
 
