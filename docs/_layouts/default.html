@@ -9,7 +9,16 @@
 <title>{% if page.title and page.url != "/" %}{{ page.title }} | {% endif %}{{ site.title }}</title>
 <style>
   :root { color-scheme: light dark; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 46rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; }
+  .site-header { background: #000; color: #fff; }
+  .site-header .inner { max-width: 46rem; margin: 0 auto; padding: 0.9rem 1rem; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+  .site-header a { color: #fff; text-decoration: none; font-weight: 700; letter-spacing: -0.01em; }
+  .site-header a:hover, .site-header a:focus-visible { text-decoration: underline; }
+  .site-header a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .site-header .tag { color: #a3a3a3; font-size: 0.9rem; }
+  main, footer { max-width: 46rem; margin: 0 auto; padding: 0 1rem; }
+  main { padding-top: 1.5rem; }
+  footer { padding-bottom: 4rem; }
   a { color: #0b62d6; }
   @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
   .banner { border: 2px solid #b26b00; border-radius: 6px; padding: 0.75rem 1rem; margin: 1rem 0 1.5rem; }
@@ -20,6 +29,12 @@
 </style>
 </head>
 <body>
+<header class="site-header">
+<div class="inner">
+<a href="{{ site.baseurl }}/">{{ site.header_title }}</a>
+<span class="tag">Draft, not for implementation</span>
+</div>
+</header>
 <main>
 {{ content }}
 </main>

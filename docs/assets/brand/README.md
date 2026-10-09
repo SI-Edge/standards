@@ -1,17 +1,23 @@
-# Selfkin Brand Assets
+# Brand Assets
 
-> **Status: Draft.** A trademark check for the name "Selfkin" is pending (see [TRADEMARKS.md](../../../TRADEMARKS.md)). The licenses of this repository do not grant rights to use the name or the mark as a trademark.
+> **Status: Draft.** A trademark check for the project name is pending (see [TRADEMARKS.md](../../../TRADEMARKS.md)). The licenses of this repository do not grant rights to use any project name or wordmark as a trademark.
 
 | File | Use |
 |---|---|
-| [selfkin-mark.svg](selfkin-mark.svg) | Organisation avatar and favicon source. Square, full-bleed background, safe for circular cropping, legible at 64 px and below |
-| [selfkin-social-preview.svg](selfkin-social-preview.svg) | Repository social preview source (1280 x 640) with name and tagline |
+| [selfkin-mark.svg](selfkin-mark.svg) | Organisation avatar (500 x 500): the wordmark "SK" in white on black. Square, full-bleed background, safe for circular cropping (all letters lie inside the inscribed circle), legible at 64 px and below |
+| [selfkin-social-preview.svg](selfkin-social-preview.svg) | Repository social preview (1280 x 640): the headline "Standards for Personal SI/AI Edge Devices" in white on black, with the line "built by Grok Bot" in grey |
 | [../architecture.svg](../architecture.svg) | Architecture overview used in the README and on the project page |
 
-The mark is an S-shaped link of two arcs that joins two nodes: you and your kin devices and agents, connected by one protected line.
+**Style.** Flat and typographic: wordmark only, no symbol, no colour.
 
-**Colours.** Navy `#0B1F33` (background), teal `#2DD4BF` (link), amber `#F5B547` and mint `#E6FFFA` (nodes). Teal, amber, and mint on navy each have a contrast ratio of at least 8.9:1. Text in the social preview uses white `#FFFFFF`, mint `#E6FFFA`, and slate `#A7C4D9` on navy (all above 9:1).
+**Colours.**
 
-**Fonts.** The SVGs name Inter with system fallbacks. Rendered PNGs were produced with Inter installed; other renderers may substitute a similar sans-serif.
+| Colour | Use | Contrast on `#000000` |
+|---|---|---|
+| `#000000` black | Background | |
+| `#FFFFFF` white | Wordmark and headline | 21:1 |
+| `#A3A3A3` grey | Secondary line only (and the subtitle in the site header) | 8.3:1 |
 
-**Rendering.** The PNGs (500 x 500 avatar, 1280 x 640 social preview) are rendered from these SVGs, for example with `cairosvg` or `rsvg-convert`. They are not stored in the repository.
+**Type.** Inter (SIL Open Font License 1.1), weights 800 (avatar), 700 (headline), and 450 (secondary line). All text is converted to outlines (SVG paths), so the SVGs load no fonts and render the same everywhere. Each SVG has a `<title>` and `<desc>` with the text it shows.
+
+**Rendering.** The PNGs (500 x 500 and 64 x 64 avatar, 1280 x 640 social preview) are rendered from these SVGs, for example with `cairosvg` or `rsvg-convert`. They are not stored in the repository; the owner uploads them in the GitHub settings.

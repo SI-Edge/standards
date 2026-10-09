@@ -1,10 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500" role="img" aria-labelledby="mark-title mark-desc">
-  <title id="mark-title">Selfkin mark</title>
-  <desc id="mark-desc">An S-shaped link of two arcs on a dark navy field. Each end of the link is a node: one for you, one for your kin devices and agents, joined by one continuous protected line.</desc>
-  <rect width="500" height="500" fill="#0B1F33"/>
-  <g transform="translate(250 250) scale(1.18) translate(-250 -250)">
-    <path d="M310.6 145 A70 70 0 1 0 250 250 A70 70 0 1 1 189.4 355" fill="none" stroke="#2DD4BF" stroke-width="44" stroke-linecap="round"/>
-    <circle cx="310.6" cy="145" r="34" fill="#F5B547" stroke="#0B1F33" stroke-width="10"/>
-    <circle cx="189.4" cy="355" r="34" fill="#E6FFFA" stroke="#0B1F33" stroke-width="10"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500" role="img" aria-labelledby="sk-title sk-desc">
+  <title id="sk-title">SK</title>
+  <desc id="sk-desc">Avatar for the Selfkin standards organisation: the letters SK in a bold white geometric sans-serif on a black background.</desc>
+  <rect width="500" height="500" fill="#000000"/>
+  <path fill="#FFFFFF" d="M168.24 339.06Q146 339.06 130.39 332.26Q114.78 325.47 106.58 312.5Q98.39 299.53 98.39 281.11H136.91Q137.13 289.08 141.06 294.81Q144.99 300.54 152.01 303.57Q159.03 306.6 168.58 306.6Q177.22 306.6 183.57 304.36Q189.91 302.11 193.45 298.01Q196.99 293.91 196.99 288.41Q196.99 283.69 194.01 280.15Q191.04 276.62 184.69 273.98Q178.35 271.34 168.24 269.2L151.06 265.72Q126.57 260.67 114.11 248.71Q101.64 236.75 101.64 218.44Q101.64 202.83 109.9 191.15Q118.15 179.47 132.98 172.9Q147.8 166.33 167.45 166.33Q187.56 166.33 202.04 172.9Q216.53 179.47 224.56 191.71Q232.59 203.96 233.15 221.14H195.75Q194.97 210.69 187.5 204.74Q180.03 198.79 168.02 198.79Q160.49 198.79 154.59 201.04Q148.7 203.28 145.39 207.27Q142.07 211.25 142.07 216.53Q142.07 221.14 144.88 224.45Q147.69 227.76 153.64 230.23Q159.59 232.71 169.14 234.61L183.85 237.53Q197.78 240.34 207.83 244.55Q217.88 248.76 224.34 254.6Q230.79 260.44 233.88 268.14Q236.97 275.83 236.97 285.49Q236.97 302.33 228.77 314.29Q220.57 326.25 205.19 332.66Q189.8 339.06 168.24 339.06ZM280.21 306.71V257.19Q285.83 250.11 291.55 243.04Q297.28 235.96 302.95 228.94Q308.63 221.92 314.35 214.85L351.75 169.03H399.26L328.95 252.81H325.47ZM250.68 336.36V169.03H291.11V210.36V255.5V274.59V336.36ZM355.34 336.36 309.86 264.6 334.12 234.17 401.61 336.36Z"/>
 </svg>
