@@ -165,6 +165,43 @@ class SemanticTests(unittest.TestCase):
         self.assertFalse(validate.right_covered(child, parent))
 
 
+class SignedObjectTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.schemas = validate.load_schemas()
+        cls.registry = validate.build_registry(cls.schemas)
+
+    def problems(self, document, name="capability-token"):
+        return validate.validate_document(document, name, self.schemas, self.registry)
+
+    def test_signed_timestamps_are_utc_whole_seconds(self):
+        for value in ("2026-10-09T10:00:00+02:00", "2026-10-09T08:00:00.000Z", "2026-10-09T08:00:00.5Z"):
+            document = validate.load_json(validate.EXAMPLE_DIR / "capability-token.root.json")
+            document["iat"] = value
+            self.assertTrue(self.problems(document), value)
+
+    def test_unsigned_report_keeps_offsets(self):
+        document = validate.load_json(validate.EXAMPLE_DIR / "privacy-report.p0-full-gateway.json")
+        self.assertEqual(self.problems(document, "privacy-report"), [])
+
+    def test_integral_float_is_allowed(self):
+        # dcbor numeric reduction encodes 50.0 as 50, and jcs serialises it as 50.
+        document = validate.load_json(validate.EXAMPLE_DIR / "capability-token.root.json")
+        document["budget"]["messages"] = 50.0
+        self.assertEqual(self.problems(document), [])
+
+    def test_number_outside_safe_range_is_refused(self):
+        self.assertTrue(validate.signed_value_problems({"seq": 2**53}))
+        self.assertTrue(validate.signed_value_problems({"seq": float(2**53)}))
+        self.assertTrue(validate.signed_value_problems({"big": 1.5e300}))  # integral value, too large
+        self.assertEqual(validate.signed_value_problems({"seq": 2**53 - 1, "t": 21.5, "small": 1.5e-300}), [])
+
+    def test_text_must_be_nfc(self):
+        self.assertTrue(validate.signed_value_problems({"name": "Rene\u0301"}))
+        self.assertTrue(validate.signed_value_problems({"Rene\u0301": 1}))
+        self.assertEqual(validate.signed_value_problems({"name": "Ren\u00e9"}), [])
+
+
 class RepositoryStyleTests(unittest.TestCase):
     def test_no_em_or_en_dashes(self):
         roots = [validate.REPO / d for d in ("schemas", "examples", "tools", "registries", "drafts", "test-vectors", "changes")]

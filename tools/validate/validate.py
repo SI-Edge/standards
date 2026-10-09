@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import unicodedata
 from datetime import datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
@@ -168,6 +169,38 @@ def budget_problems(child: dict, parent: dict) -> list[str]:
 # ---------------------------------------------------------------- semantic checks
 
 
+SIGNED = {"envelope", "capability-token", "module-manifest", "provider-manifest"}
+JSON_SAFE_INTEGER = 2**53 - 1  # SK-COM section A5.1, I-JSON (RFC 7493) range
+
+
+def signed_value_problems(value, where: str = "(root)") -> list[str]:
+    """Checks for every value in a signed object (SK-COM section A5.1).
+
+    Numbers with an integral value (including 50.0, which dcbor numeric
+    reduction encodes as the integer 50) must lie in the I-JSON safe range,
+    and text strings must be in Unicode Normalization Form C.
+    """
+    if isinstance(value, bool) or value is None:
+        return []
+    if isinstance(value, str):
+        if not unicodedata.is_normalized("NFC", value):
+            return [f"{where}: text is not in Unicode Normalization Form C (SK-COM section A5.1)"]
+        return []
+    if isinstance(value, (int, float)):
+        if (isinstance(value, int) or value.is_integer()) and abs(value) > JSON_SAFE_INTEGER:
+            return [f"{where}: number {value!r} is outside the range allowed in a signed object (SK-COM section A5.1)"]
+        return []
+    if isinstance(value, list):
+        return [p for i, item in enumerate(value) for p in signed_value_problems(item, f"{where}/{i}")]
+    if isinstance(value, dict):
+        problems = []
+        for key, item in value.items():
+            problems.extend(signed_value_problems(key, f"{where}/{key}"))
+            problems.extend(signed_value_problems(item, f"{where}/{key}"))
+        return problems
+    return []
+
+
 def check_token(token: dict, where: str = "token") -> list[str]:
     """Attenuation and lifetime checks for a Selfkin capability token (SK-COM A6)."""
     problems = []
@@ -269,6 +302,8 @@ def validate_document(document, name: str, schemas: dict[str, dict], registry: R
         if len(message) > 200:
             message = f"failed '{error.validator}' check at {'/'.join(str(p) for p in error.absolute_schema_path)}"
         problems.append(f"{location}: {message}")
+    if not problems and name in SIGNED:
+        problems.extend(signed_value_problems(document))
     if not problems:
         try:
             problems.extend(SEMANTIC[name](document))

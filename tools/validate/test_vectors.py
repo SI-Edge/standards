@@ -44,7 +44,9 @@ import validate  # noqa: E402
 
 VECTOR_DIR = validate.REPO / "test-vectors"
 VECTOR_SCHEMA = VECTOR_DIR / "vector.schema.json"
-KEY_FILE = VECTOR_DIR / "keys" / "rfc8032-test-keys.json"
+KEY_DIR = VECTOR_DIR / "keys"
+# Published test keys only: the source each key file must cite.
+KEY_SOURCES = {"rfc8032-test-keys.json": "RFC 8032, section 7.1", "rfc7515-test-keys.json": "RFC 7515, Appendix A.3"}
 REGISTRY = validate.REPO / "registries" / "refusal-reasons.md"
 
 
@@ -96,6 +98,8 @@ class Runner:
         return "result" not in expected or actual["result"] == expected["result"]
 
     def run(self, vector: dict) -> tuple[str, object]:
+        if vector["status"] == "withdrawn":
+            return "skip", None
         if vector.get("kind") == "sequence":
             steps = vector["steps"]
         else:
@@ -174,11 +178,14 @@ class VectorFileTests(unittest.TestCase):
             with self.subTest(vector=vector["id"]):
                 self.assertEqual(times, sorted(times))
 
-    def test_keys_are_the_rfc_8032_test_keys(self):
-        keys = validate.load_json(KEY_FILE)
-        self.assertIs(keys["test_only"], True)
-        self.assertIn("RFC 8032, section 7.1", keys["source"])
-        names = {key["name"] for key in keys["keys"]}
+    def test_keys_are_published_test_keys(self):
+        self.assertEqual(sorted(p.name for p in KEY_DIR.glob("*.json")), sorted(KEY_SOURCES))
+        names = set()
+        for file, source in KEY_SOURCES.items():
+            keys = validate.load_json(KEY_DIR / file)
+            self.assertIs(keys["test_only"], True)
+            self.assertIn(source, keys["source"])
+            names |= {key["name"] for key in keys["keys"]}
         for _, vector in self.vectors:
             for data in [step["input"] for step in vector.get("steps", [])] or [vector["input"]]:
                 for field in ("key", "public_key"):

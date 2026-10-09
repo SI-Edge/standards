@@ -1073,8 +1073,8 @@
       "expected": {
         "result": "accept"
       },
-      "status": "normative",
-      "note": "Timestamps with a +02:00 offset"
+      "status": "withdrawn",
+      "note": "Withdrawn in 0.2.0: timestamps in signed objects are UTC with Z and whole seconds (SK-COM A5.1, #10). Replaced by envelope.signed-values.001"
     },
     {
       "id": "envelope.structure.008",

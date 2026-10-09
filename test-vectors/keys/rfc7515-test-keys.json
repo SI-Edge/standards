@@ -1,0 +1,19 @@
+{
+  "description": "ECDSA P-256 test key copied unchanged from RFC 7515, Appendix A.3 (https://www.rfc-editor.org/rfc/rfc7515#appendix-A.3). TEST ONLY: this key is public and must never be used to sign anything real.",
+  "source": "RFC 7515, Appendix A.3 (https://www.rfc-editor.org/rfc/rfc7515#appendix-A.3)",
+  "test_only": true,
+  "keys": [
+    {
+      "name": "rfc7515-a3-p256",
+      "rfc_test": "Appendix A.3",
+      "algorithm": "P-256",
+      "jwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+        "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+        "d": "jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI"
+      }
+    }
+  ]
+}

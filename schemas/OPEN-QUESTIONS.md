@@ -11,8 +11,7 @@ Writing the v0.1 schemas showed 35 places where the drafts were ambiguous, silen
 3. **Maximum provider retention window.** The format is fixed (ISO 8601 duration, purpose required if non-zero), but no maximum exists (SK-PRV §13 Q3).
 4. **Private path for streaming provider responses.** Oblivious HTTP covers non-streaming requests only (SK-PRV §13 Q6).
 5. **Multi-recipient streams.** `aud` may name one MLS group, but stream setup for groups is not specified (SK-COM §D Q7).
-6. **Normative CBOR profile.** Deterministic CBOR is mandatory for signatures, but exact type mappings (timestamps, byte strings, integers) are only a non-normative note ([README.md](README.md)).
-7. **Registry stewardship.** Minimal registries exist in [../registries](../registries/README.md); who maintains them after v1.0 and how application domains grow is open (SK-COM §D Q1).
+6. **Registry stewardship.** Minimal registries exist in [../registries](../registries/README.md); who maintains them after v1.0 and how application domains grow is open (SK-COM §D Q1).
 
 ## Resolved in the Drafts
 
@@ -30,7 +29,7 @@ Writing the v0.1 schemas showed 35 places where the drafts were ambiguous, silen
 | 10 | Data-class vocabulary | Minimal registry; other classes start with `x-` | SK-RT §11; registries/data-classes.md |
 | 11 | Intent and refusal vocabularies; refusal format | Intent registry with reserved `sk.*` intents and application domains; refusal object schema and reason-code registry | SK-COM §A5, §A7; schemas/refusal.schema.json; registries/ |
 | 12 | F5 in envelopes | F5 never appears in an envelope (advertisement format still open, above) | SK-COM §A5 |
-| 13 | Nonce length, timestamp format | Nonce at least 128 bits; RFC 3339 with explicit offset (CBOR tag 1 in CBOR) | SK-COM §A5 |
+| 13 | Nonce length, timestamp format | Nonce at least 128 bits; RFC 3339 in UTC with whole seconds in signed objects, a text string in `dcbor` (revised 2026-10-09, #10) | SK-COM §A5, §A5.1 |
 | 14 | `data` without type | `data` and `payload_type` appear together or not at all | SK-COM §A5 |
 | 15 | "Short-lived" tokens had no bound | At most 1 hour from `iat` to `exp`; owner policy may set less | SK-COM §A6 |
 | 16 | Attenuation semantics | Rules (a) to (f): `iss` equals parent `sub`, same `aud`, no later `exp`, rights covered by same action and equal or `/*`-prefixed resource, constraints and budgets present and not higher, chain root first with at most 16 links | SK-COM §A6 |

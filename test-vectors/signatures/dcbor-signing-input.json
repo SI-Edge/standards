@@ -1,0 +1,421 @@
+{
+  "category": "signatures",
+  "description": "Signing input for canon dcbor (SK-COM A5.1, Appendix F): the RFC 8949 section 4.2.1 core deterministic encoding, with numeric reduction, of the JSON data model of the object with its sig member removed, as lowercase hex.",
+  "vectors": [
+    {
+      "id": "signature.dcbor-input.001",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "dcbor-signing-input",
+      "requires": [
+        "dcbor"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 50
+          },
+          "chain": []
+        }
+      },
+      "expected": {
+        "value": "ab617663302e316269646d746f6b2d726f6f742d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b467449752d5662477266655f4b4236434837474e774f444237324d4e786a5f6d6c31316445764f2d376b6b6365787074323032362d31302d30395430393a30303a30305a6369617474323032362d31302d30395430383a30303a30305a6369737378386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d73776373756278386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435465636861696e8066627564676574a1686d6573736167657318326672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781a75726e3a6578616d706c653a63616c656e6461723a626f622f2a6b636f6e73747261696e7473a1686d61785f7573657305"
+      },
+      "status": "normative",
+      "note": "Root token; timestamps and base64url values stay text strings"
+    },
+    {
+      "id": "signature.dcbor-input.002",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C1"
+        }
+      ],
+      "operation": "dcbor-signing-input",
+      "requires": [
+        "dcbor"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "id": "tok-deleg-0001",
+          "iss": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "sub": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:05:00Z",
+          "exp": "2026-10-09T08:35:00Z",
+          "cnf": {
+            "jkt": "FVV5umTuau890q59V-4Ga_R6qWb7ON_ivJc4EjvCwTM"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/work",
+              "constraints": {
+                "max_uses": 1
+              }
+            }
+          ],
+          "budget": {
+            "messages": 10
+          },
+          "chain": [
+            {
+              "v": "0.1",
+              "id": "tok-root-0001",
+              "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+              "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+              "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+              "iat": "2026-10-09T08:00:00Z",
+              "exp": "2026-10-09T09:00:00Z",
+              "cnf": {
+                "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+              },
+              "rights": [
+                {
+                  "action": "calendar.propose_meeting",
+                  "resource": "urn:example:calendar:bob/*",
+                  "constraints": {
+                    "max_uses": 5
+                  }
+                }
+              ],
+              "budget": {
+                "messages": 50
+              },
+              "sig": {
+                "alg": "EdDSA",
+                "kid": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw#z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "canon": "dcbor",
+                "value": "0FZvR2jGwkYxyAzJxB4oONltskswIk0JqF04wNHlWPBxaUqiAEr6wEdDC55iYWorirp0GIWeGDTgPzQEHCoEDw"
+              }
+            }
+          ]
+        }
+      },
+      "expected": {
+        "value": "ab617663302e316269646e746f6b2d64656c65672d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b46565635756d54756175383930713539562d3447615f5236715762374f4e5f69764a6334456a764377544d6365787074323032362d31302d30395430383a33353a30305a6369617474323032362d31302d30395430383a30353a30305a6369737378386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b6748564869643146315743546373756278386469643a6b65793a7a364d6b77534438644264716358517a4b4a5a5146507932686832697a7a78736b6e644b436a646d4332644270664d4565636861696e81ab617663302e316269646d746f6b2d726f6f742d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b467449752d5662477266655f4b4236434837474e774f444237324d4e786a5f6d6c31316445764f2d376b6b6365787074323032362d31302d30395430393a30303a30305a6369617474323032362d31302d30395430383a30303a30305a6369737378386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763736967a463616c67654564445341636b696478696469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d7377237a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d73776563616e6f6e656463626f726576616c7565785630465a7652326a47776b597879417a4a7842346f4f4e6c74736b7377496b304a71463034774e486c575042786155716941457236774564444335356959576f72697270304749576547445467507a514548436f4544776373756278386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435466627564676574a1686d6573736167657318326672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781a75726e3a6578616d706c653a63616c656e6461723a626f622f2a6b636f6e73747261696e7473a1686d61785f757365730566627564676574a1686d657373616765730a6672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781d75726e3a6578616d706c653a63616c656e6461723a626f622f776f726b6b636f6e73747261696e7473a1686d61785f7573657301"
+      },
+      "status": "normative",
+      "note": "Delegated token; chain holds the root as carried, with its sig and without chain"
+    },
+    {
+      "id": "signature.dcbor-input.003",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "dcbor-signing-input",
+      "requires": [
+        "dcbor"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+          "sender_device": "did:example:device-1",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "session": "sess-0001",
+          "seq": 1,
+          "attestation_ref": null,
+          "cap_token": {
+            "v": "0.1",
+            "id": "tok-deleg-0001",
+            "iss": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+            "sub": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+            "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+            "iat": "2026-10-09T08:05:00Z",
+            "exp": "2026-10-09T08:35:00Z",
+            "cnf": {
+              "jkt": "FVV5umTuau890q59V-4Ga_R6qWb7ON_ivJc4EjvCwTM"
+            },
+            "rights": [
+              {
+                "action": "calendar.propose_meeting",
+                "resource": "urn:example:calendar:bob/work",
+                "constraints": {
+                  "max_uses": 1
+                }
+              }
+            ],
+            "budget": {
+              "messages": 10
+            },
+            "chain": [
+              {
+                "v": "0.1",
+                "id": "tok-root-0001",
+                "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+                "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "iat": "2026-10-09T08:00:00Z",
+                "exp": "2026-10-09T09:00:00Z",
+                "cnf": {
+                  "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+                },
+                "rights": [
+                  {
+                    "action": "calendar.propose_meeting",
+                    "resource": "urn:example:calendar:bob/*",
+                    "constraints": {
+                      "max_uses": 5
+                    }
+                  }
+                ],
+                "budget": {
+                  "messages": 50
+                },
+                "sig": {
+                  "alg": "EdDSA",
+                  "kid": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw#z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                  "canon": "dcbor",
+                  "value": "0FZvR2jGwkYxyAzJxB4oONltskswIk0JqF04wNHlWPBxaUqiAEr6wEdDC55iYWorirp0GIWeGDTgPzQEHCoEDw"
+                }
+              }
+            ],
+            "sig": {
+              "alg": "EdDSA",
+              "kid": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT#z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+              "canon": "dcbor",
+              "value": "C03QHF_AJEfmELmyMuZ8xSgtA1kqzsMhPyZ9StWo1AhOROAxXxNSW8voJCICMprfTBNJbuCab-7O8OLXV-h0Bw"
+            }
+          },
+          "intent": "scheduling.propose",
+          "instructions": {
+            "action": "calendar.propose_meeting",
+            "resource": "urn:example:calendar:bob/work",
+            "params": {
+              "duration_min": 30
+            },
+            "consequential": false
+          },
+          "residency": {
+            "tags": [
+              "CH-EU"
+            ],
+            "data_classes": [
+              "calendar.availability"
+            ]
+          },
+          "idem_key": "idem-2026-10-09-0001-a7c3",
+          "nonce": "AAECAwQFBgcICQoLDA0ODw",
+          "issued": "2026-10-09T08:10:00Z",
+          "expires": "2026-10-09T08:15:00Z",
+          "provenance": []
+        }
+      },
+      "expected": {
+        "value": "b1617663302e316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d7377637365710164666f726d624632656e6f6e63657641414543417751464267634943516f4c4441304f447766696e74656e74727363686564756c696e672e70726f706f73656669737375656474323032362d31302d30395430383a31303a30305a676578706972657374323032362d31302d30395430383a31353a30305a6773657373696f6e69736573732d30303031686964656d5f6b657978196964656d2d323032362d31302d30392d303030312d61376333696361705f746f6b656eac617663302e316269646e746f6b2d64656c65672d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b46565635756d54756175383930713539562d3447615f5236715762374f4e5f69764a6334456a764377544d6365787074323032362d31302d30395430383a33353a30305a6369617474323032362d31302d30395430383a30353a30305a6369737378386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435463736967a463616c67654564445341636b696478696469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b674856486964314631574354237a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b6748564869643146315743546563616e6f6e656463626f726576616c756578564330335148465f414a45666d454c6d794d755a387853677441316b717a734d6850795a395374576f3141684f524f417858784e535738766f4a4349434d70726654424e4a62754361622d374f384f4c58562d683042776373756278386469643a6b65793a7a364d6b77534438644264716358517a4b4a5a5146507932686832697a7a78736b6e644b436a646d4332644270664d4565636861696e81ab617663302e316269646d746f6b2d726f6f742d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b467449752d5662477266655f4b4236434837474e774f444237324d4e786a5f6d6c31316445764f2d376b6b6365787074323032362d31302d30395430393a30303a30305a6369617474323032362d31302d30395430383a30303a30305a6369737378386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763736967a463616c67654564445341636b696478696469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d7377237a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d73776563616e6f6e656463626f726576616c7565785630465a7652326a47776b597879417a4a7842346f4f4e6c74736b7377496b304a71463034774e486c575042786155716941457236774564444335356959576f72697270304749576547445467507a514548436f4544776373756278386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435466627564676574a1686d6573736167657318326672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781a75726e3a6578616d706c653a63616c656e6461723a626f622f2a6b636f6e73747261696e7473a1686d61785f757365730566627564676574a1686d657373616765730a6672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781d75726e3a6578616d706c653a63616c656e6461723a626f622f776f726b6b636f6e73747261696e7473a1686d61785f7573657301697265736964656e6379a26474616773816543482d45556c646174615f636c6173736573817563616c656e6461722e617661696c6162696c6974796a70726f76656e616e6365806c696e737472756374696f6e73a466616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e6766706172616d73a16c6475726174696f6e5f6d696e181e687265736f75726365781d75726e3a6578616d706c653a63616c656e6461723a626f622f776f726b6d636f6e73657175656e7469616cf46c73656e6465725f6167656e7478386469643a6b65793a7a364d6b77534438644264716358517a4b4a5a5146507932686832697a7a78736b6e644b436a646d4332644270664d456d73656e6465725f646576696365746469643a6578616d706c653a6465766963652d316f6174746573746174696f6e5f726566f6"
+      },
+      "status": "normative",
+      "note": "Envelope carrying the delegated token; the whole cap_token including its sig is covered"
+    },
+    {
+      "id": "signature.dcbor-input.004",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "dcbor-signing-input",
+      "requires": [
+        "dcbor"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 50.0
+          },
+          "chain": []
+        }
+      },
+      "expected": {
+        "value": "ab617663302e316269646d746f6b2d726f6f742d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b467449752d5662477266655f4b4236434837474e774f444237324d4e786a5f6d6c31316445764f2d376b6b6365787074323032362d31302d30395430393a30303a30305a6369617474323032362d31302d30395430383a30303a30305a6369737378386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d73776373756278386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435465636861696e8066627564676574a1686d6573736167657318326672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781a75726e3a6578616d706c653a63616c656e6461723a626f622f2a6b636f6e73747261696e7473a1686d61785f7573657305"
+      },
+      "status": "normative",
+      "note": "budget.messages written as 50.0: numeric reduction gives the same bytes as 001"
+    },
+    {
+      "id": "signature.dcbor-input.005",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "dcbor-signing-input",
+      "requires": [
+        "dcbor"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+          "sender_device": "did:example:device-1",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "session": "sess-0001",
+          "seq": 1,
+          "attestation_ref": null,
+          "cap_token": {
+            "v": "0.1",
+            "id": "tok-deleg-0001",
+            "iss": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+            "sub": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+            "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+            "iat": "2026-10-09T08:05:00Z",
+            "exp": "2026-10-09T08:35:00Z",
+            "cnf": {
+              "jkt": "FVV5umTuau890q59V-4Ga_R6qWb7ON_ivJc4EjvCwTM"
+            },
+            "rights": [
+              {
+                "action": "calendar.propose_meeting",
+                "resource": "urn:example:calendar:bob/work",
+                "constraints": {
+                  "max_uses": 1
+                }
+              }
+            ],
+            "budget": {
+              "messages": 10
+            },
+            "chain": [
+              {
+                "v": "0.1",
+                "id": "tok-root-0001",
+                "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+                "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "iat": "2026-10-09T08:00:00Z",
+                "exp": "2026-10-09T09:00:00Z",
+                "cnf": {
+                  "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+                },
+                "rights": [
+                  {
+                    "action": "calendar.propose_meeting",
+                    "resource": "urn:example:calendar:bob/*",
+                    "constraints": {
+                      "max_uses": 5
+                    }
+                  }
+                ],
+                "budget": {
+                  "messages": 50
+                },
+                "sig": {
+                  "alg": "EdDSA",
+                  "kid": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw#z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                  "canon": "dcbor",
+                  "value": "0FZvR2jGwkYxyAzJxB4oONltskswIk0JqF04wNHlWPBxaUqiAEr6wEdDC55iYWorirp0GIWeGDTgPzQEHCoEDw"
+                }
+              }
+            ],
+            "sig": {
+              "alg": "EdDSA",
+              "kid": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT#z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+              "canon": "dcbor",
+              "value": "C03QHF_AJEfmELmyMuZ8xSgtA1kqzsMhPyZ9StWo1AhOROAxXxNSW8voJCICMprfTBNJbuCab-7O8OLXV-h0Bw"
+            }
+          },
+          "intent": "scheduling.propose",
+          "instructions": {
+            "action": "calendar.propose_meeting",
+            "resource": "urn:example:calendar:bob/work",
+            "params": {
+              "duration_min": 30
+            },
+            "consequential": false
+          },
+          "residency": {
+            "tags": [
+              "CH-EU"
+            ],
+            "data_classes": [
+              "calendar.availability"
+            ]
+          },
+          "idem_key": "idem-2026-10-09-0001-a7c3",
+          "nonce": "AAECAwQFBgcICQoLDA0ODw",
+          "issued": "2026-10-09T08:10:00Z",
+          "expires": "2026-10-09T08:15:00Z",
+          "provenance": [],
+          "data": {
+            "temperature_c": 21.5,
+            "count": 3.0
+          },
+          "payload_type": "application/json"
+        }
+      },
+      "expected": {
+        "value": "b3617663302e316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763736571016464617461a265636f756e74036d74656d70657261747572655f63f94d6064666f726d624632656e6f6e63657641414543417751464267634943516f4c4441304f447766696e74656e74727363686564756c696e672e70726f706f73656669737375656474323032362d31302d30395430383a31303a30305a676578706972657374323032362d31302d30395430383a31353a30305a6773657373696f6e69736573732d30303031686964656d5f6b657978196964656d2d323032362d31302d30392d303030312d61376333696361705f746f6b656eac617663302e316269646e746f6b2d64656c65672d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b46565635756d54756175383930713539562d3447615f5236715762374f4e5f69764a6334456a764377544d6365787074323032362d31302d30395430383a33353a30305a6369617474323032362d31302d30395430383a30353a30305a6369737378386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435463736967a463616c67654564445341636b696478696469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b674856486964314631574354237a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b6748564869643146315743546563616e6f6e656463626f726576616c756578564330335148465f414a45666d454c6d794d755a387853677441316b717a734d6850795a395374576f3141684f524f417858784e535738766f4a4349434d70726654424e4a62754361622d374f384f4c58562d683042776373756278386469643a6b65793a7a364d6b77534438644264716358517a4b4a5a5146507932686832697a7a78736b6e644b436a646d4332644270664d4565636861696e81ab617663302e316269646d746f6b2d726f6f742d303030316361756478386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763636e66a1636a6b74782b467449752d5662477266655f4b4236434837474e774f444237324d4e786a5f6d6c31316445764f2d376b6b6365787074323032362d31302d30395430393a30303a30305a6369617474323032362d31302d30395430383a30303a30305a6369737378386469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d737763736967a463616c67654564445341636b696478696469643a6b65793a7a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d7377237a364d6b74777570646d4c58565671547a43773469343672347547796f734758526e5233586a4e345a71376f4d4d73776563616e6f6e656463626f726576616c7565785630465a7652326a47776b597879417a4a7842346f4f4e6c74736b7377496b304a71463034774e486c575042786155716941457236774564444335356959576f72697270304749576547445467507a514548436f4544776373756278386469643a6b65793a7a364d6b69614d626858484e4134654a5643436a3864627a4b7a546759444b663663724b67485648696431463157435466627564676574a1686d6573736167657318326672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781a75726e3a6578616d706c653a63616c656e6461723a626f622f2a6b636f6e73747261696e7473a1686d61785f757365730566627564676574a1686d657373616765730a6672696768747381a366616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e67687265736f75726365781d75726e3a6578616d706c653a63616c656e6461723a626f622f776f726b6b636f6e73747261696e7473a1686d61785f7573657301697265736964656e6379a26474616773816543482d45556c646174615f636c6173736573817563616c656e6461722e617661696c6162696c6974796a70726f76656e616e6365806c696e737472756374696f6e73a466616374696f6e781863616c656e6461722e70726f706f73655f6d656574696e6766706172616d73a16c6475726174696f6e5f6d696e181e687265736f75726365781d75726e3a6578616d706c653a63616c656e6461723a626f622f776f726b6d636f6e73657175656e7469616cf46c7061796c6f61645f74797065706170706c69636174696f6e2f6a736f6e6c73656e6465725f6167656e7478386469643a6b65793a7a364d6b77534438644264716358517a4b4a5a5146507932686832697a7a78736b6e644b436a646d4332644270664d456d73656e6465725f646576696365746469643a6578616d706c653a6465766963652d316f6174746573746174696f6e5f726566f6"
+      },
+      "status": "normative",
+      "note": "data carries 21.5 (half float f94d60) and 3.0 (reduced to the integer 3)"
+    }
+  ]
+}

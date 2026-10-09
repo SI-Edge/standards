@@ -28,10 +28,16 @@
       "pattern": "^https://[^\\s]+$"
     },
     "timestamp": {
-      "description": "RFC 3339 date-time with an explicit offset or Z. In deterministic CBOR the same value MAY be carried as CBOR tag 1 (epoch seconds); see schemas/README.md (non-normative).",
+      "description": "RFC 3339 date-time with an explicit offset or Z, for objects that are not signed (for example privacy reports). Signed objects use signedTimestamp (SK-COM section A5.1).",
       "type": "string",
       "format": "date-time",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "signedTimestamp": {
+      "description": "Timestamp in a signed object: RFC 3339 in UTC with Z and whole seconds (YYYY-MM-DDTHH:MM:SSZ), so that one instant has exactly one text form. It is a text string in every canonical encoding, never CBOR tag 1 (SK-COM section A5.1).",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
     },
     "duration": {
       "description": "ISO 8601 duration, for example PT0S (no retention), PT1H, P30D.",
@@ -74,7 +80,7 @@
       }
     },
     "signature": {
-      "description": "Signature block (SK-COM section A5.1). The signature is computed over the canonical encoding named in canon (dcbor: deterministic CBOR, RFC 8949 section 4.2; jcs: JSON Canonicalization Scheme, RFC 8785) of the enclosing object with the sig member removed. dcbor is mandatory to implement. The signature only proves who signed; trust in the key comes from identity statements (SK-COM section A2).",
+      "description": "Signature block (SK-COM section A5.1). The signature is computed over the canonical encoding named in canon (dcbor: RFC 8949 section 4.2.1 core deterministic encoding of the JSON data model with no type mapping and with numeric reduction, SK-COM section A5.1 and Appendix F; jcs: JSON Canonicalization Scheme, RFC 8785) of the enclosing object with the sig member removed. dcbor is mandatory to implement. In a signed object, numbers with an integral value stay within the I-JSON safe range and text is in Unicode Normalization Form C. The signature only proves who signed; trust in the key comes from identity statements (SK-COM section A2).",
       "type": "object",
       "required": [
         "alg",
@@ -234,6 +240,7 @@
             "unsupported-token-format",
             "unauthorized",
             "expired",
+            "not-yet-valid",
             "replayed",
             "wrong-audience",
             "out-of-sequence",
