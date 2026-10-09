@@ -15,7 +15,7 @@ Every commit must be signed off under the [Developer Certificate of Origin 1.1](
 
 Add the sign-off with `git commit -s`. It adds a line like:
 
-```
+```text
 Signed-off-by: Your Name <your.email@example.com>
 ```
 
@@ -46,6 +46,17 @@ All Contributions are made under the royalty-free [Patent Policy](PATENT-POLICY.
 - Do not describe legal requirements unless you are sure they are accurate; prefer "can help with" over "required by".
 - Use plain ASCII punctuation. Do not use em-dashes or en-dashes.
 - Update [CHANGELOG.md](CHANGELOG.md) and the change note at the end of the affected draft.
+
+## Checking Your Changes Locally
+
+CI lints Markdown and checks links on every pull request. To run the same checks before you push, from the repository root:
+
+```sh
+npx markdownlint-cli2@0.23.3
+lychee --root-dir "$PWD" './**/*.md' 'docs/**/*.html'
+```
+
+markdownlint needs Node.js 22 or later. For lychee, install version 0.24.2 from its [releases page](https://github.com/lycheeverse/lychee/releases). Settings live in `.markdownlint-cli2.jsonc` and `lychee.toml`. Links to reserved example names such as `example.com` are not checked.
 
 ## Pull Requests
 

@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: Apache-2.0
+// markdownlint settings for this repository.
+// Run locally with: npx markdownlint-cli2@0.23.3
+{
+  "config": {
+    "default": true,
+    // Prose is written one paragraph per line, so line length is not limited.
+    "MD013": false,
+    // Tables use compact pipes without padding; aligning them adds churn to every diff.
+    "MD060": false,
+    // CHANGELOG repeats "Added", "Changed" and so on under each dated entry.
+    "MD024": { "siblings_only": true },
+    // Issue templates use bold labels, and the site uses an emphasized tagline.
+    "MD036": false,
+    // Specs are split into parts and annexes with their own top-level headings.
+    "MD025": false,
+    // Templates (for example the pull request template) start below the top level.
+    "MD041": false,
+    // Lists directly after a paragraph render fine on GitHub and in Jekyll (kramdown).
+    "MD032": false,
+    // The project page uses a small, fixed set of HTML elements.
+    "MD033": {
+      "allowed_elements": ["div", "figure", "img", "figcaption", "a", "details", "summary"]
+    }
+  },
+  "globs": ["**/*.md"],
+  "ignores": ["**/node_modules/**", ".git/**"]
+}

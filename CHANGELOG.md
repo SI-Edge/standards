@@ -10,6 +10,41 @@ Normative clarification, open for comments.
 
 - SK-COM §A6: below C2, the rule that F6 delegation must not cross owners applies to every delegated link (every link after the root), not to the root link, and applies whatever the envelope's `form`. A root token may still be issued across owners, as in a normal F2 request.
 
+## 2026-10-09: Markdown lint and link check in CI
+
+Tooling change. No normative rule changed.
+
+### Added
+
+- `.github/workflows/docs-lint.yml`: markdownlint and a link check (lychee) run on every pull request and push to `main`; the link check also runs weekly.
+- `.markdownlint-cli2.jsonc` and `lychee.toml`: settings for both tools. Links to reserved example names (RFC 2606) and local addresses are skipped, and rate limits (HTTP 429) do not fail the check.
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to run both checks locally.
+
+### Changed
+
+- Languages on a few code blocks and angle brackets around a few bare URLs, so the current files pass markdownlint.
+- `test-vectors/README.md`: the paragraph after the status table no longer renders as a broken table row.
+
+## 2026-10-09: Test vectors, phase 1
+
+Tooling change. No normative rule changed.
+
+### Added
+
+- `test-vectors/`: 138 shared conformance test vectors for resource matching, capability token lifetime, attenuation, budgets and constraints, envelope structure and token binding, residency tags, and signatures (RFC 8032 known answers, `jcs` signing input, signing, and verification), plus multi-step sequence vectors for a receiver (replay, expiry, audience, `idem_key`, usage counting), with a JSON Schema for vector files and a README that defines each operation.
+- `test-vectors/keys/rfc8032-test-keys.json`: the Ed25519 test keys from RFC 8032 section 7.1, test only.
+- `tools/validate/test_vectors.py`: runs the vectors against the validator as part of the existing tests; provisional vectors are reported but do not fail.
+- `.gitleaks.toml`: default rules, with `test-vectors/` allowlisted for the published test keys.
+- Pointers from README.md, the project web page, and `tools/validate/README.md`.
+
+## 2026-10-09: Owner residency tag length
+
+Schema fix. No normative rule changed.
+
+### Fixed
+
+- `common.schema.json` `residencyTag`: owner-defined tags are limited to 64 characters in total, as SK-RT §11 says; the pattern accepted 65. Validator test covers exactly 64 (valid) and 65 (invalid).
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added
@@ -54,7 +89,7 @@ Repository and editorial change. No normative rule changed.
 
 ## 2026-10-09: Renamed to Selfkin
 
-Naming change, prepared for the move of the repository to https://github.com/selfkin/standards. No normative rule changed in substance.
+Naming change, prepared for the move of the repository to <https://github.com/selfkin/standards>. No normative rule changed in substance.
 
 ### Changed
 
