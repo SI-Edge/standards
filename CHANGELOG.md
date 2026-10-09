@@ -2,6 +2,14 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Wording review
+
+Editorial change. No normative rule changed.
+
+### Changed
+- [TERMINOLOGY.md](TERMINOLOGY.md): the note on the term "SI" no longer cites a specific government document; it only says that some usage calls advanced AI systems "SI".
+- [TRADEMARKS.md](TRADEMARKS.md): the note on "Ready" style marks no longer makes statements about third-party registrations.
+
 ## 2026-10-09: Reference implementation linked
 
 Repository and editorial change. No normative rule changed.
@@ -19,7 +27,7 @@ Naming change, prepared for the move of the repository to https://github.com/sel
 
 ### Changed
 - Project name "SI Edge" is now **Selfkin**, with the tagline "Open standards for personal AI on your own devices". Documents: Selfkin Runtimes (SK-RT), Selfkin Edge-to-Edge Communication (SK-COM), Selfkin Provider Profiles (SK-PRV). Identifiers SIE-RT, SIE-COM, and SIE-PRV became SK-RT, SK-COM, and SK-PRV throughout, including earlier entries of this changelog.
-- The neutral term is now **personal AI runtime**; "SI" is no longer used as shorthand. TERMINOLOGY notes that US federal usage since Executive Order 14434 (29 September 2026) may call such systems "SI".
+- The neutral term is now **personal AI runtime**; "SI" is no longer used as shorthand. TERMINOLOGY notes that some usage calls such systems "SI".
 - The "SI Envelope" is now the **Selfkin Envelope**; schema titles use "Selfkin".
 - Wire identifiers: reserved intents `si.*` became `sk.*` (for example `sk.pairing.request`, `sk.refused`), the refusal media type became `application/vnd.selfkin.refusal+json`, the Provider Manifest field `si_request_header` became `runtime_request_header`, the reserved other-token format name `si-cap` became `sk-cap`, example URLs use `/selfkin/` paths, and the example headers became `Selfkin-Request` and `Selfkin-Model`. The defined term "SI request" in SK-PRV became "runtime request".
 - Schema `$id` values, the CI badge, CITATION.cff, and the Pages site point to `github.com/selfkin/standards` and `selfkin.github.io/standards`.
@@ -43,7 +51,7 @@ Editorial and naming change. No normative rule changed; identifiers `SK-PRV` and
 ### Changed
 - The provider draft is now titled **Selfkin Provider Profiles Standard (SK-PRV)**, replacing the working name "Selfkin Ready Provider". Conformance claims are worded "self-assessed against SK-PRV profile P0 to P3" (§11).
 - Cross-references in the runtime and communication drafts, README, TERMINOLOGY, and earlier CHANGELOG headings use the new name.
-- [TRADEMARKS.md](TRADEMARKS.md): new section explaining that the project avoids "Edge Ready" style marks because of existing third-party EDGEREADY registrations, and that "Selfkin" is a provisional project name, not a certification mark.
+- [TRADEMARKS.md](TRADEMARKS.md): new section explaining that the project avoids "Edge Ready" style marks to avoid confusion with names used by others and any suggestion of certification, and that "Selfkin" is a provisional project name, not a certification mark.
 
 ## 2026-10-09: Interim patent policy
 

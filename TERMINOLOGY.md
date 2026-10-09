@@ -6,7 +6,7 @@ Shared terms for all Selfkin drafts. Where a draft defines a term normatively, t
 
 | Term | Meaning | Defined in |
 |---|---|---|
-| **SI** | Not used as a term in these drafts. US federal usage since Executive Order 14434 (29 September 2026) may call such systems "SI" (super intelligence); in these drafts they are called personal AI runtimes, and no claim is made that any system is superintelligent | Informative |
+| **SI** | Not used as a term in these drafts. Some official and public usage calls advanced AI systems "SI" (super intelligence); these drafts say personal AI runtime instead and make no claim that any system is superintelligent | Informative |
 | **Personal AI** | A personal AI runtime that acts for one person on hardware they control and serves as their primary interface | README, SK-RT intro |
 | **Edge Device** | Hardware the owner controls that runs a personal AI runtime or a shim | SK-RT §1 |
 | **Personal AI runtime** | On-device software that hosts agents, mediates every action, and presents the interface | SK-RT §1 |

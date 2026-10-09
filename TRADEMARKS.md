@@ -11,7 +11,7 @@ The project is called **Selfkin** (previously "SI Edge"). The document names "Se
 
 ## No "Ready" Style Marks
 
-- The project deliberately avoids "Edge Ready" style names and badges. Third parties already hold registrations for EDGEREADY in the same field (for example for computer hardware and software). The provider document was therefore renamed from its earlier working name to **Selfkin Provider Profiles (SK-PRV)**.
+- The project deliberately avoids "Edge Ready" style names and badges, to avoid confusion with names used by others in this field and any suggestion of certification. The provider document was therefore renamed from its earlier working name to **Selfkin Provider Profiles (SK-PRV)**.
 - **"Selfkin" is a provisional project name, not a certification mark.** It must not be used as a seal, badge, or quality claim, and the project has not filed it as a mark.
 - Provider conformance is expressed only as "self-assessed against SK-PRV profile P0 to P3".
 
