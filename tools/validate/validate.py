@@ -52,7 +52,9 @@ SCHEMA_NAMES = (
     "privacy-report",
     "provider-manifest",
     "refusal",
+    "session-record",
 )
+SESSION_RECORD_TYPE = "application/vnd.selfkin.session-record+json"  # SK-RT section 13
 MAX_TOKEN_LIFETIME = timedelta(hours=1)  # SK-COM section A6
 
 
@@ -246,6 +248,71 @@ def check_privacy_report(report: dict) -> list[str]:
     return problems
 
 
+def profile_tier(profile: str) -> int:
+    """Tier of a runtime, communication, or provider profile tag: R0 to R3, C0 to C3, P0 to P3."""
+    return int(profile[1])
+
+
+def session_profiles(record: dict) -> set[str]:
+    profiles = {record["runtime_profile"]}
+    profiles.update(hop["profile"] for hop in record["hops"])
+    profiles.update(egress["provider_profile"] for egress in record["egress"])
+    return profiles
+
+
+def check_session_record(record: dict) -> list[str]:
+    """Report links and the effective tier display (SK-RT section 5, section 13, section 21)."""
+    problems = []
+    for index, egress in enumerate(record["egress"]):
+        if egress["report"]["payload_digest"] != egress["payload_digest"]:
+            problems.append(f"egress[{index}]: the report's payload_digest does not match the egress (no matching report)")
+    display = record["tier_display"]
+    if display["session"] != record["session"]:
+        problems.append("tier_display.session is not this session")
+    if display["sig"]["kid"] != record["core"]["kid"]:
+        problems.append("tier_display is not signed by the Core key")
+    if "signer" in display["sig"] and display["sig"]["signer"] != record["core"]["agent"]:
+        problems.append("tier_display signer is not the Core")
+    profiles = session_profiles(record)
+    hidden = profiles - set(display["shows"])
+    if hidden:
+        problems.append(f"tier_display hides profiles of the session: {sorted(hidden)}")
+    extra = set(display["shows"]) - profiles
+    if extra:
+        problems.append(f"tier_display shows profiles the session does not have: {sorted(extra)}")
+    effective = min(profile_tier(p) for p in profiles)
+    if display["tier"] > effective:
+        problems.append(f"tier_display.tier {display['tier']} is higher than the effective tier {effective}")
+    if record["runtime_profile"] == "R0" and "prototype" not in display["labels"]:
+        problems.append("an R0 runtime must show the prototype label")
+    return problems
+
+
+def check_session(envelope: dict, core_kid: str, schemas: dict[str, dict], registry: Registry) -> list[str]:
+    """A session record as received: a valid envelope signed by the Core key, carrying a valid session record.
+
+    Checks key binding (kid), not cryptography: like the rest of the validator it does not verify signatures.
+    """
+    problems = validate_document(envelope, "envelope", schemas, registry)
+    if problems:
+        return problems
+    if envelope.get("payload_type") != SESSION_RECORD_TYPE:
+        return [f"payload_type must be {SESSION_RECORD_TYPE}"]
+    if envelope["sig"]["kid"] != core_kid:
+        problems.append("envelope is not signed by the Core key")
+    record = envelope["data"]
+    problems.extend(f"data: {p}" for p in validate_document(record, "session-record", schemas, registry))
+    if problems:
+        return problems
+    if record["core"]["kid"] != core_kid:
+        problems.append("data.core.kid is not the Core key")
+    if record["core"]["agent"] != envelope["sender_agent"]:
+        problems.append("data.core.agent is not the envelope sender")
+    if record["session"] != envelope["session"]:
+        problems.append("data.session is not the envelope session")
+    return problems
+
+
 SEMANTIC = {
     "envelope": check_envelope,
     "capability-token": check_token,
@@ -253,6 +320,7 @@ SEMANTIC = {
     "provider-manifest": check_provider_manifest,
     "privacy-report": check_privacy_report,
     "refusal": lambda document: [],
+    "session-record": check_session_record,
 }
 
 

@@ -43,7 +43,10 @@ Shared terms for all Selfkin drafts. Where a draft defines a term normatively, t
 | **Provider** | Any remote service a runtime calls | SK-PRV §1 |
 | **Provider Manifest** | Signed, machine-readable description of a provider's capabilities, policies, and claimed profile | SK-PRV §8 |
 | **Anonymous mode / Identified mode** | Requests without account credentials / with the user's own account | SK-PRV §1 |
-| **Conformance profile** | Set of rules a self-assessment can claim (R1 to R3, C1 to C3, P0 to P3). Not a certification | All drafts |
+| **Conformance profile** | Set of rules a self-assessment can claim (R0 to R3, C1 to C3, P0 to P3). Not a certification | All drafts |
+| **R0 (prototype profile)** | Runtime profile below R1 that a prototype can claim: Core decides, Core-signed session record in a Selfkin Envelope, a privacy report per egress, Core-rendered effective tier display, local-only secrets, and the label "prototype, not for production". Tier 0; no sovereignty claim, no P2 or P3 treatment, no hideable C0 | SK-RT §21 |
+| **Effective tier display** | Trusted UI element rendered and signed only by the Core that shows the session's effective tier and every profile it comes from; it cannot hide a C0 hop or a P0 provider | SK-RT §5 |
+| **Session record** | Core-signed record of a session that links each egress to its privacy report and holds the signed tier display | SK-RT §13, [schemas/session-record.schema.json](schemas/session-record.schema.json) |
 | **Profile tag** | Marker such as [R2] at the start of a rule giving the lowest profile it applies to | All drafts, Conventions |
 | **Self-assessment** | The only form of conformance claim before v1.0. Provider claims are worded "self-assessed against SK-PRV profile P0 to P3" | All drafts |
 
@@ -64,12 +67,12 @@ Several tags on the same data combine by **intersection**: the data may be proce
 
 | Tier | Runtime | Communication | Provider |
 |---|---|---|---|
-| 0 Unverified | n/a | C0 (legacy hop) | P0 |
+| 0 Unverified | R0 (prototype) | C0 (legacy hop) | P0 |
 | 1 Basic | R1 | C1 | P1 |
 | 2 Sovereign | R2 | C2 | P2 |
 | 3 Attested | R3 | C3 | P3 |
 
-A session's effective tier is the lowest tier of the runtime, every communication hop, and every provider in its path. Machine-readable documents give the tier as the integer 0 to 3 (for example `effective_tier` in a privacy report).
+A session's effective tier is the lowest tier of the runtime, every communication hop, and every provider in its path. An R0 runtime, a C0 hop, or a P0 provider makes it 0, and the Core's display shows it (SK-RT §5). Machine-readable documents give the tier as the integer 0 to 3 (for example `effective_tier` in a privacy report).
 
 ## Labels Shown in Trusted UI
 

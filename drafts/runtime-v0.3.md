@@ -12,6 +12,7 @@
 - The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **RECOMMENDED**, **NOT RECOMMENDED**, **MAY**, and **OPTIONAL** in this document are to be interpreted as described in BCP 14 (RFC 2119, RFC 8174) when, and only when, they appear in all capitals, as shown here.
 - **Profile tags.** Each normative rule starts with a tag such as **[R1]**, **[R2]**, or **[R3]**: the lowest conformance profile (§21) at which the rule applies. A rule tagged [R2] applies at R2 and R3. Below its tag, a rule is RECOMMENDED unless it says otherwise. Statements without a tag are non-normative.
 - Each rule ends with a one-line *rationale*.
+- **[R0]** is the tag of the prototype profile (§21). A rule tagged [R0] applies at every profile, R0 to R3.
 
 ---
 
@@ -46,6 +47,14 @@
 
 **Example connectors (non-normative).** Hosted models, in alphabetical order: Claude (Anthropic), Gemini (Google), GPT models (OpenAI), Grok (xAI), Llama (Meta), Mistral (Mistral AI). Also: self-hosted open-weight models served locally (for example with llama.cpp, Ollama, or vLLM) and MCP-compatible tool servers. Alphabetical order is not a ranking. No vendor is endorsed or required. Examples are illustrative only, and any connector that implements the provider interface is equally conforming.
 
+### 2.1 Boundary to Other Protocols (non-normative)
+
+Selfkin is not a tool dialect. The cut is the composition of Core, Envelope, Privacy Gateway, and effective tier. MCP and A2A may run under a module or a legacy adapter. They do not replace the Core, the gateway, or the tier display.
+
+- **MCP (Model Context Protocol):** Selfkin does not replace MCP as the way a model reaches tools (§6); an MCP server runs as a module or behind a legacy adapter, and every action it proposes still passes Core policy and, if data leaves the device, the Privacy Gateway.
+- **A2A (Agent2Agent protocol):** Selfkin does not replace A2A as a task protocol between agents; A2A traffic runs inside a module or a legacy adapter and is a C0 hop (SK-COM Part B) unless it is carried in signed Selfkin Envelopes.
+- **Solid:** Selfkin does not replace Solid as a store for the owner's data in a pod they choose; a pod outside the device is an egress destination like any other, under egress policy, residency tags, and the privacy report.
+
 ## 3. Modularity and Extensions
 
 - **[R1]** Every feature, function, model, device adapter, UI kit, and legacy adapter outside the Core **MUST** be packaged as a module. *Rationale: one model for extending, auditing, and removing anything.*
@@ -79,6 +88,8 @@
 - **[R1]** Legacy apps **MUST** remain available, and the user **MUST** be able to bypass the agent. *Rationale: the agent must never be the only way into the device.*
 - **[R1]** The runtime **MUST** always show what the agent is doing (active task, tools, data leaving the device). *Rationale: delegated action has to be observable.*
 - **[R1]** Visual interfaces **MUST** meet WCAG 2.2 level AA, approval prompts and the kill switch **MUST** be operable with assistive technology (screen reader, switch access, voice), and users **SHOULD** be able to switch modality mid-task. *Rationale: replacing the interface must not exclude anyone.*
+- **[R0]** The Core **MUST** compute each session's **effective tier** as the lowest tier of the runtime profile, every communication hop, and every provider profile used (README, "How They Fit Together"), and **MUST** show it as a Trusted UI element, rendered only by the Core, together with every profile it was computed from. A C0 hop (SK-COM Part B) or a P0 provider (SK-PRV §11) lowers the effective tier to 0, and the display **MUST** show that downgrade for as long as the session runs. Models, modules, and generated UI **MUST NOT** be able to hide, collapse, replace, or raise the display. *Rationale: a display that can hide C0 or a P0 call is theater.*
+- **[R0]** The Core **MUST** sign every tier display it renders with the Core key (a signing key held by the Core under the device identity, §10) and record it in the session record (§13). The displayed tier **MUST NOT** be higher than the effective tier. *Rationale: a signed record makes a forged, hidden, or inflated display testable.*
 
 ## 6. Device and App Capability API
 
@@ -154,6 +165,9 @@
 - **[R1]** For P0 providers the runtime **MUST** use full gateway mode, or let the user explicitly choose their own API key or account. Under that choice it **MUST** label clearly that the provider can link requests to that account. *Rationale: informed choice, never silent exposure.*
 - **[R1]** Each call **MUST** produce a user-visible **privacy report** ([schemas/privacy-report.schema.json](../schemas/privacy-report.schema.json)): provider, provider profile (claimed, effective, and whether verified, with any downgrade), gateway mode, relay used, network identity exposed (relay or direct), account linkage, data classes and field names sent after redaction, data classes and field names redacted or pseudonymised, minimisation steps applied, a hash of the exact outbound payload, residency tags, the provider's declared retention window (an ISO 8601 duration, or `undeclared`), and the model identity when the provider returns one. Reports **MUST** list field names and data classes, never values, and **MUST NOT** contain redaction maps. *Rationale: the user can judge each call, from the same profile at which the Gateway is required.*
 - **[R2]** Runtimes **MUST** provide **verifiable minimisation**: for each call the Gateway logs the exact outbound payload, or a reproducible hash plus redaction map, under the log protections in §11, and the privacy report's payload hash **MUST** match that log entry. Redaction maps **MUST NOT** leave the device. *Rationale: honesty, backed by evidence.*
+- **[R0]** For every session that sends data off the device, the Core **MUST** write a **session record** ([schemas/session-record.schema.json](../schemas/session-record.schema.json)) that lists each egress with a link to its privacy report: the report id and the report's payload hash, which **MUST** equal the hash of that egress payload. An egress without a matching privacy report **MUST NOT** leave the device. The record also holds the signed tier display (§5). *Rationale: one report per egress, checkable after the fact.*
+- **[R0]** The Core **MUST** carry each session record as `data` of a Selfkin Envelope (SK-COM §A5) with `payload_type` `application/vnd.selfkin.session-record+json`, signed with the Core key (SK-COM §A5.1). *Rationale: the record is evidence only if a module cannot write it.*
+- **[R0]** A runtime or owner tool that checks a session record **MUST** refuse it with `bad-signature` if the envelope or the tier display is not signed by the Core key, and with `malformed` if an egress has no matching report, the tier display is missing or belongs to another session, the display leaves out a profile of the session, the displayed tier is higher than the effective tier, or an R0 record lacks the `prototype` label. The vectors in [test-vectors/slice/](../test-vectors/README.md) cover each case. *Rationale: fixed refusal codes make the slice testable across implementations.*
 - **[R2]** The Gateway **SHOULD** resolve DNS through the relay or an encrypted resolver and **SHOULD** pad or batch requests where practical. *Rationale: metadata reveals behaviour even when content is protected.*
 
 *Note (non-normative): this standard does not claim that zero personal data leaves the device. Content itself can identify a person. The goal is minimisation that the user can verify.*
@@ -209,6 +223,7 @@
 
 | Profile | Name | Requires |
 |---|---|---|
+| **R0** | Prototype | Every rule tagged [R0]: the Core decides, signed session records in a Selfkin Envelope, one privacy report per egress (§13), the Core-rendered effective tier display (§5), local-only secrets, and the prototype label (below). An R0 session is always at tier 0 |
 | **R1** | Basic | Every rule tagged [R1]. In summary: Core/model separation, local mode, untrusted-content handling (§2); signed manifests, sandboxing, model hashes (§3); consented hardware (§4); Trusted UI, accessibility, legacy fallback (§5); capability manifests (§6); minimal onboarding and Adaptation Profile (§7); local exportable memory and backup (§8); device keys, signed Core, key recovery (§10); default-local data and registered data classes (§11); outbound control plane (§12); Privacy Gateway with full gateway mode and per-call privacy reports (§13); local secrets (§15); approvals and kill switch (§16); signed updates without unsafe rollback, SBOMs (§17); shared-device protections (§19); communication at C1 |
 | **R2** | Sovereign | R1 + every rule tagged [R2]: open registries with revocation (§3), Trusted UI anti-spoofing (§5), memory import (§8), E2E mesh (§9), mesh re-keying and owner-key rotation (§10), egress policy, protected logs, residency tags (§11), verifiable minimisation (§13), routing records (§14); communication at C2 |
 | **R3** | Attested | R2 + every rule tagged [R3]: reproducible builds (§3), hardware-backed keys, measured boot and remote attestation (§10), provider profile verification (§13), hardware-backed secrets (§15), resource reporting (§18); communication at C3 |
@@ -216,6 +231,13 @@
 - Before v1.0, any claim of conformance is a **self-assessment** only. It **MUST NOT** be presented as a certification, and it **SHOULD** be published together with the evidence for each rule. *Rationale: there is no certification program, and claims must not imply one.*
 - A self-assessment **SHOULD** be phrased as "Self-assessed against Selfkin Runtimes draft v0.3, profile R2". *Rationale: neutral wording that cannot be mistaken for a seal.*
 - How R, C, and P profiles combine for one session is defined in the README ("How They Fit Together").
+- **[R0]** A self-assessment is not a badge. It **MUST NOT** be shown as a symbol or label in Trusted UI or generated UI, and it never raises the effective tier: only the Core's tier display (§5) tells the user how a session runs, a C0 hop lowers that tier to 0 whatever the runtime or provider claims, and the display **MUST NOT** hide it. *Rationale: a claim the user cannot check must not look like evidence.*
+
+**Profile R0 (prototype).** R0 is a profile that a prototype can claim honestly. It is below R1. No existing R1 to R3 rule text changed; the new [R0] rules also bind R1 to R3 (§0). R0 is tier 0 in the tier table, so an R0 session's effective tier is always 0.
+
+- **[R0]** A runtime that claims R0 **MUST** meet these rules tagged [R1], without relaxing them: the Core is separate from models and modules and decides whether proposed actions run (§2, first rule); all outbound calls to cloud services pass through the Privacy Gateway (§13, first rule) with a privacy report for each call (§13); credentials stay on the device and out of every model context (§15, first rule). *Rationale: these are the parts a prototype cannot skip without becoming something else.*
+- **[R0]** A runtime that claims R0 and no higher profile **MUST** show the label `prototype` with the text "prototype, not for production" in Trusted UI next to the effective tier, and **MUST** state the same in its self-assessment. *Rationale: users and reviewers know what they are running.*
+- **[R0]** A runtime that claims R0 **MUST NOT** claim sovereignty (R2) or describe itself as sovereign, **MUST NOT** claim P2 or P3 treatment for a session (the effective tier stays 0 even when a provider is P2 or P3), and **MUST NOT** offer any way to hide a C0 hop. *Rationale: a prototype must not borrow the trust of higher tiers.*
 
 ## 22. Open Questions
 
@@ -229,9 +251,11 @@
 
 ## 23. References
 
-BCP 14 (RFC 2119, RFC 8174); TLS 1.3 (RFC 8446); Oblivious HTTP (RFC 9458); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); Model Context Protocol specification; TPM 2.0 (TCG); WCAG 2.2 (W3C); OpenTelemetry; SPDX; CycloneDX; SLSA; Swiss Federal Act on Data Protection (nFADP); EU General Data Protection Regulation (GDPR); EU AI Act (Regulation (EU) 2024/1689).
+BCP 14 (RFC 2119, RFC 8174); Agent2Agent (A2A) protocol specification; Solid Protocol (W3C Solid Community Group); TLS 1.3 (RFC 8446); Oblivious HTTP (RFC 9458); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); Model Context Protocol specification; TPM 2.0 (TCG); WCAG 2.2 (W3C); OpenTelemetry; SPDX; CycloneDX; SLSA; Swiss Federal Act on Data Protection (nFADP); EU General Data Protection Regulation (GDPR); EU AI Act (Regulation (EU) 2024/1689).
 
 ---
+*Prototype profile and vertical slice (2026-10-09, proposal): profile R0 (prototype) and the [R0] tag (§0, §21), boundary to MCP, A2A, and Solid (§2.1, non-normative), Core-rendered and Core-signed effective tier display that cannot hide C0 (§5), session record with one privacy report per egress in a Core-signed envelope (§13), self-assessment is not a badge (§21). No existing R1 to R3 rule text changed. Through the existing tag rule, the new [R0] rules in §5, §13 and §21 also bind R1 to R3; this is a disclosed normative addition. The new [R0] rules: §5 tagged rules 10 (effective tier display that cannot hide a C0 hop or a P0 provider) and 11 (tier display signed by the Core key, not higher than the effective tier); §13 tagged rules 9 (session record with one matching privacy report per egress), 10 (session record in an envelope signed by the Core key) and 11 (refusal codes for checkers); §21 rule "A self-assessment is not a badge". The three [R0] rules under "Profile R0 (prototype)" in §21 bind only a runtime that claims R0.*
+
 *Schema alignment revision (2026-10-09): module kinds including `hardware` and the sideloaded definition (§1), manifest contents and compatibility range syntax (§3), performance classes (§4), `x-` owner residency tags, tag intersection, and registered data classes (§11), privacy reports moved to R1 with defined contents (§13), SBOMs moved to R1 (§17).*
 
 *v0.3 changes: added modularity (§3), hardware discovery (§4), generated UI with Trusted UI (§5), onboarding and adaptation (§7), key recovery (§10), Private Cloud Calls with full gateway mode (§13), efficiency (§18), people and shared devices (§19); profile tags on every rule; conformance profiles linked to C and P profiles. Full history in [CHANGELOG.md](../CHANGELOG.md).*

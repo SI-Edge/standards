@@ -98,6 +98,8 @@
 | **P3** | Attested | P2 + every rule tagged [P3]: attested or audited retention (§3), attested confidential inference bound to the session (§5) |
 
 - Before v1.0, any claim of conformance is a **self-assessment** only and **MUST NOT** be presented as a certification or seal. A self-assessment **SHOULD** be phrased as "Self-assessed against SK-PRV draft v0.1, profile P2" (in general: self-assessed against SK-PRV profile P0 to P3). *Rationale: no certification program exists.*
+- **[P1]** A self-assessment is not a badge. Providers **MUST NOT** state or imply that a runtime will treat them above P0 because of a self-assessment, and **MUST NOT** show a claimed profile as a symbol or logo. *Rationale: until a runtime verifies a claim (§12), the claim changes nothing for the user.*
+- **[Runtime]** A self-assessed P2 or P3 claim never raises the effective tier on its own: unless the runtime verified it (§12), the provider counts as P0 (SK-RT §13). A C0 legacy hop on the path lowers the session to tier 0 whatever the provider claims. The Core's tier display (SK-RT §5) **MUST** show that tier and **MUST NOT** hide the downgrade. *Rationale: C0 legacy methods are the common path for years, and a display that hides them misleads the user.*
 
 ## 12. Runtime Verification and Downgrade
 
@@ -121,4 +123,6 @@
 BCP 14 (RFC 2119, RFC 8174); Privacy Pass (RFC 9576, RFC 9577, RFC 9578); Oblivious HTTP (RFC 9458); MASQUE (IETF working group); W3C Verifiable Credentials Data Model 2.0; Swiss nFADP; EU GDPR; EU AI Act (Regulation (EU) 2024/1689).
 
 ---
+*Self-assessment and C0 (2026-10-09, proposal): a self-assessment is not a badge, an unverified claim never raises the effective tier, and a C0 hop lowers it to 0 in the Core's display (§11).*
+
 *Schema alignment revision (2026-10-09): retention window format and purpose (§3), full Selfkin Envelope required at P2 with no equivalent mappings, residency refusal codes (§6), model identity carrier (§7), manifest schema link (§8), refusal object (§9), audit validity bound (§10), P0 manifests allowed (§11). Renamed to "Selfkin Provider Profiles" (2026-10-09, no normative change). Full history in [CHANGELOG.md](../CHANGELOG.md).*

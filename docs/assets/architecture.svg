@@ -161,6 +161,6 @@
     <text class="s" x="707" y="764" text-anchor="middle">guided fallback</text>
   </g>
 
-  <text class="t b" x="30" y="842">Effective tier = lowest of the runtime (R1 to R3), every hop (C0 to C3), and every provider (P0 to P3).</text>
+  <text class="t b" x="30" y="842">Effective tier = lowest of the runtime (R0 to R3), every hop (C0 to C3), and every provider (P0 to P3).</text>
   <text class="s" x="30" y="864">Selfkin drafts SK-RT v0.3, SK-COM v0.1, SK-PRV v0.1. Draft, not for implementation.</text>
 </svg>

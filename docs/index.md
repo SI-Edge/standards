@@ -52,7 +52,7 @@ flowchart TB
 
 | Document | Version | Scope |
 |---|---|---|
-| [Selfkin Runtimes (SK-RT)]({{ site.repo_url }}/blob/main/drafts/runtime-v0.3.md) | Draft v0.3 | The on-device runtime: Core, modules, hardware, Trusted UI, adaptation, memory, Privacy Gateway. Profiles R1 to R3 |
+| [Selfkin Runtimes (SK-RT)]({{ site.repo_url }}/blob/main/drafts/runtime-v0.3.md) | Draft v0.3 | The on-device runtime: Core, modules, hardware, Trusted UI, adaptation, memory, Privacy Gateway. Profiles R0 to R3 |
 | [Selfkin Edge-to-Edge Communication (SK-COM)]({{ site.repo_url }}/blob/main/drafts/edge-to-edge-communication-v0.1.md) | Draft v0.1 | Identity, pairing, end-to-end encryption, the signed Selfkin Envelope, delegation, legacy compatibility. Profiles C1 to C3 |
 | [Selfkin Provider Profiles (SK-PRV)]({{ site.repo_url }}/blob/main/drafts/provider-v0.1.md) | Draft v0.1 | What cloud models and services should offer: anonymous access, no training or retention, no tracking. Profiles P0 to P3, self-assessed only |
 

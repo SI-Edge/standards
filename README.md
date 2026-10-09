@@ -15,7 +15,7 @@ A **personal AI** is an advanced AI agent runtime that runs on hardware the user
 
 | Document | File | Scope |
 |---|---|---|
-| **Selfkin Runtimes v0.3** (SK-RT, current) | [drafts/runtime-v0.3.md](drafts/runtime-v0.3.md) | The on-device runtime: Core, modules, hardware, interface and Trusted UI, adaptation, memory, key recovery, Privacy Gateway, approvals, shared devices. Profiles **R1 to R3** |
+| **Selfkin Runtimes v0.3** (SK-RT, current) | [drafts/runtime-v0.3.md](drafts/runtime-v0.3.md) | The on-device runtime: Core, modules, hardware, interface and Trusted UI, adaptation, memory, key recovery, Privacy Gateway, approvals, shared devices. Profiles **R0** (prototype) and **R1 to R3** |
 | **Selfkin Edge-to-Edge Communication v0.1** (SK-COM) | [drafts/edge-to-edge-communication-v0.1.md](drafts/edge-to-edge-communication-v0.1.md) | All communication forms (F1 to F9), identity, pairing, E2E crypto, the signed Selfkin Envelope, delegation, agent-to-agent safety, legacy compatibility Methods 1 to 5. Profiles **C1 to C3** |
 | **Selfkin Provider Profiles v0.1** (SK-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3**. Claims are worded "self-assessed against SK-PRV profile P0 to P3" |
 | Terminology | [TERMINOLOGY.md](TERMINOLOGY.md) | Shared glossary, residency tags, profile tiers |
@@ -35,12 +35,16 @@ Profiles group into tiers:
 
 | Tier | Runtime | Communication | Provider |
 |---|---|---|---|
-| 0 Unverified | n/a | C0 (legacy hop) | P0 |
+| 0 Unverified | R0 (prototype) | C0 (legacy hop) | P0 |
 | 1 Basic | R1 | C1 | P1 |
 | 2 Sovereign | R2 | C2 | P2 |
 | 3 Attested | R3 | C3 | P3 |
 
-A session's **effective tier** is the lowest tier of the runtime, of every communication hop, and of every provider in its path. For example, an R3 runtime that calls a P1 provider runs that call at tier 1, and a hop through a legacy endpoint runs at tier 0. Runtimes show the effective tier to the user.
+A session's **effective tier** is the lowest tier of the runtime, of every communication hop, and of every provider in its path. For example, an R3 runtime that calls a P1 provider runs that call at tier 1, and a hop through a legacy endpoint runs at tier 0. Runtimes show the effective tier to the user: the Core renders and signs the display, and it cannot hide a C0 hop or a P0 provider (SK-RT §5). A self-assessment is not a badge and never raises the effective tier.
+
+**R0 (prototype)** is the profile a prototype can claim: the Core decides, a signed Selfkin Envelope carries the session record, every egress has a Privacy Gateway report, the Core renders the effective tier, secrets stay local, and the runtime is labelled "prototype, not for production". It sits at tier 0, so it claims no sovereignty, no P2 or P3 treatment, and no way to hide C0. No existing R1 to R3 rule text changed; the new [R0] rules also bind R1 to R3 (SK-RT §0, §21).
+
+**Boundary.** Selfkin is not a tool dialect. The cut is the composition of Core, Envelope, Privacy Gateway, and effective tier. MCP and A2A may run under a module or a legacy adapter. They do not replace the Core, the gateway, or the tier display. Selfkin in turn does not replace MCP, A2A, or Solid (SK-RT §2.1).
 
 ## Architecture at a Glance
 
