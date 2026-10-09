@@ -2,6 +2,18 @@
 
 All notable changes to the SI Edge drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: v0.1 JSON Schemas, examples, and validator
+
+Roadmap step 1 (first part). No normative text changed.
+
+### Added
+- `schemas/`: JSON Schema 2020-12 for the SI Envelope (SIE-COM A5), capability token (SIE-COM A6), module manifest with capability descriptor (SIE-RT 3, 4), privacy report (SIE-RT 13), and Provider Manifest (SIE-PRV 8, 11), plus shared definitions. `schemas/README.md` maps each schema to the draft sections.
+- `schemas/OPEN-QUESTIONS.md`: ambiguities and inconsistencies found in the drafts while writing the schemas, with the conservative choice each schema makes.
+- `examples/`: valid and deliberately invalid examples for every schema; `examples/README.md` explains why each invalid example fails.
+- `tools/validate/`: Python validator (JSON Schema plus semantic checks such as capability attenuation) and tests (Apache-2.0).
+- `tools/validate/ci/validate.yml`: GitHub Actions workflow that runs the validator and tests on every push and pull request; to be moved to `.github/workflows/` to activate it.
+- README: "Schemas and Tooling" section, including a non-normative note that CBOR encoding follows the same data model as deterministic CBOR (RFC 8949 section 4.2).
+
 ## 2026-10-09: Pre-publication revision
 
 Repository prepared for public release.

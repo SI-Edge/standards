@@ -39,6 +39,18 @@ Profiles group into tiers:
 
 A session's **effective tier** is the lowest tier of the runtime, of every communication hop, and of every provider in its path. For example, an R3 runtime that calls a P1 provider runs that call at tier 1, and a hop through a legacy endpoint runs at tier 0. Runtimes show the effective tier to the user.
 
+## Schemas and Tooling
+
+- [schemas/](schemas/): JSON Schema 2020-12 files for the SI Envelope, capability token, module manifest, privacy report, and Provider Manifest, with a [map to the draft sections](schemas/README.md) and the [open questions](schemas/OPEN-QUESTIONS.md) found while writing them. The schemas follow the drafts; where they disagree, the draft wins.
+- [examples/](examples/): valid and deliberately invalid examples for every schema, with the reason each invalid one fails.
+- [tools/validate/](tools/validate/): a small Python validator (JSON Schema plus semantic checks such as capability attenuation) and its tests. A GitHub Actions workflow is ready in [tools/validate/ci/](tools/validate/ci/) and runs them on every push and pull request once moved to `.github/workflows/`.
+- CBOR (non-normative): a CBOR encoding follows the same data model, encoded as deterministic CBOR (RFC 8949 section 4.2). A normative CBOR profile is future work.
+
+```
+pip install -r tools/validate/requirements.txt
+python tools/validate/validate.py
+```
+
 ## Repository
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to propose changes, DCO sign-off, style rules
@@ -58,7 +70,7 @@ A session's **effective tier** is the lowest tier of the runtime, of every commu
 
 ## Next Steps / Roadmap
 
-1. **Envelope schema:** publish the SI Envelope, module manifest, capability descriptor, open memory format, and Provider Manifest as JSON Schema plus a deterministic CBOR profile.
+1. **Envelope schema:** publish the SI Envelope, module manifest, capability descriptor, open memory format, and Provider Manifest as JSON Schema plus a deterministic CBOR profile. *Started in v0.1 of [schemas/](schemas/): envelope, capability token, module manifest (with capability descriptor), privacy report, and Provider Manifest. Still open: open memory format, normative CBOR profile.*
 2. **Reference implementation:** a minimal Core prototype with a local router model, MCP tool layer, Privacy Gateway, Trusted UI components, and one proxy module for a legacy device. Start on a PC and a VPS, then add a phone.
 3. **Test suite:** conformance tests for R1, C1, and P1 first, including downgrade, prompt-injection, and Trusted UI spoofing tests.
 4. **Governance:** the RFC process in [GOVERNANCE.md](GOVERNANCE.md), an open module registry template, and neutral maintainership before v1.0.
