@@ -69,19 +69,19 @@ The validator runs `resource-covers`, `token-check`, `envelope-check`, and `resi
 
 ## Status and Versioning
 
-The suite has 160 vectors: 133 normative, 25 provisional, and 2 withdrawn.
+The suite has 164 vectors: 140 normative, 22 provisional, and 2 withdrawn.
 
 | Category | Normative | Provisional | Withdrawn |
 |---|---|---|---|
 | Resource matching | 0 | 19 (#23) | 0 |
 | Tokens | 48 | 0 | 1 |
 | Envelope (single) | 25 | 2 (#23) | 1 |
-| Envelope (receive sequences) | 4 | 4 (#22, #24) | 0 |
+| Envelope (receive sequences) | 11 | 1 (#22) | 0 |
 | Residency | 24 | 0 | 0 |
 | Signatures | 32 | 0 | 0 |
 
-The resource-matching vectors, and two binding vectors that depend on them, are provisional until the matching rule proposed for #23 and #48 is merged. `open_issue` may name an issue or a pull request. Receive sequences about how a repeated `idem_key` is answered (#22) and how usage is counted (#24) are provisional; replay, expiry, audience, and at-most-once execution are normative. The `dcbor` signing input, `dcbor` signatures, chain link signatures, and the timestamp, number, and text rules for signed objects (#10, #17) were added in 0.2.0. Later phases add freshness checks against a clock, such as a future `iat` (#47) and `max_clock_skew`, root issuers and `cnf` (#19, #20), and more stateful receiver checks such as sequence windows, clock skew, nonce retention, and chain-wide budget counting (#21, #22, #24).
+The resource-matching vectors, and two binding vectors that depend on them, are provisional until the matching rule proposed for #23 and #48 is merged. `open_issue` may name an issue or a pull request. Receive sequences about how a repeated `idem_key` is answered (#22) are provisional; replay, expiry, audience, at-most-once execution, and usage counting along the whole chain (#24, from 0.2.2) are normative. The `dcbor` signing input, `dcbor` signatures, chain link signatures, and the timestamp, number, and text rules for signed objects (#10, #17) were added in 0.2.0. Later phases add freshness checks against a clock, such as a future `iat` (#47) and `max_clock_skew`, root issuers and `cnf` (#19, #20), and more stateful receiver checks such as sequence windows, clock skew, and nonce retention (#21, #22), and `compute_units` and `money` charging, which needs a cost input for `receive` steps (#24).
 
 Also in 0.2.0: `envelope.structure.007` and `token.lifetime.003` accepted timestamps with an offset in signed objects and are `withdrawn`; `envelope.signed-values.001` and `token.signed-values.001` replace them.
 
-The current suite version is `0.2.0`. `VERSION` is its only source, and a test checks that this sentence matches it, so a version bump changes `VERSION` and this line and nothing else. The suite follows semantic versioning: patch for new vectors, minor for new operations or fields. A changed expectation is a major change from 1.0; while the suite is 0.x, it takes a minor bump and a change note instead. A vector whose expectation changes is marked `withdrawn` and replaced by a vector with a new `id`; old ids are never reused. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.
+The current suite version is `0.2.2`. `VERSION` is its only source, and a test checks that this sentence matches it, so a version bump changes `VERSION` and this line and nothing else. The suite follows semantic versioning: patch for new vectors, minor for new operations or fields. A changed expectation is a major change from 1.0; while the suite is 0.x, it takes a minor bump and a change note instead. A vector whose expectation changes is marked `withdrawn` and replaced by a vector with a new `id`; old ids are never reused. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.

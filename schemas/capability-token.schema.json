@@ -143,6 +143,7 @@
               "$ref": "common.schema.json#/$defs/money"
             },
             "max_uses": {
+              "description": "Maximum number of executed uses of this right. A use with a delegated token is also charged to the covering right of each ancestor (SK-COM section A7). Refused requests and unexecuted idem_key repeats are not counted.",
               "type": "integer",
               "minimum": 1
             },
@@ -159,7 +160,7 @@
       }
     },
     "budget": {
-      "description": "Per-token budget (SK-COM section A7 rate limits and budgets). A delegated token may only lower each limit, and may not drop a limit the parent set.",
+      "description": "Per-token budget (SK-COM section A7 rate limits and budgets). A delegated token may only lower each limit, and may not drop a limit the parent set. Receivers count usage per link along the whole chain, so every use with a delegated token is also charged to each ancestor (SK-COM section A7).",
       "type": "object",
       "minProperties": 1,
       "additionalProperties": false,
