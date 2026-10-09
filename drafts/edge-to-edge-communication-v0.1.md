@@ -104,7 +104,7 @@ Fields:
 
 ### A5.1 Canonical Encoding and Signatures
 
-- **[C1]** A signature **MUST** be computed over the canonical encoding of the signed object with its `sig` member removed. The `sig` block contains `alg` (JOSE or COSE algorithm name), `kid` (signing key), `canon`, `value`, and, for manifests, `signer`. `canon` names the encoding: `dcbor` (deterministic CBOR: the core deterministic encoding of RFC 8949 §4.2.1 with the rules below and in Appendix F) or `jcs` (JSON Canonicalization Scheme, RFC 8785). *Rationale: both sides must hash exactly the same bytes.*
+- **[C1]** A signature **MUST** be computed over the canonical encoding of the signed object with its `sig` member removed. The `sig` block contains `alg` (signature algorithm from the table in §B8), `kid` (signing key), `canon`, `value`, and, for manifests, `signer`. `canon` names the encoding: `dcbor` (deterministic CBOR: the core deterministic encoding of RFC 8949 §4.2.1 with the rules below and in Appendix F) or `jcs` (JSON Canonicalization Scheme, RFC 8785). *Rationale: both sides must hash exactly the same bytes.*
 - **[C1]** Every runtime **MUST** be able to produce and verify `dcbor` signatures. Senders **MUST** use `dcbor` unless the receiver announced `jcs` support during negotiation (§B7). *Rationale: one mandatory-to-implement encoding guarantees interoperability.*
 - **[C1]** The `dcbor` signing input **MUST** be the core deterministic encoding (RFC 8949 §4.2.1) of the object's JSON data model with `sig` removed, as defined in Appendix F: JSON objects become maps with text-string keys, JSON strings (including timestamps, identifiers, base64url values, and decimal money amounts) become text strings, JSON numbers become numbers as in the next rule, and `true`, `false`, and `null` become the corresponding simple values. Signers and verifiers **MUST NOT** convert any member to another CBOR type (for example CBOR tag 1 for a timestamp or a byte string for a base64url value) before computing or checking the signing input. *Rationale: a signer and a verifier that map types differently hash different bytes, so every signature fails.*
 - **[C1]** In the `dcbor` signing input, a number with an integral value (for example `50`, `50.0`, or `-0.0`) **MUST** be encoded as a CBOR integer, and any other number as the shortest of half, single, or double precision floating point that represents it exactly. *Rationale: JSON does not distinguish `50` from `50.0`, so JSON parsers that read them differently must still produce the same bytes.*
@@ -112,6 +112,10 @@ Fields:
 - **[C1]** Every timestamp in a signed object (`iat`, `nbf`, `exp`, `issued`, `expires`, provenance `at`, and manifest timestamps) **MUST** be RFC 3339 in UTC with `Z` and whole seconds (`YYYY-MM-DDTHH:MM:SSZ`). Receivers **MUST** refuse other forms with `malformed`. *Rationale: one instant then has exactly one signed form, so no offset or precision choice can change the bytes.*
 - **[C1]** This version defines no CBOR wire encoding other than the data model above. A later version **MAY** define one (for example carrying timestamps as CBOR tag 1), but signatures **MUST** always be computed over the data model form. *Rationale: a transport optimisation must never change what was signed.*
 - **[C1]** `instructions` have no separate signature; they are authenticated only as part of the signed envelope. *Rationale: one signature, one verification path.*
+- **[C1]** Every runtime **MUST** be able to produce and verify signatures with `Ed25519` (EdDSA with the Ed25519 parameter set, RFC 8032, named as in RFC 9864). *Rationale: one mandatory-to-implement algorithm guarantees that two conforming runtimes can verify each other.*
+- **[C1]** Every runtime **MUST** be able to verify signatures with `ES256` (ECDSA with P-256 and SHA-256, RFC 7518). Producing `ES256` signatures is **OPTIONAL**. *Rationale: some hardware-backed key stores (§A2) hold only P-256 keys, so a device that keeps its keys there can sign only with `ES256`, and every peer must be able to verify it.*
+- **[C1]** `sig.alg` **MUST** name an algorithm listed in §B8 with status `current` or `deprecated`. Receivers **MUST** refuse any other value, including `none` and every message authentication code (for example `HS256`), with `bad-signature`. *Rationale: an open list of algorithm names invites algorithm confusion, and a shared MAC key lets every holder forge.*
+- **[C1]** A verifier **MUST** resolve `kid` only through the owner-signed statements (§A2) of the identity that must have signed: `sender_agent` for an envelope, `iss` for a capability token and for each link in its `chain`, and `signer` for a manifest. It **MUST** check that the resolved key's type matches `alg` (`Ed25519` and `EdDSA`: an Ed25519 key; `ES256`: a P-256 key), and **MUST** refuse with `bad-signature` if `kid` does not resolve that way or the type does not match. *Rationale: a valid signature by a key that belongs to someone else, or used with the wrong algorithm, proves nothing.*
 - The same rules apply to every signed Selfkin object: capability tokens (§A6), module manifests (SK-RT §3), and Provider Manifests (SK-PRV §8).
 
 ### A5.2 Versions and Extensions
@@ -245,6 +249,16 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 - **[C1]** Sunset versions **MUST** be refused, except through an explicit owner override that is logged as a security exception. *Rationale: weak crypto must eventually be retired.*
 - **[C1]** A suite with a known practical break **MUST** move to `sunset` immediately. *Rationale: security outranks compatibility.*
 
+Signature algorithms for signed Selfkin objects (§A5.1):
+
+| `alg` | Key type | Status | Notes |
+|---|---|---|---|
+| `Ed25519` | Ed25519 | `current` | Mandatory to implement |
+| `ES256` | P-256 | `current` | Mandatory to verify, optional to sign; for hardware-backed keys (§A2) that cannot hold Ed25519 keys |
+| `EdDSA` | Ed25519 only | `deprecated` | Polymorphic name deprecated by RFC 9864; accepted until v1.0 and removed in v1.0 |
+
+*Note (non-normative): a post-quantum signature algorithm (ML-DSA, FIPS 204) is expected to be added for long-lived owner statements and manifests at C3. It stays out of this table until stable JOSE and COSE registrations for it exist, and is to be reconsidered for v0.3. No other algorithm may be used until it is added to this table.*
+
 ---
 
 # C. Communication Conformance Profiles
@@ -271,7 +285,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 # E. References
 
-BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); CBOR (RFC 8949); dCBOR (draft-mcnally-deterministic-cbor-18, work in progress; informative only); CDDL (RFC 8610); I-JSON (RFC 7493); Unicode Normalization Forms (UAX #15); JSON Canonicalization Scheme (RFC 8785); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
+BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); CBOR (RFC 8949); dCBOR (draft-mcnally-deterministic-cbor-18, work in progress; informative only); CDDL (RFC 8610); I-JSON (RFC 7493); Unicode Normalization Forms (UAX #15); JSON Canonicalization Scheme (RFC 8785); EdDSA (RFC 8032); ES256 (RFC 7518); Fully-Specified Algorithms for JOSE and COSE (RFC 9864); JSON Web Token Best Current Practices (RFC 8725); ML-DSA (FIPS 204); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
 
 # F. Appendix: `dcbor` Signing Input (normative)
 
@@ -315,6 +329,8 @@ Text strings are in Unicode Normalization Form C (§A5.1). Map keys are sorted i
 *Note (informative): the numeric rule follows the same approach as numeric reduction in dCBOR (draft-mcnally-deterministic-cbor-18, work in progress), which is cited as prior art only. This document does not depend on that draft; where they differ, §A5.1 and this appendix apply.*
 
 ---
+*Proposed revision (2026-10-09, #33): `Ed25519` is mandatory to implement, `ES256` is mandatory to verify and optional to sign, `EdDSA` is deprecated and removed in v1.0, `sig.alg` is limited to the algorithm table in §B8 (`none` and MACs are never allowed), and `kid` must resolve through the signer's owner statements to a key whose type matches `alg` (§A5.1, §B8).*
+
 *Proposed revision (2026-10-09, #10, #17, #47): `dcbor` is the RFC 8949 §4.2.1 core deterministic encoding of the JSON data model with no type mapping and with numeric reduction, timestamps in signed objects are UTC with whole seconds, numbers and text are restricted so that `dcbor` and `jcs` agree (§A5.1, Appendix F), `max_clock_skew` is defined once (§A5), tokens are signed with `chain` set to their ancestors, and a future `iat` is refused with `not-yet-valid` (§A6).*
 
 *Schema alignment revision (2026-10-09): pairing intents and refusals (§A3, §A7), envelope field formats, `attestation_ref` always present, `idem_key` with `instructions`, intersection of residency tags (§A5), canonical encoding and signatures (§A5.1), versions and the `ext` extension rule (§A5.2), token format, 1 hour maximum lifetime, envelope binding, and precise narrowing rules (§A6), provenance labels for legacy endpoints (§B1, §B5). Full history in [CHANGELOG.md](../CHANGELOG.md).*

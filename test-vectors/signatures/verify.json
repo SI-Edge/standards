@@ -779,6 +779,307 @@
       },
       "status": "normative",
       "note": "Root signed without its chain member instead of chain set to []"
+    },
+    {
+      "id": "signature.verify.013",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "verify",
+      "requires": [
+        "EdDSA",
+        "jcs"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:example:bob-homeserver#agent-calendar",
+          "sender_device": "did:example:bob-homeserver",
+          "aud": "did:example:alice-phone#agent-assistant",
+          "session": "sess-4b1d0e9a77",
+          "seq": 4,
+          "attestation_ref": null,
+          "intent": "sk.refused",
+          "data": {
+            "v": "0.1",
+            "reason": "rate-limited",
+            "ref": {
+              "session": "sess-4b1d0e9a77",
+              "seq": 3,
+              "idem_key": "idem-2026-10-09-0001-a7c3"
+            },
+            "retry_after": "PT10M"
+          },
+          "payload_type": "application/vnd.selfkin.refusal+json",
+          "residency": {
+            "tags": [],
+            "data_classes": []
+          },
+          "nonce": "Mn5Bv4Cx3Zl2Kj1Hg0Fd9Sa8",
+          "issued": "2026-10-09T08:10:02Z",
+          "expires": "2026-10-09T08:15:02Z",
+          "provenance": [],
+          "sig": {
+            "alg": "Ed25519",
+            "kid": "did:example:bob-homeserver#agent-calendar-key",
+            "canon": "jcs",
+            "value": "Ma96Ya8cpi3wG53FvvgrPBABhgge6ul2U6yKCt9Vo3UOZbBynFnEq2sHXpboUqLiRRg1nKRvVPRHktNK9JhQDA"
+          }
+        },
+        "public_key": "rfc8032-test-1"
+      },
+      "expected": {
+        "result": "accept"
+      },
+      "status": "normative",
+      "note": "alg Ed25519; same sig.value as signature.sign.001 because sig is not in the signing input"
+    },
+    {
+      "id": "signature.verify.014",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "verify",
+      "requires": [
+        "EdDSA",
+        "jcs"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:example:bob-homeserver#agent-calendar",
+          "sender_device": "did:example:bob-homeserver",
+          "aud": "did:example:alice-phone#agent-assistant",
+          "session": "sess-4b1d0e9a77",
+          "seq": 4,
+          "attestation_ref": null,
+          "intent": "sk.refused",
+          "data": {
+            "v": "0.1",
+            "reason": "rate-limited",
+            "ref": {
+              "session": "sess-4b1d0e9a77",
+              "seq": 3,
+              "idem_key": "idem-2026-10-09-0001-a7c3"
+            },
+            "retry_after": "PT10M"
+          },
+          "payload_type": "application/vnd.selfkin.refusal+json",
+          "residency": {
+            "tags": [],
+            "data_classes": []
+          },
+          "nonce": "Mn5Bv4Cx3Zl2Kj1Hg0Fd9Sa8",
+          "issued": "2026-10-09T08:10:02Z",
+          "expires": "2026-10-09T08:15:02Z",
+          "provenance": [],
+          "sig": {
+            "alg": "ES256",
+            "kid": "did:example:bob-homeserver#agent-calendar-key",
+            "canon": "jcs",
+            "value": "Ma96Ya8cpi3wG53FvvgrPBABhgge6ul2U6yKCt9Vo3UOZbBynFnEq2sHXpboUqLiRRg1nKRvVPRHktNK9JhQDA"
+          }
+        },
+        "public_key": "rfc8032-test-1"
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "Valid Ed25519 signature labelled ES256: alg does not match the key type"
+    },
+    {
+      "id": "signature.verify.017",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "verify",
+      "requires": [
+        "EdDSA",
+        "jcs"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:example:bob-homeserver#agent-calendar",
+          "sender_device": "did:example:bob-homeserver",
+          "aud": "did:example:alice-phone#agent-assistant",
+          "session": "sess-4b1d0e9a77",
+          "seq": 4,
+          "attestation_ref": null,
+          "intent": "sk.refused",
+          "data": {
+            "v": "0.1",
+            "reason": "rate-limited",
+            "ref": {
+              "session": "sess-4b1d0e9a77",
+              "seq": 3,
+              "idem_key": "idem-2026-10-09-0001-a7c3"
+            },
+            "retry_after": "PT10M"
+          },
+          "payload_type": "application/vnd.selfkin.refusal+json",
+          "residency": {
+            "tags": [],
+            "data_classes": []
+          },
+          "nonce": "Mn5Bv4Cx3Zl2Kj1Hg0Fd9Sa8",
+          "issued": "2026-10-09T08:10:02Z",
+          "expires": "2026-10-09T08:15:02Z",
+          "provenance": [],
+          "sig": {
+            "alg": "none",
+            "kid": "did:example:bob-homeserver#agent-calendar-key",
+            "canon": "jcs",
+            "value": "Ma96Ya8cpi3wG53FvvgrPBABhgge6ul2U6yKCt9Vo3UOZbBynFnEq2sHXpboUqLiRRg1nKRvVPRHktNK9JhQDA"
+          }
+        },
+        "public_key": "rfc8032-test-1"
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "Valid Ed25519 signature labelled none"
+    },
+    {
+      "id": "signature.verify.015",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "verify",
+      "requires": [
+        "jcs"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:example:bob-homeserver#agent-calendar",
+          "sender_device": "did:example:bob-homeserver",
+          "aud": "did:example:alice-phone#agent-assistant",
+          "session": "sess-4b1d0e9a77",
+          "seq": 4,
+          "attestation_ref": null,
+          "intent": "sk.refused",
+          "data": {
+            "v": "0.1",
+            "reason": "rate-limited",
+            "ref": {
+              "session": "sess-4b1d0e9a77",
+              "seq": 3,
+              "idem_key": "idem-2026-10-09-0001-a7c3"
+            },
+            "retry_after": "PT10M"
+          },
+          "payload_type": "application/vnd.selfkin.refusal+json",
+          "residency": {
+            "tags": [],
+            "data_classes": []
+          },
+          "nonce": "Mn5Bv4Cx3Zl2Kj1Hg0Fd9Sa8",
+          "issued": "2026-10-09T08:10:02Z",
+          "expires": "2026-10-09T08:15:02Z",
+          "provenance": [],
+          "sig": {
+            "alg": "ES256",
+            "kid": "did:example:bob-homeserver#agent-calendar-key",
+            "canon": "jcs",
+            "value": "Lcn6mi5V6Rnegw70kFeFkJY65FTvb9JG2S5XZW0QtuZLYRBCwIJJ9sFl6MiQSmSfrYueilxBBXGamaFI3GZydg"
+          }
+        },
+        "public_key": "rfc7515-a3-p256"
+      },
+      "expected": {
+        "result": "accept"
+      },
+      "status": "normative",
+      "note": "ES256 with the RFC 7515 A.3 P-256 test key; R||S signature"
+    },
+    {
+      "id": "signature.verify.016",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "verify",
+      "requires": [
+        "jcs"
+      ],
+      "input": {
+        "object": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:example:bob-homeserver#agent-calendar",
+          "sender_device": "did:example:bob-homeserver",
+          "aud": "did:example:alice-phone#agent-assistant",
+          "session": "sess-4b1d0e9a77",
+          "seq": 4,
+          "attestation_ref": null,
+          "intent": "sk.refused",
+          "data": {
+            "v": "0.1",
+            "reason": "rate-limited",
+            "ref": {
+              "session": "sess-4b1d0e9a77",
+              "seq": 3,
+              "idem_key": "idem-2026-10-09-0001-a7c3"
+            },
+            "retry_after": "PT10M"
+          },
+          "payload_type": "application/vnd.selfkin.refusal+json",
+          "residency": {
+            "tags": [],
+            "data_classes": []
+          },
+          "nonce": "Mn5Bv4Cx3Zl2Kj1Hg0Fd9Sa8",
+          "issued": "2026-10-09T08:10:02Z",
+          "expires": "2026-10-09T08:15:02Z",
+          "provenance": [],
+          "sig": {
+            "alg": "Ed25519",
+            "kid": "did:example:bob-homeserver#agent-calendar-key",
+            "canon": "jcs",
+            "value": "Lcn6mi5V6Rnegw70kFeFkJY65FTvb9JG2S5XZW0QtuZLYRBCwIJJ9sFl6MiQSmSfrYueilxBBXGamaFI3GZydg"
+          }
+        },
+        "public_key": "rfc7515-a3-p256"
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "ES256 signature labelled Ed25519: alg does not match the key type"
     }
   ]
 }

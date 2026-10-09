@@ -40,6 +40,7 @@ Each invalid example changes one thing in a valid example. Examples were generat
 
 | File | Comment: why it must fail |
 |---|---|
+| `capability-token.alg-hs256.invalid.json` | Signed with `HS256`, a message authentication code. Only the algorithms in SK-COM section B8 are allowed, never a MAC (SK-COM section A5.1) |
 | `capability-token.lifetime-over-one-hour.invalid.json` | Root token valid for 3 hours. The maximum lifetime is 1 hour (SK-COM section A6). Semantic check |
 | `capability-token.offset-timestamp.invalid.json` | `iat` is `2026-10-09T10:00:00+02:00`. Timestamps in signed objects are UTC with `Z` and whole seconds, so one instant has one signed form (SK-COM section A5.1) |
 | `capability-token.longer-lifetime.invalid.json` | Delegated token expires after its parent. Delegation may only shorten lifetime (SK-COM section A6). Semantic check |
@@ -47,6 +48,7 @@ Each invalid example changes one thing in a valid example. Examples were generat
 | `capability-token.unsafe-integer.invalid.json` | `budget.messages` is 2^53. Numbers with an integral value in signed objects stay within the I-JSON safe range so that `dcbor` and `jcs` agree (SK-COM section A5.1). Semantic check |
 | `capability-token.widened-budget.invalid.json` | Delegated token raises the message budget above its parent's. Budgets may only narrow (SK-COM section A6). Semantic check |
 | `capability-token.widened-rights.invalid.json` | Delegated token adds a `payments.send` right the parent never had. Rights may only narrow (SK-COM section A6). Semantic check |
+| `envelope.alg-none.invalid.json` | Refusal envelope with `sig.alg` set to `none`. Unsigned objects are never accepted (SK-COM section A5.1) |
 | `envelope.bad-residency-tag.invalid.json` | Residency tag `switzerland` is neither `CH`, `EU`, `CH-EU`, nor an `x-` owner tag (SK-RT section 11) |
 | `envelope.data-without-payload-type.invalid.json` | `data` is present without `payload_type` (SK-COM section A5) |
 | `envelope.expires-before-issued.invalid.json` | `expires` is earlier than `issued`, so the envelope is never fresh. Semantic check |
