@@ -243,6 +243,13 @@ def check_privacy_report(report: dict) -> list[str]:
     overlap = set(report["sent"]["fields"]) & set(report["redacted"]["fields"])
     if overlap:
         problems.append(f"fields listed as both sent and redacted: {sorted(overlap)}")
+    pseudonymised = set(report["redacted"].get("pseudonymised", []))
+    missing = pseudonymised - set(report["sent"]["fields"])
+    if missing:
+        problems.append(f"pseudonymised fields must also be listed in sent.fields: {sorted(missing)}")
+    both = pseudonymised & set(report["redacted"]["fields"])
+    if both:
+        problems.append(f"pseudonymised fields must not be listed in redacted.fields: {sorted(both)}")
     return problems
 
 

@@ -259,7 +259,7 @@
           "uniqueItems": true
         },
         "fields": {
-          "description": "Names of the fields or context items sent (not their values).",
+          "description": "Names of the fields or context items sent (not their values), including pseudonymised fields, whose pseudonym is sent instead of the value (SK-RT section 13).",
           "type": "array",
           "items": {
             "type": "string",
@@ -290,6 +290,7 @@
           "uniqueItems": true
         },
         "fields": {
+          "description": "Fields removed entirely before sending. Pseudonymised fields are listed under pseudonymised, not here.",
           "type": "array",
           "items": {
             "type": "string",
@@ -298,6 +299,7 @@
           "uniqueItems": true
         },
         "pseudonymised": {
+          "description": "Fields sent with a pseudonym instead of their value. Each is also listed in sent.fields and never in redacted.fields; its data class is listed in redacted.data_classes (SK-RT section 13).",
           "type": "array",
           "items": {
             "type": "string",

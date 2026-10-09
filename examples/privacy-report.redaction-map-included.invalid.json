@@ -29,7 +29,8 @@
       "query.general"
     ],
     "fields": [
-      "query"
+      "query",
+      "friend_name"
     ],
     "bytes": 212
   },

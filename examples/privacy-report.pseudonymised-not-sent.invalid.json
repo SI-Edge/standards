@@ -1,6 +1,6 @@
 {
   "v": "0.1",
-  "id": "pr-2026-10-09-0815-01",
+  "id": "pr-2026-10-09-0815-01-x",
   "call_at": "2026-10-09T08:15:02+02:00",
   "agent": "did:example:alice-phone#agent-assistant",
   "provider": {
@@ -13,7 +13,7 @@
     "verified": false
   },
   "effective_tier": 0,
-  "gateway_mode": "verified-provider",
+  "gateway_mode": "full",
   "relay": {
     "used": true,
     "type": "ohttp",
@@ -29,8 +29,7 @@
       "query.general"
     ],
     "fields": [
-      "query",
-      "friend_name"
+      "query"
     ],
     "bytes": 212
   },
