@@ -135,13 +135,14 @@
       ],
       "operation": "residency-tag-syntax",
       "input": {
-        "tag": "x-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        "tag": "x-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
       "expected": {
         "value": false
       },
-      "status": "normative",
-      "note": "Owner tag of 67 characters"
+      "status": "provisional",
+      "open_issue": "#60",
+      "note": "Owner tag of 65 characters, one over the maximum. Provisional until the schema fix in PR #60 is merged"
     },
     {
       "id": "residency.syntax.008",
