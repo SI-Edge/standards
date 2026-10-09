@@ -2,6 +2,20 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Markdown lint and link check in CI
+
+Tooling change. No normative rule changed.
+
+### Added
+
+- `.github/workflows/docs-lint.yml`: markdownlint and a link check (lychee) run on every pull request and push to `main`; the link check also runs weekly.
+- `.markdownlint-cli2.jsonc` and `lychee.toml`: settings for both tools. Links to reserved example names (RFC 2606) and local addresses are skipped, and rate limits (HTTP 429) do not fail the check.
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to run both checks locally.
+
+### Changed
+
+- Languages on a few code blocks and angle brackets around a few bare URLs, so the current files pass markdownlint.
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added
@@ -46,7 +60,7 @@ Repository and editorial change. No normative rule changed.
 
 ## 2026-10-09: Renamed to Selfkin
 
-Naming change, prepared for the move of the repository to https://github.com/selfkin/standards. No normative rule changed in substance.
+Naming change, prepared for the move of the repository to <https://github.com/selfkin/standards>. No normative rule changed in substance.
 
 ### Changed
 

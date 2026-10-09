@@ -78,7 +78,7 @@ Each runtime keeps the Core (Trusted UI, policy and approvals, Privacy gateway) 
 - [selfkin/reference](https://github.com/selfkin/reference): a draft Python reference implementation of identities, the signed Selfkin Envelope, capability tokens with delegation, refusals, privacy reports, and a simplified end-to-end session, with a runnable demo (`python -m selfkin_ref.demo`). Not for production. Where the drafts leave details open, its interpretation choices are tracked as [open questions](https://github.com/selfkin/standards/issues?q=is%3Aissue+label%3Aopen-question).
 - CBOR (non-normative): a CBOR encoding follows the same data model, encoded as deterministic CBOR (RFC 8949 section 4.2). A normative CBOR profile is future work.
 
-```
+```sh
 pip install -r tools/validate/requirements.txt
 python tools/validate/validate.py
 ```
@@ -94,7 +94,7 @@ python tools/validate/validate.py
 - [TRADEMARKS.md](TRADEMARKS.md): status of names, third-party marks, no endorsement
 - [PATENT-POLICY.md](PATENT-POLICY.md): interim royalty-free patent policy for contributions
 - [CITATION.cff](CITATION.cff): how to cite this repository
-- [docs/](docs/): source of the project web page at https://selfkin.github.io/standards/ (no trackers, no cookies, no third-party assets)
+- [docs/](docs/): source of the project web page at <https://selfkin.github.io/standards/> (no trackers, no cookies, no third-party assets)
 
 ## License
 

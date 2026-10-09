@@ -4,7 +4,7 @@
 
 Checks JSON documents against the v0.1 schemas in [../../schemas](../../schemas) in two layers: JSON Schema 2020-12, then semantic checks that JSON Schema cannot express (for example that a delegated capability token only narrows its parent). It does not check signatures, key trust, revocation, replay, or clocks.
 
-```
+```sh
 pip install -r tools/validate/requirements.txt
 python tools/validate/validate.py                          # all examples, with expected results
 python tools/validate/validate.py doc.json --schema envelope
