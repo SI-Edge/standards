@@ -75,8 +75,16 @@ def problems(name: str, text: str) -> list[str]:
     return out
 
 
+def is_fragment(path: str) -> bool:
+    """True for changes/<name>.md, except changes/README.md and dotfiles.
+    Other files in changes/ (for example .markdownlint-cli2.jsonc) and subfolders are not fragments."""
+    folder, sep, name = path.partition("/")
+    return (folder == CHANGES and bool(sep) and "/" not in name and name.endswith(".md")
+            and name != "README.md" and not name.startswith("."))
+
+
 def fragments(root: Path = REPO) -> list[Path]:
-    return sorted(p for p in (root / CHANGES).glob("*.md") if p.name != "README.md")
+    return sorted(p for p in (root / CHANGES).iterdir() if p.is_file() and is_fragment(f"{CHANGES}/{p.name}"))
 
 
 def render(root: Path, date: str) -> tuple[str, list[Path]]:
@@ -108,18 +116,18 @@ def cmd_check(root: Path = REPO) -> int:
     return 1 if bad else 0
 
 
-def cmd_require(base: str, head: str) -> int:
+def cmd_require(base: str, head: str, root: Path = REPO) -> int:
     def names(*args):
-        out = subprocess.run(["git", "diff", "--name-only", *args, base, head], cwd=REPO, capture_output=True, text=True, check=True)
+        out = subprocess.run(["git", "diff", "--name-only", *args, base, head], cwd=root, capture_output=True, text=True, check=True)
         return [n for n in out.stdout.splitlines() if n]
     changed = names()
     added = names("--diff-filter=A")
     if not any(n.startswith(CHECKED) or n in CHECKED for n in changed):
         print("no fragment needed: no checked paths changed")
         return 0
-    new = [n for n in added if n.startswith(CHANGES + "/") and n != f"{CHANGES}/README.md"]
+    new = [n for n in added if is_fragment(n)]
     if "CHANGELOG.md" in changed and not new:
-        removed = [n for n in names("--diff-filter=D") if n.startswith(CHANGES + "/")]
+        removed = [n for n in names("--diff-filter=D") if is_fragment(n)]
         if removed:
             print(f"release: CHANGELOG.md assembled from {len(removed)} fragment(s)")
             return 0
