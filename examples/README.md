@@ -32,6 +32,7 @@ Notes that apply to every example:
 | `privacy-report.p2-verified.json` | Call to a verified P2 provider with a Privacy Pass credential and `CH-EU` residency |
 | `provider-manifest.p1-search.json` | P1 self-assessment of a search service with a declared 24 hour abuse-handling retention window and identified-mode linking |
 | `provider-manifest.p2-models.json` | P2 self-assessment of a model provider with OHTTP, envelope support, residency, transparency log, and audit |
+| `privacy-report.p1-anonymous.json` | Anonymous call to a verified P1 search provider over a relay, with `EU` residency and declared 24 hour abuse-handling retention |
 
 ## Invalid examples
 
