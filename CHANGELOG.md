@@ -1,25 +1,16 @@
 # Changelog
 
-All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
+All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**. Pending changes live as fragments in [changes/](changes/README.md) until the next release.
 
-## 2026-10-09: Signing input for `dcbor`, chain links, and future `iat` (proposal, #10, #17, #47)
+## 2026-10-09: Test vector suite version in one place
 
-Normative change, open for comments.
+Tooling change. No normative rule changed.
 
 ### Changed
 
-- SK-COM §A5.1 and new Appendix F: `dcbor` is the core deterministic encoding of RFC 8949 §4.2.1 over the JSON data model, with no type mapping and with numeric reduction (`50.0` is encoded as the integer `50`). Timestamps and base64url values stay text strings, never CBOR tag 1 or byte strings. dCBOR (draft-mcnally-deterministic-cbor-18) is cited as informative prior art only.
-- SK-COM §A5, §A5.1: timestamps in signed objects are RFC 3339 in UTC with whole seconds (`YYYY-MM-DDTHH:MM:SSZ`); integral numbers stay in the I-JSON safe range and text is in Unicode Normalization Form C, so `dcbor` and `jcs` agree.
-- SK-COM §A5: `max_clock_skew` (30 seconds) is defined once for every rule that allows clock skew.
-- SK-COM §A6: every token is signed with `chain` set to its ancestors as carried; a token or link whose `exp` is not after `iat` is refused with `unauthorized`, and one whose `iat` is later than now plus `max_clock_skew` with the new code `not-yet-valid`.
-- `schemas/common.schema.json`: new `signedTimestamp`, used for every timestamp in capability tokens, envelopes, and Provider Manifests (privacy reports keep `timestamp`); `not-yet-valid` added to the refusal reasons, and to `registries/refusal-reasons.md`.
-- `tools/validate`: checks the number range and NFC in signed objects.
-- `test-vectors/` 0.2.0: new status `withdrawn`; while the suite is 0.x, a changed expectation takes a minor bump and a CHANGELOG note. `envelope.structure.007` and `token.lifetime.003` (offsets in signed timestamps) are withdrawn and replaced by `envelope.signed-values.001` and `token.signed-values.001`. The key test accepts the published RFC 8032 and RFC 7515 test keys.
-
-### Added
-
-- Invalid examples `capability-token.offset-timestamp.invalid.json`, `capability-token.unsafe-integer.invalid.json`, and `envelope.fractional-seconds.invalid.json`.
-- Test vectors: operation `dcbor-signing-input` with `signatures/dcbor-signing-input.json`, `dcbor` signing and verification including chain links (`signatures/sign.json`, `signatures/verify.json`), `tokens/signed-values.json`, and `envelope/signed-values.json`; features `dcbor` and `ES256`; `keys/rfc7515-test-keys.json` (the P-256 key from RFC 7515 Appendix A.3, test only).
+- `test-vectors/VERSION` is now the only place the suite version is recorded. Vector files no longer carry a `suite` member, and `vector.schema.json` no longer allows it, so two pull requests that both bump the suite only touch `VERSION` and one sentence in `test-vectors/README.md`.
+- `tools/validate/test_vectors.py`: the check that every file's `suite` equals `VERSION` is replaced by checks that `VERSION` is a semantic version, that `test-vectors/README.md` states the same version, and that no vector file carries a `suite` member. `--summary` prints the suite version from `VERSION`.
+- `test-vectors/README.md`: states the current suite version and that `VERSION` is its only source.
 
 ## 2026-10-09: Markdown lint and link check in CI
 

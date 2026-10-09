@@ -1,5 +1,4 @@
 {
-  "suite": "0.2.0",
   "category": "signatures",
   "description": "Signing input for canon dcbor (SK-COM A5.1, Appendix F): the RFC 8949 section 4.2.1 core deterministic encoding, with numeric reduction, of the JSON data model of the object with its sig member removed, as lowercase hex.",
   "vectors": [

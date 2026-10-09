@@ -1,5 +1,4 @@
 {
-  "suite": "0.2.0",
   "category": "residency",
   "description": "Where tagged data may go (SK-RT 11): tags combine by intersection, an empty list sets no restriction, unknown tags fail closed. Regions: CH (Switzerland) and EU (EU and EEA member states); value \"any\" means unrestricted.",
   "vectors": [
