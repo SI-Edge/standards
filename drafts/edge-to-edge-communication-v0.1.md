@@ -3,7 +3,7 @@
 > **Status: Draft, not for implementation. No certification program exists.**
 > Conformance profiles in this document are for discussion only. Before v1.0 any claim of conformance is a self-assessment and must not be presented as a certification. See [TRADEMARKS.md](../TRADEMARKS.md).
 
-**Document:** SI Edge-to-Edge Communication (SIE-COM) · Draft v0.1 · roenu (@roenudev), Bern · 2026-10-09 · Companion to [SI Edge Runtimes v0.3](runtime-v0.3.md) (SIE-RT) and [SI Edge Ready Provider v0.1](provider-v0.1.md) (SIE-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
+**Document:** SI Edge-to-Edge Communication (SIE-COM) · Draft v0.1 · roenu (@roenudev), Bern · 2026-10-09 · Companion to [SI Edge Runtimes v0.3](runtime-v0.3.md) (SIE-RT) and [SI Provider Profiles v0.1](provider-v0.1.md) (SIE-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
 
 **Purpose.** This document defines secure, model-agnostic rules for every way SI runtimes communicate with each other, with devices, and with people (Part A). It also defines how runtimes interoperate with legacy endpoints that cannot speak the new protocol (Part B). It uses the terms of SIE-RT §1 (Runtime Core, Router Model, Capability, Control Plane, Egress, Consequential Action, Owner, User, residency tag) and its profiles R1 to R3. It does not describe any vendor's plans or products.
 

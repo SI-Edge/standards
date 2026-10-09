@@ -2,6 +2,15 @@
 
 All notable changes to the SI Edge drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Provider document renamed to SI Provider Profiles
+
+Editorial and naming change. No normative rule changed; identifiers `SIE-PRV` and profiles P0 to P3 are unchanged, and no schema field or enum changed.
+
+### Changed
+- The provider draft is now titled **SI Provider Profiles Standard (SIE-PRV)**, replacing the working name "SI Edge Ready Provider". Conformance claims are worded "self-assessed against SIE-PRV profile P0 to P3" (§11).
+- Cross-references in the runtime and communication drafts, README, TERMINOLOGY, and earlier CHANGELOG headings use the new name.
+- [TRADEMARKS.md](TRADEMARKS.md): new section explaining that the project avoids "Edge Ready" style marks because of existing third-party EDGEREADY registrations, and that "SI Edge" is a provisional project name, not a certification mark.
+
 ## 2026-10-09: Interim patent policy
 
 Repository and process change. No normative text changed.
@@ -34,7 +43,7 @@ Resolutions of the questions found while writing the v0.1 schemas, folded into t
 - Privacy reports moved from R2 to R1 with defined contents (names, never values; no redaction maps); verifiable minimisation stays at R2 (§13).
 - SBOMs moved from R2 to R1 (§17); profile table updated (§21).
 
-### SI Edge Ready Provider v0.1 (SIE-PRV)
+### SI Provider Profiles v0.1 (SIE-PRV)
 - Retention window format and purpose (§3); the SI Envelope itself is required at P2, equivalent mappings no longer count (§6); residency refusal codes (§6); model identity carrier (§7); manifest schema link (§8); refusal object (§9); audit validity bound (§10); P0 manifests allowed (§11); new open question on streaming (§13).
 
 ### Repository
@@ -87,7 +96,7 @@ Repository prepared for public release.
 - Legacy endpoints defined as C0; shims are native endpoints that cannot claim R profiles; Method 4 renamed Proxy Method; human-instruction safety rule (§B6); pin reset rules (§B7).
 - Downgrade protection and cross-owner approvals now at C1; delegation chains across owners at C2; revocation bound defined.
 
-### SI Edge Ready Provider v0.1 (SIE-PRV)
+### SI Provider Profiles v0.1 (SIE-PRV)
 - "Certification Levels" renamed to Provider Conformance Profiles; certifiers and certificates replaced by independent audit for P2 and P3; P0 renamed "Unverified".
 - Scoped no-training and no-tracking rules to SI requests and anonymous mode; identified-mode linking must be declared.
 - Relay acceptance at P1, Oblivious HTTP gateway at P2.
@@ -100,4 +109,4 @@ Repository prepared for public release.
 
 - SI Edge Devices v0.1 (first draft, remote attach).
 - SI Edge Runtimes v0.2 (runtime-as-interface reframing).
-- SI Edge Runtimes v0.3, SI Edge-to-Edge Communication v0.1, SI Edge Ready Provider v0.1.
+- SI Edge Runtimes v0.3, SI Edge-to-Edge Communication v0.1, SI Provider Profiles v0.1 (then titled with a working name, renamed on 2026-10-09).

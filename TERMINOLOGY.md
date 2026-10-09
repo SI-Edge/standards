@@ -2,7 +2,7 @@
 
 > **Status: Draft, not for implementation. No certification program exists.**
 
-Shared terms for all SI Edge drafts. Where a draft defines a term normatively, the section is given. Document IDs: **SIE-RT** (runtime), **SIE-COM** (communication), **SIE-PRV** (provider).
+Shared terms for all SI Edge drafts. Where a draft defines a term normatively, the section is given. Document IDs: **SIE-RT** (runtime), **SIE-COM** (communication), **SIE-PRV** (SI Provider Profiles).
 
 | Term | Meaning | Defined in |
 |---|---|---|
@@ -45,7 +45,7 @@ Shared terms for all SI Edge drafts. Where a draft defines a term normatively, t
 | **Anonymous mode / Identified mode** | Requests without account credentials / with the user's own account | SIE-PRV §1 |
 | **Conformance profile** | Set of rules a self-assessment can claim (R1 to R3, C1 to C3, P0 to P3). Not a certification | All drafts |
 | **Profile tag** | Marker such as [R2] at the start of a rule giving the lowest profile it applies to | All drafts, Conventions |
-| **Self-assessment** | The only form of conformance claim before v1.0 | All drafts |
+| **Self-assessment** | The only form of conformance claim before v1.0. Provider claims are worded "self-assessed against SIE-PRV profile P0 to P3" | All drafts |
 
 ## Residency Tags
 

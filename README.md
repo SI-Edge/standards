@@ -15,7 +15,7 @@ A **personal SI** is an advanced AI agent runtime that runs on hardware the user
 |---|---|---|
 | **SI Edge Runtimes v0.3** (SIE-RT, current) | [drafts/runtime-v0.3.md](drafts/runtime-v0.3.md) | The on-device runtime: Core, modules, hardware, interface and Trusted UI, adaptation, memory, key recovery, Privacy Gateway, approvals, shared devices. Profiles **R1 to R3** |
 | **SI Edge-to-Edge Communication v0.1** (SIE-COM) | [drafts/edge-to-edge-communication-v0.1.md](drafts/edge-to-edge-communication-v0.1.md) | All communication forms (F1 to F9), identity, pairing, E2E crypto, the signed SI Envelope, delegation, agent-to-agent safety, legacy compatibility Methods 1 to 5. Profiles **C1 to C3** |
-| **SI Edge Ready Provider v0.1** (SIE-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3** |
+| **SI Provider Profiles v0.1** (SIE-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3**. Claims are worded "self-assessed against SIE-PRV profile P0 to P3" |
 | Terminology | [TERMINOLOGY.md](TERMINOLOGY.md) | Shared glossary, residency tags, profile tiers |
 | Threat model | [THREAT-MODEL.md](THREAT-MODEL.md) | Adversaries, assets, and the rules that address them |
 | Registries | [registries/](registries/README.md) | Data classes, intents, and refusal reasons shared by all drafts |

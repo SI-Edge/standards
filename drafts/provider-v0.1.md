@@ -1,9 +1,9 @@
-# SI Edge Ready Provider Standard (Draft v0.1)
+# SI Provider Profiles Standard (Draft v0.1)
 
 > **Status: Draft, not for implementation. No certification program exists.**
-> "SI Edge Ready" is a provisional working name pending a trademark check (see [TRADEMARKS.md](../TRADEMARKS.md)). Conformance profiles in this document are for discussion only. Before v1.0 any claim of conformance is a self-assessment and must not be presented as a certification.
+> This document was renamed from an earlier working name to neutral wording to avoid any certification-style mark (see [TRADEMARKS.md](../TRADEMARKS.md)). Conformance profiles in this document are for discussion only. Before v1.0 any claim of conformance is a self-assessment and must not be presented as a certification.
 
-**Document:** SI Edge Ready Provider (SIE-PRV) · Draft v0.1 · roenu (@roenudev), Bern · 2026-10-09 · Companion to [SI Edge Runtimes v0.3](runtime-v0.3.md) (SIE-RT) and [SI Edge-to-Edge Communication v0.1](edge-to-edge-communication-v0.1.md) (SIE-COM) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md)
+**Document:** SI Provider Profiles (SIE-PRV) · Draft v0.1 · roenu (@roenudev), Bern · 2026-10-09 · Companion to [SI Edge Runtimes v0.3](runtime-v0.3.md) (SIE-RT) and [SI Edge-to-Edge Communication v0.1](edge-to-edge-communication-v0.1.md) (SIE-COM) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md)
 
 **Purpose.** This document defines what cloud model providers, APIs, search engines, and web services should do to be safe to call from a personal SI runtime without exposing the user beyond what the task needs. It is model-agnostic and vendor-neutral, and makes no claims about any provider's current practices or plans. Runtimes use these profiles to decide how much to trust a provider and when to use full gateway mode (SIE-RT §13).
 
@@ -97,7 +97,7 @@
 | **P2** | Sovereign | P1 + every rule tagged [P2]: anonymous credentials and unlinkable billing (§2), Oblivious HTTP gateway (§4), SI Envelope and residency enforcement (§6), transparency reports (§7), logged manifest (§8), per-credential rate limits (§9), independent audit (§10) |
 | **P3** | Attested | P2 + every rule tagged [P3]: attested or audited retention (§3), attested confidential inference bound to the session (§5) |
 
-- Before v1.0, any claim of conformance is a **self-assessment** only and **MUST NOT** be presented as a certification or seal. A self-assessment **SHOULD** be phrased as "Self-assessed against SI Edge Ready Provider draft v0.1, profile P2". *Rationale: no certification program exists.*
+- Before v1.0, any claim of conformance is a **self-assessment** only and **MUST NOT** be presented as a certification or seal. A self-assessment **SHOULD** be phrased as "Self-assessed against SIE-PRV draft v0.1, profile P2" (in general: self-assessed against SIE-PRV profile P0 to P3). *Rationale: no certification program exists.*
 
 ## 12. Runtime Verification and Downgrade
 
@@ -121,4 +121,4 @@
 BCP 14 (RFC 2119, RFC 8174); Privacy Pass (RFC 9576, RFC 9577, RFC 9578); Oblivious HTTP (RFC 9458); MASQUE (IETF working group); W3C Verifiable Credentials Data Model 2.0; Swiss nFADP; EU GDPR; EU AI Act (Regulation (EU) 2024/1689).
 
 ---
-*Schema alignment revision (2026-10-09): retention window format and purpose (§3), full SI Envelope required at P2 with no equivalent mappings, residency refusal codes (§6), model identity carrier (§7), manifest schema link (§8), refusal object (§9), audit validity bound (§10), P0 manifests allowed (§11). Full history in [CHANGELOG.md](../CHANGELOG.md).*
+*Schema alignment revision (2026-10-09): retention window format and purpose (§3), full SI Envelope required at P2 with no equivalent mappings, residency refusal codes (§6), model identity carrier (§7), manifest schema link (§8), refusal object (§9), audit validity bound (§10), P0 manifests allowed (§11). Renamed to "SI Provider Profiles" (2026-10-09, no normative change). Full history in [CHANGELOG.md](../CHANGELOG.md).*

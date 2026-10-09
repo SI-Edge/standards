@@ -3,7 +3,7 @@
 > **Status: Draft, not for implementation. No certification program exists.**
 > Conformance profiles in this document are for discussion only. Before v1.0 any claim of conformance is a self-assessment and must not be presented as a certification. See [TRADEMARKS.md](../TRADEMARKS.md).
 
-**Document:** SI Edge Runtimes (SIE-RT) · Draft v0.3 · roenu (@roenudev), Bern · 2026-10-09 · Supersedes v0.2 · Companions: [SI Edge-to-Edge Communication v0.1](edge-to-edge-communication-v0.1.md) (SIE-COM), [SI Edge Ready Provider v0.1](provider-v0.1.md) (SIE-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
+**Document:** SI Edge Runtimes (SIE-RT) · Draft v0.3 · roenu (@roenudev), Bern · 2026-10-09 · Supersedes v0.2 · Companions: [SI Edge-to-Edge Communication v0.1](edge-to-edge-communication-v0.1.md) (SIE-COM), [SI Provider Profiles v0.1](provider-v0.1.md) (SIE-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
 
 **Interpretation.** This is an open standard for a **personal SI**: an advanced AI agent runtime that runs natively on user-owned edge devices (phones, PCs, VPS instances, home servers, cars, robots) and **is the primary interface**. "SI" is shorthand used in these drafts for highly capable AI agent systems; it makes no claim that any system is superintelligent. Users talk to the runtime, and the runtime drives tools, apps, files, and hardware for them. The standard aims to be fast, efficient, secure, modular, adaptable, and open to everyone. It is model-agnostic: any local or remote model can be plugged in. Nothing here describes or implies any vendor's actual plans or products.
 
