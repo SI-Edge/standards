@@ -16,7 +16,9 @@
 The validator implements the static operations (resource-covers, token-check,
 envelope-check, residency-tag-syntax). It returns problems, not refusal codes,
 so it compares accept or refuse only, and skips the other operations
-(signatures and residency regions), which need a runtime.
+(signatures, residency regions, and receive), which need a runtime. A sequence
+vector runs only if the validator supports every step; it keeps no state
+between steps because none of its operations has state.
 
 Failures of normative vectors fail the tests. Failures of provisional vectors
 (an interim reading of an open issue) are printed but never fail.
@@ -70,8 +72,7 @@ class Runner:
         problems = validate.validate_document(document, schema, self.schemas, self.registry)
         return {"result": "refuse" if problems else "accept"}
 
-    def actual(self, vector: dict):
-        operation, data = vector["operation"], vector["input"]
+    def actual(self, operation: str, data: dict):
         if operation == "resource-covers":
             return {"value": validate.resource_covers(data["right"], data["resource"])}
         if operation == "token-check":
@@ -82,16 +83,27 @@ class Runner:
             return {"value": self.tag_validator.is_valid(data["tag"])}
         return None
 
-    def run(self, vector: dict) -> tuple[str, object]:
-        actual = self.actual(vector)
-        if actual is None:
-            return "skip", None
-        expected = vector["expected"]
+    @staticmethod
+    def matches(expected: dict, actual: dict) -> bool:
         if "value" in expected:
-            ok = actual == expected
+            return actual == expected
+        # The validator has no refusal codes and runs nothing, so only result is compared.
+        return "result" not in expected or actual["result"] == expected["result"]
+
+    def run(self, vector: dict) -> tuple[str, object]:
+        if vector.get("kind") == "sequence":
+            steps = vector["steps"]
         else:
-            ok = actual["result"] == expected["result"]  # the validator has no refusal codes
-        return ("pass" if ok else "fail"), actual
+            steps = [vector]
+        results = []
+        for step in steps:
+            actual = self.actual(step["operation"], step["input"])
+            if actual is None:
+                return "skip", None
+            results.append(actual)
+            if not self.matches(step["expected"], actual):
+                return "fail", results if len(steps) > 1 else actual
+        return "pass", results if len(steps) > 1 else results[0]
 
 
 class VectorFileTests(unittest.TestCase):
@@ -111,6 +123,19 @@ class VectorFileTests(unittest.TestCase):
                 errors = [e.message for e in self.validator.iter_errors(validate.load_json(path))]
                 self.assertEqual(errors, [])
 
+    def test_schema_keeps_single_and_sequence_shapes_apart(self):
+        single = {"id": "x.y.001", "spec": [{"doc": "SK-COM", "section": "A5"}], "status": "normative",
+                  "operation": "envelope-check", "input": {}, "expected": {"result": "accept"}}
+        step = {"operation": "receive", "now": "2026-10-09T08:11:00Z", "input": {}, "expected": {"executed": False}}
+        sequence = {"id": "x.y.002", "kind": "sequence", "spec": single["spec"], "status": "normative",
+                    "state": {}, "steps": [step]}
+        wrap = lambda vector: {"suite": "0.1.0", "category": "envelope", "description": "d", "vectors": [vector]}
+        self.assertTrue(self.validator.is_valid(wrap(single)))
+        self.assertTrue(self.validator.is_valid(wrap(sequence)))
+        self.assertFalse(self.validator.is_valid(wrap({**sequence, "input": {}})))
+        self.assertFalse(self.validator.is_valid(wrap({**single, "steps": [step]})))
+        self.assertFalse(self.validator.is_valid(wrap({**sequence, "steps": [{**step, "expected": {"reason": "replayed"}}]})))
+
     def test_suite_version_matches(self):
         version = (VECTOR_DIR / "VERSION").read_text(encoding="utf-8").strip()
         for path in vector_files():
@@ -124,10 +149,17 @@ class VectorFileTests(unittest.TestCase):
     def test_reasons_are_registered(self):
         reasons = registered_reasons()
         for _, vector in self.vectors:
-            reason = vector["expected"].get("reason")
-            for code in [reason] if isinstance(reason, str) else reason or []:
-                with self.subTest(vector=vector["id"]):
-                    self.assertIn(code, reasons)
+            for expected in [step["expected"] for step in vector.get("steps", [])] or [vector["expected"]]:
+                reason = expected.get("reason")
+                for code in [reason] if isinstance(reason, str) else reason or []:
+                    with self.subTest(vector=vector["id"]):
+                        self.assertIn(code, reasons)
+
+    def test_sequence_steps_are_in_time_order(self):
+        for _, vector in self.vectors:
+            times = [validate.parse_time(step["now"]) for step in vector.get("steps", [])]
+            with self.subTest(vector=vector["id"]):
+                self.assertEqual(times, sorted(times))
 
     def test_keys_are_the_rfc_8032_test_keys(self):
         keys = validate.load_json(KEY_FILE)
@@ -135,10 +167,21 @@ class VectorFileTests(unittest.TestCase):
         self.assertIn("RFC 8032, section 7.1", keys["source"])
         names = {key["name"] for key in keys["keys"]}
         for _, vector in self.vectors:
-            for field in ("key", "public_key"):
-                if field in vector["input"]:
-                    with self.subTest(vector=vector["id"]):
-                        self.assertIn(vector["input"][field], names)
+            for data in [step["input"] for step in vector.get("steps", [])] or [vector["input"]]:
+                for field in ("key", "public_key"):
+                    if field in data:
+                        with self.subTest(vector=vector["id"]):
+                            self.assertIn(data[field], names)
+
+
+    def test_accepted_receive_steps_are_valid_envelopes(self):
+        schemas, registry = validate.load_checked()
+        for _, vector in self.vectors:
+            for step in vector.get("steps", []):
+                if step["operation"] == "receive" and step["expected"].get("result", "accept") == "accept":
+                    with self.subTest(vector=vector["id"], now=step["now"]):
+                        problems = validate.validate_document(step["input"]["envelope"], "envelope", schemas, registry)
+                        self.assertEqual(problems, [])
 
 
 class VectorRunTests(unittest.TestCase):
@@ -153,14 +196,14 @@ class VectorRunTests(unittest.TestCase):
                 continue
             with self.subTest(vector=vector["id"]):
                 status, actual = self.runner.run(vector)
-                self.assertNotEqual(status, "fail", f"expected {vector['expected']}, got {actual}")
+                self.assertNotEqual(status, "fail", f"expected {vector.get('expected', vector.get('steps'))}, got {actual}")
 
     def test_provisional_vectors_are_reported(self):
         for _, vector in self.vectors:
             if vector["status"] == "provisional":
                 status, actual = self.runner.run(vector)
                 if status == "fail":
-                    print(f"\n  provisional {vector['id']} ({vector['open_issue']}): expected {vector['expected']}, "
+                    print(f"\n  provisional {vector['id']} ({vector['open_issue']}): expected {vector.get('expected', 'see steps')}, "
                           f"got {actual}", end="", file=sys.stderr)
 
 
@@ -173,7 +216,8 @@ def summary() -> int:
         key = (str(path.relative_to(VECTOR_DIR)), status)
         totals[key] = totals.get(key, 0) + 1
         if status == "fail":
-            failed.append(f"{vector['id']} [{vector['status']}]: expected {vector['expected']}, got {actual}")
+            expected = [step["expected"] for step in vector["steps"]] if "steps" in vector else vector["expected"]
+            failed.append(f"{vector['id']} [{vector['status']}]: expected {expected}, got {actual}")
     for (name, status), count in sorted(totals.items()):
         print(f"{name:40} {status:5} {count}")
     for line in failed:

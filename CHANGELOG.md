@@ -8,7 +8,7 @@ Tooling change. No normative rule changed.
 
 ### Added
 
-- `test-vectors/`: 130 shared conformance test vectors for resource matching, capability token lifetime, attenuation, budgets and constraints, envelope structure and token binding, residency tags, and signatures (RFC 8032 known answers, `jcs` signing input, signing, and verification), with a JSON Schema for vector files and a README that defines each operation.
+- `test-vectors/`: 138 shared conformance test vectors for resource matching, capability token lifetime, attenuation, budgets and constraints, envelope structure and token binding, residency tags, and signatures (RFC 8032 known answers, `jcs` signing input, signing, and verification), plus multi-step sequence vectors for a receiver (replay, expiry, audience, `idem_key`, usage counting), with a JSON Schema for vector files and a README that defines each operation.
 - `test-vectors/keys/rfc8032-test-keys.json`: the Ed25519 test keys from RFC 8032 section 7.1, test only.
 - `tools/validate/test_vectors.py`: runs the vectors against the validator as part of the existing tests; provisional vectors are reported but do not fail.
 - `.gitleaks.toml`: default rules, with `test-vectors/` allowlisted for the published test keys.
