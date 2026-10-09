@@ -1,5 +1,7 @@
 # Personal SI Open Standards: Overview
 
+[![Validate schemas and examples](https://github.com/SI-Edge/standards/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/SI-Edge/standards/actions/workflows/validate.yml)
+
 > **Status: Draft, not for implementation. No certification program exists.**
 > These are early drafts for discussion. Conformance profiles are not certifications, and before v1.0 any claim of conformance is a self-assessment only. The "SI Edge" names are provisional (see [TRADEMARKS.md](TRADEMARKS.md)).
 
@@ -63,6 +65,8 @@ python tools/validate/validate.py
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md): Contributor Covenant 2.1
 - [TRADEMARKS.md](TRADEMARKS.md): status of names, third-party marks, no endorsement
 - [PATENT-POLICY.md](PATENT-POLICY.md): interim royalty-free patent policy for contributions
+- [CITATION.cff](CITATION.cff): how to cite this repository
+- [docs/](docs/): source of the project web page at https://si-edge.github.io/standards/ (no trackers, no cookies, no third-party assets)
 
 ## License
 

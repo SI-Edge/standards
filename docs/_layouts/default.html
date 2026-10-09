@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self' https://github.com; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="{{ site.description }}">
+<title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 46rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  a { color: #0b62d6; }
+  @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+  .banner { border: 2px solid #b26b00; border-radius: 6px; padding: 0.75rem 1rem; margin: 1rem 0 1.5rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #8884; padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  footer { margin-top: 3rem; font-size: 0.9rem; opacity: 0.8; }
+</style>
+</head>
+<body>
+<main>
+{{ content }}
+</main>
+<footer>
+<p>{{ site.project_name }} drafts by {{ site.maintainer }} and contributors. Specification text CC BY 4.0, code Apache-2.0. This page uses no cookies, no analytics, no trackers, and no third-party fonts or scripts. Source: <a href="{{ site.repo_url }}/tree/main/docs">docs/</a>.</p>
+</footer>
+</body>
+</html>

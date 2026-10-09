@@ -2,6 +2,15 @@
 
 All notable changes to the SI Edge drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Launch readiness
+
+Repository change. No normative text changed.
+
+### Added
+- CI badge at the top of [README.md](README.md).
+- [CITATION.cff](CITATION.cff) (version `v0.1-draft`, CC BY 4.0).
+- [docs/](docs/): minimal project web page for GitHub Pages (Jekyll, own layout, no external scripts, fonts, analytics, or cookies; brand strings kept in `docs/_config.yml`).
+
 ## 2026-10-09: Provider document renamed to SI Provider Profiles
 
 Editorial and naming change. No normative rule changed; identifiers `SIE-PRV` and profiles P0 to P3 are unchanged, and no schema field or enum changed.

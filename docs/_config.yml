@@ -1,0 +1,11 @@
+# Brand strings live here so a rename only needs changes in one place.
+title: "SI Edge Open Standards"
+project_name: "SI Edge"
+description: "Draft open standards for personal SI runtimes on user-owned edge devices."
+repo_url: "https://github.com/SI-Edge/standards"
+maintainer: "roenu (@roenudev), Bern"
+baseurl: "/standards"
+markdown: kramdown
+plugins: []
+exclude:
+  - README.md
