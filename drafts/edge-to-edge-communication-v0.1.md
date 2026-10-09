@@ -50,7 +50,7 @@
 - Local discovery **MAY** use mDNS, BLE, NFC, or QR codes. Remote discovery **MAY** use a rendezvous or relay service. *Rationale: use proven mechanisms.*
 - **[C1]** Discovery advertisements (F5) **MUST** reveal as little as possible (no owner name, agent list, or capabilities in clear text) and **MUST NOT** carry payload data. *Rationale: broadcasts reach everyone nearby and cannot be end-to-end encrypted.*
 - **[C1]** Pairing **MUST** require explicit owner consent on at least one side, and on both sides for F1 and F2. *Rationale: no silent trust relationships.*
-- **[C1]** Pairing messages **MUST** use an `intent` from the reserved `sk.pairing.*` namespace ([registries/intents.md](../registries/intents.md)) and **MUST NOT** carry `instructions`. Together with refusals (§A7), they are the only envelopes that **MAY** omit `cap_token`. *Rationale: before pairing there is no capability to present, so pairing must not be able to request actions.*
+- **[C1]** Pairing messages **MUST** use an `intent` from the reserved `sk.pairing.*` namespace ([registries/intents.md](../registries/intents.md)) and **MUST NOT** carry `instructions`. Together with negotiation messages (§B7) and refusals (§A7), they are the only envelopes that **MAY** omit `cap_token`. *Rationale: before pairing there is no capability to present, so pairing must not be able to request actions.*
 - **[C1]** Pairing **MUST** include out-of-band verification: a short authentication string, a QR scan, or NFC proximity. *Rationale: defeats man-in-the-middle attacks at the moment trust is set up.*
 - **[C1]** A pairing record **MUST** state the forms and capabilities it allows, and it **SHOULD** expire unless renewed. *Rationale: trust should be specific and time-bound.*
 
@@ -60,7 +60,7 @@
 - **[C1]** Every session (any exchange after pairing) **MUST** use mutual authentication. Before pairing, the exchange is authenticated by the out-of-band step in A3. *Rationale: both sides must prove who they are.*
 - **[C1]** Key exchange **MUST** provide forward secrecy. *Rationale: protects past traffic if a key is later stolen.*
 - **[C3]** Key exchange **MUST** use a hybrid classical plus post-quantum construction. Below C3 it is RECOMMENDED where implementations are available. *Rationale: protects against attacks that record traffic now and decrypt it later.*
-- Implementations **SHOULD** build on established building blocks: TLS 1.3 or QUIC for client/server and relay paths, the Noise Protocol Framework for peer-to-peer and constrained links, and MLS for group messaging within a mesh or multi-party sessions. *Rationale: do not invent your own cryptography.*
+- Implementations **SHOULD** build on established building blocks: TLS 1.3 or QUIC for client/server, relay, and peer-to-peer paths, and MLS for group messaging within a mesh or multi-party sessions. The Noise Protocol Framework **MAY** be used for peer-to-peer and constrained links. *Rationale: do not invent your own cryptography. TLS 1.3 has maintained libraries on every common platform, and one stack for every path means less code to implement and review than a second handshake next to TLS; Noise stays available where TLS does not fit.*
 - **[C1]** Streams (F7) **MUST** be set up with a signed Selfkin Envelope that establishes per-session keys. Media frames **MUST** then be protected with authenticated encryption under those keys (for example SRTP or QUIC). Per-frame signatures are not required. Streams **SHOULD** support rekeying during long sessions. *Rationale: strong protection without signing every frame.*
 - **[C1]** Cipher suite negotiation **MUST** be protected against downgrade (B7). *Rationale: attackers target negotiation.*
 
@@ -81,7 +81,7 @@ Fields:
 | `session` | Always | Session or conversation identifier |
 | `seq` | Always | Sequence number within the session |
 | `attestation_ref` | Always; `null` unless the session was negotiated at C3 | Reference to the device's attestation or profile claim. **MUST NOT** be `null` in a session negotiated at C3 (§B7) |
-| `cap_token` | Always, except pairing messages (§A3) and refusals (§A7) | Capability token authorising this message (§A6) |
+| `cap_token` | Always, except pairing messages (§A3), negotiation messages (§B7), and refusals (§A7) | Capability token authorising this message (§A6) |
 | `intent` | Always | Declared purpose, from the intent registry ([registries/intents.md](../registries/intents.md)) |
 | `instructions` | When an action is requested | Requested action, structured (`action`, optional `resource`, `params`, `consequential`). Authenticated by `sig`; there is no separate signature (§A5.1) |
 | `data` | When there is content | Payload content, always treated as untrusted data |
@@ -161,6 +161,8 @@ Fields:
 ## A9. Reliability
 
 - **[C1]** Store-and-forward queues (F8) **MUST** keep envelopes encrypted and **MUST** respect `expires`. *Rationale: delayed delivery must not mean data at rest is exposed.*
+- **[C1]** An envelope delivered through a store-and-forward node (F8) **MUST NOT** have `expires` more than 7 days after `issued`, and receivers **MUST** refuse it otherwise. *Rationale: a fixed bound on how long a stored message stays deliverable, and so on how long receivers keep its `nonce` and `idem_key`.*
+- **[C1]** For an envelope without `instructions` that is delivered through a store-and-forward node (F8), the receiver **MUST** evaluate the time validity of `cap_token`, and of every link in its `chain`, at the envelope's `issued` time instead of the time of receipt, and **MUST** refuse the envelope if `issued` is later than the time of receipt plus `max_clock_skew` (§A5). At the time of receipt, it **MUST** still check that the sending agent and device, the token, and every link in its chain are not revoked, and **MUST** refuse with `revoked` otherwise. Envelopes with `instructions` are evaluated entirely at the time of receipt. *Rationale: a token lives at most 1 hour (§A6), but an offline device may receive a stored message days later; checking revocation at receipt keeps lost devices out, and requested actions never run on authority that has already expired.*
 - **[C1]** Messages that change state **MUST** carry an `idem_key`, and receivers **MUST** execute each `idem_key` at most once. *Rationale: retries must not duplicate a payment or an action.*
 - **[C1]** Ordering **MUST** be tracked per session with `seq`. *Rationale: agents reason over sequences.*
 - **[C2]** Mesh sync **SHOULD** use conflict-free merge strategies (for example CRDTs) for memory and policy, and **MUST** surface conflicts it cannot resolve to the owner. *Rationale: offline devices diverge.*
@@ -237,6 +239,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 ## B7. Negotiation, Version Fallback, and Downgrade Protection
 
 - **[C1]** Peers **MUST** negotiate envelope version, crypto suites, canonical encodings (§A5.1), forms, and profile at session start, and **MUST** select the highest profile both support and owner policy allows. *Rationale: always use the best available security.*
+- **[C1]** Negotiation messages (intent `sk.negotiate`) **MAY** omit `cap_token` and **MUST NOT** carry `instructions`. A receiver **MUST NOT** grant authority based on a negotiation message; a capability token handed over in negotiation `data` takes effect only when its holder presents it as `cap_token` (§A6). *Rationale: negotiation runs at session start, before any capability exists, so it must be able to start without a token and must not be able to request actions.*
 - **[C1]** The negotiation transcript **MUST** be signed and bound to the session keys. *Rationale: prevents an attacker from forcing legacy mode.*
 - **[C1]** A runtime **MUST** remember a peer's highest previously seen profile and **MUST** refuse, or require owner approval, before dropping below it. The owner **MAY** reset a pin, and a peer that announces a planned profile change in a signed statement **MAY** be re-pinned after owner approval. *Rationale: trust on first use with downgrade pinning, and a way out for legitimate changes.*
 - **[C1]** Falling back to a legacy method **MUST** be shown to the user explicitly (for example "Legacy connection: unattested"). *Rationale: no silent loss of security.*
@@ -329,6 +332,8 @@ Text strings are in Unicode Normalization Form C (§A5.1). Map keys are sorted i
 *Note (informative): the numeric rule follows the same approach as numeric reduction in dCBOR (draft-mcnally-deterministic-cbor-18, work in progress), which is cited as prior art only. This document does not depend on that draft; where they differ, §A5.1 and this appendix apply.*
 
 ---
+*Proposed revision (2026-10-09): negotiation messages may omit `cap_token` (§A3, §A5, §B7); for store-and-forward delivery, token time validity is evaluated at `issued` for envelopes without `instructions`, revocation is checked at receipt, and envelope lifetime is capped at 7 days (§A9); TLS 1.3 or QUIC is also the default for peer-to-peer paths, and the Noise Protocol Framework drops from SHOULD to MAY (§A4).*
+
 *Proposed revision (2026-10-09, #33): `Ed25519` is mandatory to implement, `ES256` is mandatory to verify and optional to sign, `EdDSA` is deprecated and removed in v1.0, `sig.alg` is limited to the algorithm table in §B8 (`none` and MACs are never allowed), and `kid` must resolve through the signer's owner statements to a key whose type matches `alg` (§A5.1, §B8).*
 
 *Proposed revision (2026-10-09, #10, #17, #47): `dcbor` is the RFC 8949 §4.2.1 core deterministic encoding of the JSON data model with no type mapping and with numeric reduction, timestamps in signed objects are UTC with whole seconds, numbers and text are restricted so that `dcbor` and `jcs` agree (§A5.1, Appendix F), `max_clock_skew` is defined once (§A5), tokens are signed with `chain` set to their ancestors, and a future `iat` is refused with `not-yet-valid` (§A6).*

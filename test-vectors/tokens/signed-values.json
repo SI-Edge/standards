@@ -1,5 +1,5 @@
 {
-  "suite": "0.2.1",
+  "suite": "0.3.0",
   "category": "tokens",
   "description": "Value rules for signed objects (SK-COM A5.1): timestamps in UTC with whole seconds, integral numbers in the I-JSON range, text in NFC. Static checks; signatures are placeholders.",
   "vectors": [

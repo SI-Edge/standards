@@ -2,6 +2,24 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Negotiation without `cap_token`, store-and-forward token time, Noise optional (proposal)
+
+Normative change, open for comments.
+
+### Changed
+
+- SK-COM §A3, §A5, §B7: negotiation messages (`sk.negotiate`) may omit `cap_token` and never carry `instructions`; they grant no authority.
+- SK-COM §A9: an envelope delivered through a store-and-forward node (F8) lives at most 7 days. Without `instructions`, its token is evaluated at `issued` and revocation is checked at receipt; with `instructions`, everything is evaluated at receipt.
+- SK-COM §A4: TLS 1.3 or QUIC is the default building block also for peer-to-peer paths; the Noise Protocol Framework drops from SHOULD to MAY.
+- `schemas/envelope.schema.json` and `registries/intents.md`: `sk.negotiate` joins pairing and refusals as the envelopes that may omit `cap_token`.
+- THREAT-MODEL.md T9: revocation is checked at receipt for stored deliveries.
+- `test-vectors/` 0.3.0: the `receive` operation gains the input `delivery`, the state `revoked`, and token time checks.
+
+### Added
+
+- Examples `envelope.f1-negotiate-offer.json` and `envelope.negotiate-with-instructions.invalid.json`.
+- Test vectors `envelope.structure.017` and `.018` and `envelope.receive.013` to `.018`.
+
 ## 2026-10-09: Signature algorithm allowlist and key binding (proposal, #33)
 
 Normative change, open for comments.

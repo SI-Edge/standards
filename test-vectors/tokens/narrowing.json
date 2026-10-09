@@ -1,5 +1,5 @@
 {
-  "suite": "0.2.1",
+  "suite": "0.3.0",
   "category": "tokens",
   "description": "Attenuation rules (a) to (f) of SK-COM A6 for delegated capability tokens. Static checks; signatures are placeholders.",
   "vectors": [
