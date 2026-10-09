@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/selfkin/standards/test-vectors/vector.schema.json",
+  "title": "Selfkin Test Vector File",
+  "description": "A group of conformance test vectors: fixed inputs with expected results for one operation area. See test-vectors/README.md for the operation contracts. Status: Draft, not for implementation.",
+  "type": "object",
+  "required": ["suite", "category", "description", "vectors"],
+  "additionalProperties": false,
+  "properties": {
+    "suite": {
+      "description": "Suite version (test-vectors/VERSION) this file belongs to.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "category": {
+      "enum": ["resource-matching", "tokens", "envelope", "residency", "signatures"]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/vector"
+      }
+    }
+  },
+  "$defs": {
+    "vector": {
+      "type": "object",
+      "required": ["id", "spec", "operation", "input", "expected", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable identifier, never reused: category, group, and a three-digit number.",
+          "type": "string",
+          "pattern": "^[a-z]+\\.[a-z0-9-]+\\.[0-9]{3}$"
+        },
+        "spec": {
+          "description": "Rules this vector tests.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["doc", "section"],
+            "additionalProperties": false,
+            "properties": {
+              "doc": {
+                "enum": ["SK-RT", "SK-COM", "SK-PRV", "RFC 8032", "RFC 8785"]
+              },
+              "version": {
+                "type": "string"
+              },
+              "section": {
+                "type": "string"
+              },
+              "tag": {
+                "description": "Profile tag of the rule, for example C1 or R2.",
+                "type": "string",
+                "pattern": "^[RCP][0-3]$"
+              }
+            }
+          }
+        },
+        "operation": {
+          "description": "What to run. Each operation's input and output are defined in test-vectors/README.md.",
+          "enum": [
+            "resource-covers",
+            "token-check",
+            "envelope-check",
+            "residency-regions",
+            "residency-tag-syntax",
+            "ed25519-sign",
+            "jcs-signing-input",
+            "verify",
+            "sign"
+          ]
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[RCP][0-3]$"
+        },
+        "requires": {
+          "description": "Optional features a runner must support to run this vector; runners without them skip it.",
+          "type": "array",
+          "items": {
+            "enum": ["EdDSA", "jcs"]
+          },
+          "uniqueItems": true
+        },
+        "input": {
+          "type": "object"
+        },
+        "expected": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["result"],
+              "additionalProperties": false,
+              "properties": {
+                "result": {
+                  "const": "accept"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["result"],
+              "additionalProperties": false,
+              "properties": {
+                "result": {
+                  "const": "refuse"
+                },
+                "reason": {
+                  "description": "Refusal reason code from registries/refusal-reasons.md, or a list of acceptable codes where the drafts do not fix the order of checks. Absent when the drafts do not fix a code.",
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "string"
+                      },
+                      "uniqueItems": true
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["value"],
+              "additionalProperties": false,
+              "properties": {
+                "value": {}
+              }
+            }
+          ]
+        },
+        "status": {
+          "description": "normative: follows from merged draft text. provisional: an interim reading of an open question, named in open_issue; failures are reported but do not fail a run.",
+          "enum": ["normative", "provisional"]
+        },
+        "open_issue": {
+          "type": "string",
+          "pattern": "^#[0-9]+$"
+        },
+        "note": {
+          "description": "One line for readers. Never compared.",
+          "type": "string"
+        }
+      },
+      "if": {
+        "properties": {
+          "status": {
+            "const": "provisional"
+          }
+        }
+      },
+      "then": {
+        "required": ["open_issue"]
+      },
+      "else": {
+        "not": {
+          "required": ["open_issue"]
+        }
+      }
+    }
+  }
+}

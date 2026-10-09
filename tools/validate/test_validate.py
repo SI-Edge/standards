@@ -166,7 +166,7 @@ class SemanticTests(unittest.TestCase):
 
 class RepositoryStyleTests(unittest.TestCase):
     def test_no_em_or_en_dashes(self):
-        roots = [validate.REPO / d for d in ("schemas", "examples", "tools", "registries", "drafts")]
+        roots = [validate.REPO / d for d in ("schemas", "examples", "tools", "registries", "drafts", "test-vectors")]
         roots += sorted(validate.REPO.glob("*.md"))
         for root in roots:
             paths = [root] if root.is_file() else [p for p in root.rglob("*") if p.is_file()]
