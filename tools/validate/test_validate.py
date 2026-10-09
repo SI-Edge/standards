@@ -82,9 +82,10 @@ class SchemaTests(unittest.TestCase):
         from jsonschema import Draft202012Validator
 
         checker = Draft202012Validator(tag_schema, registry=self.registry)
-        for good in ("CH", "EU", "CH-EU", "x-home-only"):
+        for good in ("CH", "EU", "CH-EU", "x-home-only", "x-" + "a" * 62):
             self.assertTrue(checker.is_valid(good), good)
-        for bad in ("ch", "EU-CH", "Switzerland", "x-", ""):
+        # SK-RT section 11: owner-defined tags have at most 64 characters in total.
+        for bad in ("ch", "EU-CH", "Switzerland", "x-", "", "x-" + "a" * 63):
             self.assertFalse(checker.is_valid(bad), bad)
 
 
