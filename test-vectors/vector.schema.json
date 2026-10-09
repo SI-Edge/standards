@@ -2,21 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/selfkin/standards/test-vectors/vector.schema.json",
   "title": "Selfkin Test Vector File",
-  "description": "A group of conformance test vectors: fixed inputs with expected results for one operation area. See test-vectors/README.md for the operation contracts. Status: Draft, not for implementation.",
+  "description": "A group of conformance test vectors: fixed inputs with expected results for one operation area. See test-vectors/README.md for the operation contracts. The suite version is recorded only in test-vectors/VERSION, not in vector files. Status: Draft, not for implementation.",
   "type": "object",
   "required": [
-    "suite",
     "category",
     "description",
     "vectors"
   ],
   "additionalProperties": false,
   "properties": {
-    "suite": {
-      "description": "Suite version (test-vectors/VERSION) this file belongs to.",
-      "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
-    },
     "category": {
       "enum": [
         "resource-matching",
