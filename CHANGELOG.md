@@ -15,6 +15,7 @@ Tooling change. No normative rule changed.
 ### Changed
 
 - Languages on a few code blocks and angle brackets around a few bare URLs, so the current files pass markdownlint.
+- `test-vectors/README.md`: the paragraph after the status table no longer renders as a broken table row.
 
 ## 2026-10-09: Test vectors, phase 1
 
@@ -80,7 +81,7 @@ Repository and editorial change. No normative rule changed.
 
 ## 2026-10-09: Renamed to Selfkin
 
-Naming change, prepared for the move of the repository to https://github.com/selfkin/standards. No normative rule changed in substance.
+Naming change, prepared for the move of the repository to <https://github.com/selfkin/standards>. No normative rule changed in substance.
 
 ### Changed
 
