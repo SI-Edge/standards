@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500" role="img" aria-labelledby="mark-title mark-desc">
+  <title id="mark-title">Selfkin mark</title>
+  <desc id="mark-desc">An S-shaped link of two arcs on a dark navy field. Each end of the link is a node: one for you, one for your kin devices and agents, joined by one continuous protected line.</desc>
+  <rect width="500" height="500" fill="#0B1F33"/>
+  <g transform="translate(250 250) scale(1.18) translate(-250 -250)">
+    <path d="M310.6 145 A70 70 0 1 0 250 250 A70 70 0 1 1 189.4 355" fill="none" stroke="#2DD4BF" stroke-width="44" stroke-linecap="round"/>
+    <circle cx="310.6" cy="145" r="34" fill="#F5B547" stroke="#0B1F33" stroke-width="10"/>
+    <circle cx="189.4" cy="355" r="34" fill="#E6FFFA" stroke="#0B1F33" stroke-width="10"/>
+  </g>
+</svg>

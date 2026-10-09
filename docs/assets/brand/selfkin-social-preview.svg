@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-labelledby="sp-title sp-desc" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif">
+  <title id="sp-title">Selfkin: Open standards for personal AI on your own devices</title>
+  <desc id="sp-desc">Social preview card. The Selfkin mark, an S-shaped link joining two nodes, next to the name Selfkin, the tagline Open standards for personal AI on your own devices, and the three drafts: SK-RT runtime, SK-COM communication, SK-PRV provider profiles.</desc>
+  <rect width="1280" height="640" fill="#0B1F33"/>
+  <g stroke="#2DD4BF" stroke-opacity="0.22" stroke-width="2"><line x1="1020" y1="90" x2="1110" y2="60"/><line x1="1110" y1="60" x2="1200" y2="110"/><line x1="1200" y1="110" x2="1150" y2="190"/><line x1="1150" y1="190" x2="1060" y2="170"/><line x1="1060" y1="170" x2="1020" y2="90"/><line x1="1110" y1="60" x2="1060" y2="170"/><line x1="1110" y1="60" x2="1150" y2="190"/><line x1="1200" y1="110" x2="1235" y2="40"/><line x1="1120" y1="560" x2="1200" y2="520"/><line x1="1200" y1="520" x2="1230" y2="600"/><line x1="1230" y1="600" x2="1120" y2="560"/><line x1="1120" y1="560" x2="1060" y2="610"/></g>
+  <g fill="#2DD4BF" fill-opacity="0.4"><circle cx="1020" cy="90" r="6"/><circle cx="1110" cy="60" r="6"/><circle cx="1200" cy="110" r="6"/><circle cx="1150" cy="190" r="6"/><circle cx="1060" cy="170" r="6"/><circle cx="1235" cy="40" r="6"/><circle cx="1120" cy="560" r="6"/><circle cx="1200" cy="520" r="6"/><circle cx="1230" cy="600" r="6"/><circle cx="1060" cy="610" r="6"/></g>
+  <g transform="translate(225 320) scale(1.25) translate(-250 -250)">
+    <path d="M310.6 145 A70 70 0 1 0 250 250 A70 70 0 1 1 189.4 355" fill="none" stroke="#2DD4BF" stroke-width="44" stroke-linecap="round"/>
+    <circle cx="310.6" cy="145" r="34" fill="#F5B547" stroke="#0B1F33" stroke-width="10"/>
+    <circle cx="189.4" cy="355" r="34" fill="#E6FFFA" stroke="#0B1F33" stroke-width="10"/>
+  </g>
+  <text x="440" y="270" fill="#FFFFFF" font-size="120" font-weight="800" letter-spacing="-2">Selfkin</text>
+  <text x="444" y="345" fill="#E6FFFA" font-size="42" font-weight="500">Open standards for personal AI</text>
+  <text x="444" y="400" fill="#E6FFFA" font-size="42" font-weight="500">on your own devices</text>
+  <text x="444" y="478" fill="#A7C4D9" font-size="26" font-weight="500">SK-RT runtime<tspan fill="#5EEAD4" dx="14">·</tspan><tspan dx="14">SK-COM communication</tspan><tspan fill="#5EEAD4" dx="14">·</tspan><tspan dx="14">SK-PRV providers</tspan></text>
+  <text x="444" y="524" fill="#F5B547" font-size="24" font-weight="600">github.com/selfkin/standards</text>
+</svg>

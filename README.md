@@ -42,6 +42,33 @@ Profiles group into tiers:
 
 A session's **effective tier** is the lowest tier of the runtime, of every communication hop, and of every provider in its path. For example, an R3 runtime that calls a P1 provider runs that call at tier 1, and a hop through a legacy endpoint runs at tier 0. Runtimes show the effective tier to the user.
 
+## Architecture at a Glance
+
+```mermaid
+flowchart TB
+  subgraph owner["Your devices, one owner: each runs the Selfkin runtime (SK-RT)"]
+    direction LR
+    phone["<b>Phone</b><br/>Core: Trusted UI, policy, Privacy gateway<br/>Sandboxed: router model, modules, memory"]
+    pc["<b>PC</b><br/>Core: Trusted UI, policy, Privacy gateway<br/>Sandboxed: router model, modules, memory"]
+    vps["<b>VPS</b><br/>Core: Trusted UI, policy, Privacy gateway<br/>Sandboxed: router model, modules, memory"]
+    phone <-->|"SK-COM F1 mesh, E2E"| pc
+    pc <-->|"SK-COM F1 mesh, E2E"| vps
+  end
+
+  peers["<b>Other owners' agents</b><br/>untrusted by default, capability tokens,<br/>human approval for consequential actions"]
+  owner <-->|"SK-COM F2 peer and F6 handoff, E2E"| peers
+
+  legacy["<b>Legacy devices and apps</b> (SK-COM Part B)<br/>Method 1 App, Method 2 OS bridge, Method 3 Shim,<br/>Method 4 Proxy, Method 5 Human in the loop<br/><i>C0 hop, labelled legacy and unattested</i>"]
+  owner -->|"legacy-adapter modules, policy enforced by the runtime"| legacy
+
+  relay["<b>Privacy relay</b><br/>Oblivious HTTP or IP-hiding proxy"]
+  cloud["<b>Cloud providers</b> (SK-PRV)<br/>P0 Unverified: full gateway mode or own account<br/>P1 Private: no training, no tracking<br/>P2 Sovereign: OHTTP, anonymous tokens, audit<br/>P3 Attested: attested confidential inference"]
+  owner -->|"only through the Privacy gateway"| relay
+  relay --> cloud
+```
+
+Each runtime keeps the Core (Trusted UI, policy and approvals, Privacy gateway) separate from the router model, modules, and memory, which run sandboxed outside it. A static, accessible version with every component of each runtime is in [docs/assets/architecture.svg](docs/assets/architecture.svg) (with a text description in its `<desc>` element).
+
 ## Schemas and Tooling
 
 - [schemas/](schemas/): JSON Schema 2020-12 files for the Selfkin Envelope, capability token, module manifest, privacy report, refusal, and Provider Manifest, with a [map to the draft sections](schemas/README.md) and the [open questions](schemas/OPEN-QUESTIONS.md) that remain. The schemas follow the drafts; where they disagree, the draft wins.

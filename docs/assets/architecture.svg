@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 880" width="1200" height="880" role="img" aria-labelledby="arch-title arch-desc" font-family="Inter, 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif">
+  <title id="arch-title">Selfkin architecture overview</title>
+  <desc id="arch-desc">The owner's devices, a phone, a PC, and a VPS, each run a Selfkin runtime (SK-RT). In every runtime the trusted Runtime Core holds the Trusted UI, policy with approvals and the egress log, and the Privacy gateway. Outside the Core, sandboxed, are the router model, modules, and encrypted memory. The devices form one mesh over SK-COM form F1, end-to-end encrypted and mutually authenticated. The runtimes talk to other owners' agents over SK-COM forms F2 and F6, end-to-end encrypted with capability tokens; those agents are untrusted by default and consequential actions need human approval. Legacy devices and apps are reached through the five compatibility paths of SK-COM Part B: Method 1 App, Method 2 OS bridge, Method 3 Shim, Method 4 Proxy, and Method 5 Human in the loop. Those hops run at C0 and are labelled legacy and unattested. Cloud providers are reached only through each runtime's Privacy gateway and a privacy relay such as Oblivious HTTP. Providers have SK-PRV profiles P0 Unverified, used with full gateway mode or the owner's own account, P1 Private, P2 Sovereign, and P3 Attested. A session's effective tier is the lowest tier of the runtime, every hop, and every provider in its path.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1E293B"/>
+    </marker>
+  </defs>
+  <style>
+    .t { fill: #0F172A; }
+    .h1 { font-size: 26px; font-weight: 700; }
+    .h2 { font-size: 18px; font-weight: 700; }
+    .h3 { font-size: 15px; font-weight: 700; }
+    .b { font-size: 14px; }
+    .s { font-size: 13px; fill: #334155; }
+    .w { fill: #FFFFFF; }
+    .link { stroke: #1E293B; stroke-width: 2.5; fill: none; }
+  </style>
+  <rect width="1200" height="880" fill="#FFFFFF"/>
+  <text class="t h1" x="30" y="44">Selfkin: personal AI on your own devices</text>
+
+  <!-- Owner's devices -->
+  <g id="owner">
+    <rect x="30" y="66" width="760" height="504" rx="16" fill="#F1F7F7" stroke="#0E6B6A" stroke-width="2"/>
+    <text class="t h2" x="50" y="98">Your devices, one owner</text>
+    <text class="s" x="290" y="98">each runs the Selfkin runtime (SK-RT)</text>
+    <g id="device-phone">
+      <rect x="44" y="116" width="228" height="380" rx="12" fill="#FFFFFF" stroke="#0E6B6A" stroke-width="2"/>
+      <text class="t h2" x="60" y="146">Phone</text>
+      <text class="s" x="60" y="166">SK-RT runtime</text>
+      <rect x="54" y="178" width="208" height="164" rx="8" fill="#D9EFEE" stroke="#0E6B6A" stroke-width="1.5"/>
+      <text class="t h3" x="64" y="200">Runtime Core (trusted)</text>
+      <rect x="64" y="210" width="188" height="36" rx="6" fill="#0F172A"/>
+      <text class="w b" x="158.0" y="233" text-anchor="middle">Trusted UI</text>
+      <rect x="64" y="252" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#0E6B6A"/>
+      <text class="t b" x="158.0" y="275" text-anchor="middle">Policy, approvals, logs</text>
+      <rect x="64" y="294" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#0E6B6A"/>
+      <text class="t b" x="158.0" y="317" text-anchor="middle">Privacy gateway</text>
+      <text class="s" x="64" y="366">Outside the Core, sandboxed</text>
+      <rect x="64" y="376" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="158.0" y="397" text-anchor="middle">Router model</text>
+      <rect x="64" y="414" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="158.0" y="435" text-anchor="middle">Modules (signed)</text>
+      <rect x="64" y="452" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="158.0" y="473" text-anchor="middle">Memory (encrypted)</text>
+    </g>
+    <g id="device-pc">
+      <rect x="296" y="116" width="228" height="380" rx="12" fill="#FFFFFF" stroke="#0E6B6A" stroke-width="2"/>
+      <text class="t h2" x="312" y="146">PC</text>
+      <text class="s" x="312" y="166">SK-RT runtime</text>
+      <rect x="306" y="178" width="208" height="164" rx="8" fill="#D9EFEE" stroke="#0E6B6A" stroke-width="1.5"/>
+      <text class="t h3" x="316" y="200">Runtime Core (trusted)</text>
+      <rect x="316" y="210" width="188" height="36" rx="6" fill="#0F172A"/>
+      <text class="w b" x="410.0" y="233" text-anchor="middle">Trusted UI</text>
+      <rect x="316" y="252" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#0E6B6A"/>
+      <text class="t b" x="410.0" y="275" text-anchor="middle">Policy, approvals, logs</text>
+      <rect x="316" y="294" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#0E6B6A"/>
+      <text class="t b" x="410.0" y="317" text-anchor="middle">Privacy gateway</text>
+      <text class="s" x="316" y="366">Outside the Core, sandboxed</text>
+      <rect x="316" y="376" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="410.0" y="397" text-anchor="middle">Router model</text>
+      <rect x="316" y="414" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="410.0" y="435" text-anchor="middle">Modules (signed)</text>
+      <rect x="316" y="452" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="410.0" y="473" text-anchor="middle">Memory (encrypted)</text>
+    </g>
+    <g id="device-vps">
+      <rect x="548" y="116" width="228" height="380" rx="12" fill="#FFFFFF" stroke="#0E6B6A" stroke-width="2"/>
+      <text class="t h2" x="564" y="146">VPS</text>
+      <text class="s" x="564" y="166">SK-RT runtime</text>
+      <rect x="558" y="178" width="208" height="164" rx="8" fill="#D9EFEE" stroke="#0E6B6A" stroke-width="1.5"/>
+      <text class="t h3" x="568" y="200">Runtime Core (trusted)</text>
+      <rect x="568" y="210" width="188" height="36" rx="6" fill="#0F172A"/>
+      <text class="w b" x="662.0" y="233" text-anchor="middle">Trusted UI</text>
+      <rect x="568" y="252" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#0E6B6A"/>
+      <text class="t b" x="662.0" y="275" text-anchor="middle">Policy, approvals, logs</text>
+      <rect x="568" y="294" width="188" height="36" rx="6" fill="#FFFFFF" stroke="#0E6B6A"/>
+      <text class="t b" x="662.0" y="317" text-anchor="middle">Privacy gateway</text>
+      <text class="s" x="568" y="366">Outside the Core, sandboxed</text>
+      <rect x="568" y="376" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="662.0" y="397" text-anchor="middle">Router model</text>
+      <rect x="568" y="414" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="662.0" y="435" text-anchor="middle">Modules (signed)</text>
+      <rect x="568" y="452" width="188" height="32" rx="6" fill="#FFFFFF" stroke="#64748B" stroke-dasharray="5 3"/>
+      <text class="t b" x="662.0" y="473" text-anchor="middle">Memory (encrypted)</text>
+    </g>
+    <!-- F1 mesh -->
+    <path class="link" d="M158.0 496 V524 H662.0 V496"/>
+    <path class="link" d="M410.0 496 V524"/>
+    <text class="t h3" x="410" y="548" text-anchor="middle">SK-COM F1 mesh</text>
+    <text class="s" x="410" y="564" text-anchor="middle">end-to-end encrypted, mutually authenticated</text>
+  </g>
+
+  <!-- Other owners -->
+  <g id="peers">
+    <rect x="880" y="96" width="290" height="190" rx="14" fill="#EEF2FF" stroke="#3730A3" stroke-width="2"/>
+    <text class="t h2" x="900" y="128">Other owners' agents</text>
+    <text class="t b" x="900" y="158">Untrusted by default</text>
+    <text class="t b" x="900" y="184">Capability tokens, delegation</text>
+    <text class="t b" x="900" y="204">that can only narrow</text>
+    <text class="t b" x="900" y="230">Human approval for</text>
+    <text class="t b" x="900" y="250">consequential actions</text>
+    <text class="s" x="900" y="274">may run on their own devices</text>
+    <path class="link" d="M794 190 H876" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <text class="t h3" x="835" y="180" text-anchor="middle">F2 / F6</text>
+    <text class="s" x="835" y="210" text-anchor="middle">E2E</text>
+  </g>
+
+  <!-- Cloud path -->
+  <g id="cloud">
+    <rect x="880" y="336" width="290" height="70" rx="12" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+    <text class="t h3" x="900" y="364">Privacy relay</text>
+    <text class="s" x="900" y="388">Oblivious HTTP or IP-hiding proxy</text>
+    <path class="link" d="M794 371 H876" marker-end="url(#arrow)"/>
+    <text class="s" x="835" y="344" text-anchor="middle">Privacy</text>
+    <text class="s" x="835" y="361" text-anchor="middle">gateway</text>
+    <path class="link" d="M1025 406 V442" marker-end="url(#arrow)"/>
+    <rect x="880" y="446" width="290" height="324" rx="14" fill="#FFF7E8" stroke="#8A5300" stroke-width="2"/>
+    <text class="t h2" x="900" y="478">Cloud providers (SK-PRV)</text>
+    <text class="s" x="900" y="498">trusted only as far as verified</text>
+    <rect x="896" y="510" width="258" height="56" rx="8" fill="#FFFFFF" stroke="#8A5300"/>
+    <text class="t h3" x="910" y="533">P3 Attested</text>
+    <text class="s" x="910" y="554">attested confidential inference</text>
+    <rect x="896" y="572" width="258" height="56" rx="8" fill="#FFFFFF" stroke="#8A5300"/>
+    <text class="t h3" x="910" y="595">P2 Sovereign</text>
+    <text class="s" x="910" y="616">OHTTP, anonymous tokens, audit</text>
+    <rect x="896" y="634" width="258" height="56" rx="8" fill="#FFFFFF" stroke="#8A5300"/>
+    <text class="t h3" x="910" y="657">P1 Private</text>
+    <text class="s" x="910" y="678">no training, no tracking, retention</text>
+    <rect x="896" y="696" width="258" height="56" rx="8" fill="#FFFFFF" stroke="#8A5300"/>
+    <text class="t h3" x="910" y="719">P0 Unverified</text>
+    <text class="s" x="910" y="740">full gateway mode or own account</text>
+  </g>
+
+  <!-- Legacy -->
+  <g id="legacy">
+    <path class="link" d="M410 570 V612" marker-end="url(#arrow)"/>
+    <text class="s" x="422" y="596">legacy-adapter modules; the runtime enforces policy</text>
+    <rect x="30" y="616" width="760" height="190" rx="16" fill="#F8FAFC" stroke="#475569" stroke-width="2" stroke-dasharray="8 4"/>
+    <text class="t h2" x="50" y="646">Legacy devices and apps (SK-COM Part B)</text>
+    <text class="s" x="50" y="668">Hop runs at C0 and is labelled legacy and unattested</text>
+    <rect x="46" y="684" width="138" height="104" rx="10" fill="#FFFFFF" stroke="#475569"/>
+    <text class="s" x="115" y="710" text-anchor="middle">Method 1</text>
+    <text class="t h3" x="115" y="736" text-anchor="middle">App</text>
+    <text class="s" x="115" y="764" text-anchor="middle">intents, accessibility</text>
+    <rect x="194" y="684" width="138" height="104" rx="10" fill="#FFFFFF" stroke="#475569"/>
+    <text class="s" x="263" y="710" text-anchor="middle">Method 2</text>
+    <text class="t h3" x="263" y="736" text-anchor="middle">OS bridge</text>
+    <text class="s" x="263" y="764" text-anchor="middle">privileged service</text>
+    <rect x="342" y="684" width="138" height="104" rx="10" fill="#FFFFFF" stroke="#475569"/>
+    <text class="s" x="411" y="710" text-anchor="middle">Method 3</text>
+    <text class="t h3" x="411" y="736" text-anchor="middle">Shim</text>
+    <text class="s" x="411" y="764" text-anchor="middle">light envelope agent</text>
+    <rect x="490" y="684" width="138" height="104" rx="10" fill="#FFFFFF" stroke="#475569"/>
+    <text class="s" x="559" y="710" text-anchor="middle">Method 4</text>
+    <text class="t h3" x="559" y="736" text-anchor="middle">Proxy</text>
+    <text class="s" x="559" y="764" text-anchor="middle">IoT, Matter, Modbus</text>
+    <rect x="638" y="684" width="138" height="104" rx="10" fill="#FFFFFF" stroke="#475569"/>
+    <text class="s" x="707" y="710" text-anchor="middle">Method 5</text>
+    <text class="t h3" x="707" y="736" text-anchor="middle">Human</text>
+    <text class="s" x="707" y="764" text-anchor="middle">guided fallback</text>
+  </g>
+
+  <text class="t b" x="30" y="842">Effective tier = lowest of the runtime (R1 to R3), every hop (C0 to C3), and every provider (P0 to P3).</text>
+  <text class="s" x="30" y="864">Selfkin drafts SK-RT v0.3, SK-COM v0.1, SK-PRV v0.1. Draft, not for implementation.</text>
+</svg>
