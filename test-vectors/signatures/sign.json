@@ -1,5 +1,5 @@
 {
-  "suite": "0.2.0",
+  "suite": "0.2.1",
   "category": "signatures",
   "description": "Producing sig.value for canon jcs (SK-COM A5.1) with the RFC 8032 test keys. Ed25519 signatures are deterministic, so the expected base64url value is exact.",
   "vectors": [

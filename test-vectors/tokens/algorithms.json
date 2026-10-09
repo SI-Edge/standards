@@ -1,0 +1,419 @@
+{
+  "suite": "0.2.1",
+  "category": "tokens",
+  "description": "Signature algorithm allowlist (SK-COM A5.1, B8): sig.alg must be Ed25519, ES256, or the deprecated EdDSA. Static checks; signatures are placeholders.",
+  "vectors": [
+    {
+      "id": "token.algorithms.001",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B8",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-7f3a9c2e1b",
+          "iss": "did:example:alice",
+          "sub": "did:example:alice-homeserver#agent-planner",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5,
+                "data_classes": [
+                  "calendar.availability",
+                  "contacts.name"
+                ]
+              }
+            },
+            {
+              "action": "calendar.read_availability",
+              "resource": "urn:example:calendar:bob/*"
+            }
+          ],
+          "budget": {
+            "messages": 50,
+            "money": {
+              "amount": "0.00",
+              "currency": "CHF"
+            }
+          },
+          "chain": [],
+          "sig": {
+            "alg": "none",
+            "kid": "did:example:alice#owner-key-1",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "alg none"
+    },
+    {
+      "id": "token.algorithms.002",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B8",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-7f3a9c2e1b",
+          "iss": "did:example:alice",
+          "sub": "did:example:alice-homeserver#agent-planner",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5,
+                "data_classes": [
+                  "calendar.availability",
+                  "contacts.name"
+                ]
+              }
+            },
+            {
+              "action": "calendar.read_availability",
+              "resource": "urn:example:calendar:bob/*"
+            }
+          ],
+          "budget": {
+            "messages": 50,
+            "money": {
+              "amount": "0.00",
+              "currency": "CHF"
+            }
+          },
+          "chain": [],
+          "sig": {
+            "alg": "HS256",
+            "kid": "did:example:alice#owner-key-1",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "A MAC is never a signature"
+    },
+    {
+      "id": "token.algorithms.003",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B8",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-7f3a9c2e1b",
+          "iss": "did:example:alice",
+          "sub": "did:example:alice-homeserver#agent-planner",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5,
+                "data_classes": [
+                  "calendar.availability",
+                  "contacts.name"
+                ]
+              }
+            },
+            {
+              "action": "calendar.read_availability",
+              "resource": "urn:example:calendar:bob/*"
+            }
+          ],
+          "budget": {
+            "messages": 50,
+            "money": {
+              "amount": "0.00",
+              "currency": "CHF"
+            }
+          },
+          "chain": [],
+          "sig": {
+            "alg": "RS256",
+            "kid": "did:example:alice#owner-key-1",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "A registered JOSE algorithm that is not in the B8 table"
+    },
+    {
+      "id": "token.algorithms.004",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B8",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-7f3a9c2e1b",
+          "iss": "did:example:alice",
+          "sub": "did:example:alice-homeserver#agent-planner",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5,
+                "data_classes": [
+                  "calendar.availability",
+                  "contacts.name"
+                ]
+              }
+            },
+            {
+              "action": "calendar.read_availability",
+              "resource": "urn:example:calendar:bob/*"
+            }
+          ],
+          "budget": {
+            "messages": 50,
+            "money": {
+              "amount": "0.00",
+              "currency": "CHF"
+            }
+          },
+          "chain": [],
+          "sig": {
+            "alg": "ed25519",
+            "kid": "did:example:alice#owner-key-1",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "bad-signature"
+      },
+      "status": "normative",
+      "note": "Algorithm names are case-sensitive"
+    },
+    {
+      "id": "token.algorithms.005",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B8",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-7f3a9c2e1b",
+          "iss": "did:example:alice",
+          "sub": "did:example:alice-homeserver#agent-planner",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5,
+                "data_classes": [
+                  "calendar.availability",
+                  "contacts.name"
+                ]
+              }
+            },
+            {
+              "action": "calendar.read_availability",
+              "resource": "urn:example:calendar:bob/*"
+            }
+          ],
+          "budget": {
+            "messages": 50,
+            "money": {
+              "amount": "0.00",
+              "currency": "CHF"
+            }
+          },
+          "chain": [],
+          "sig": {
+            "alg": "Ed25519",
+            "kid": "did:example:alice#owner-key-1",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "accept"
+      },
+      "status": "normative",
+      "note": "Mandatory-to-implement name"
+    },
+    {
+      "id": "token.algorithms.006",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B8",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-7f3a9c2e1b",
+          "iss": "did:example:alice",
+          "sub": "did:example:alice-homeserver#agent-planner",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5,
+                "data_classes": [
+                  "calendar.availability",
+                  "contacts.name"
+                ]
+              }
+            },
+            {
+              "action": "calendar.read_availability",
+              "resource": "urn:example:calendar:bob/*"
+            }
+          ],
+          "budget": {
+            "messages": 50,
+            "money": {
+              "amount": "0.00",
+              "currency": "CHF"
+            }
+          },
+          "chain": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "did:example:alice#owner-key-1",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "accept"
+      },
+      "status": "normative",
+      "note": "Deprecated name, accepted until v1.0"
+    }
+  ]
+}

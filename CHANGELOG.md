@@ -2,6 +2,21 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Signature algorithm allowlist and key binding (proposal, #33)
+
+Normative change, open for comments.
+
+### Changed
+
+- SK-COM §A5.1: `Ed25519` is mandatory to implement; `sig.alg` must be one of the algorithms in the new §B8 table (`Ed25519`, the optional `ES256`, and the deprecated name `EdDSA`, removed in v1.0), so `none` and MACs are refused with `bad-signature`; `kid` must resolve through the owner statements of `sender_agent`, `iss`, or `signer` to a key whose type matches `alg`.
+- SK-COM §B8: table of signature algorithms with their status, and a non-normative note that ML-DSA is added only once stable JOSE and COSE registrations exist (to be reconsidered for v0.3).
+- `schemas/common.schema.json`: `sig.alg` is an enum.
+
+### Added
+
+- Invalid examples `envelope.alg-none.invalid.json` and `capability-token.alg-hs256.invalid.json`.
+- Test vectors `tokens/algorithms.json` and `signature.verify.013` to `.017` (`.015` and `.016` use the RFC 7515 P-256 test key); suite 0.2.1.
+
 ## 2026-10-09: Signing input for `dcbor`, chain links, and future `iat` (proposal, #10, #17, #47)
 
 Normative change, open for comments.
