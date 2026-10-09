@@ -60,7 +60,7 @@
       "minimum": 1
     },
     "published": {
-      "$ref": "common.schema.json#/$defs/timestamp"
+      "$ref": "common.schema.json#/$defs/signedTimestamp"
     },
     "profile_claim": {
       "description": "Claimed provider profile (SK-PRV section 11). basis is fixed to self-assessment before v1.0. A manifest MAY claim P0.",
@@ -448,11 +448,11 @@
               "$ref": "common.schema.json#/$defs/uri"
             },
             "issued": {
-              "$ref": "common.schema.json#/$defs/timestamp"
+              "$ref": "common.schema.json#/$defs/signedTimestamp"
             },
             "valid_until": {
               "description": "At most two years after issued (SK-PRV section 10; checked by tools/validate).",
-              "$ref": "common.schema.json#/$defs/timestamp"
+              "$ref": "common.schema.json#/$defs/signedTimestamp"
             }
           }
         }
@@ -470,7 +470,7 @@
         "additionalProperties": false,
         "properties": {
           "effective": {
-            "$ref": "common.schema.json#/$defs/timestamp"
+            "$ref": "common.schema.json#/$defs/signedTimestamp"
           },
           "summary": {
             "type": "string",

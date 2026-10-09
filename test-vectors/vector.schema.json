@@ -104,6 +104,7 @@
             "residency-regions",
             "residency-tag-syntax",
             "ed25519-sign",
+            "dcbor-signing-input",
             "jcs-signing-input",
             "verify",
             "sign",
@@ -120,7 +121,9 @@
           "items": {
             "enum": [
               "EdDSA",
-              "jcs"
+              "jcs",
+              "ES256",
+              "dcbor"
             ]
           },
           "uniqueItems": true
@@ -182,10 +185,11 @@
           }
         },
         "status": {
-          "description": "normative: follows from merged draft text. provisional: an interim reading of an open question, named in open_issue; failures are reported but do not fail a run.",
+          "description": "normative: follows from merged draft text. provisional: an interim reading of an open question, named in open_issue; failures are reported but do not fail a run. withdrawn: no longer valid because the drafts changed; kept so the id is never reused, never run, and note names the replacement.",
           "enum": [
             "normative",
-            "provisional"
+            "provisional",
+            "withdrawn"
           ]
         },
         "open_issue": {
@@ -275,6 +279,20 @@
                 }
               ]
             }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "withdrawn"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "note"
+            ]
           }
         }
       ]

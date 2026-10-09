@@ -184,11 +184,11 @@
       "$ref": "common.schema.json#/$defs/nonce"
     },
     "issued": {
-      "$ref": "common.schema.json#/$defs/timestamp"
+      "$ref": "common.schema.json#/$defs/signedTimestamp"
     },
     "expires": {
       "description": "Expiry; store-and-forward queues MUST respect it (SK-COM section A9). Must be later than issued (checked by tools/validate).",
-      "$ref": "common.schema.json#/$defs/timestamp"
+      "$ref": "common.schema.json#/$defs/signedTimestamp"
     },
     "provenance": {
       "description": "Chain of prior hops, oldest first (SK-COM section A5): senders, delegators, proxies, relays, and legacy endpoints. Empty if there is no prior hop. Legacy endpoints carry their legacy and unattested labels here (SK-COM section B1, B5).",
@@ -344,7 +344,7 @@
           "uniqueItems": true
         },
         "at": {
-          "$ref": "common.schema.json#/$defs/timestamp"
+          "$ref": "common.schema.json#/$defs/signedTimestamp"
         }
       },
       "allOf": [

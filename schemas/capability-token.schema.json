@@ -7,7 +7,7 @@
   "$ref": "#/$defs/tokenFields",
   "properties": {
     "chain": {
-      "description": "Parent tokens, ordered from the root token to the immediate parent. Empty for a root token. Each link is a complete signed token without its own chain (the chain is flattened). For every adjacent pair (parent, child), including the last link and this token: child.iss equals parent.sub, child rights are a subset of parent rights, child exp is not later than parent exp, and child budget does not exceed parent budget.",
+      "description": "Parent tokens, ordered from the root token to the immediate parent. Empty for a root token. Each link is a complete signed token without its own chain (the chain is flattened). Every token is signed with chain set to its ancestors as carried (an empty array for a root token); a verifier checks link i with chain set to links 0 to i-1 (SK-COM section A6). For every adjacent pair (parent, child), including the last link and this token: child.iss equals parent.sub, child rights are a subset of parent rights, child exp is not later than parent exp, and child budget does not exceed parent budget.",
       "type": "array",
       "maxItems": 16,
       "items": {
@@ -63,16 +63,16 @@
           "$ref": "common.schema.json#/$defs/identifier"
         },
         "iat": {
-          "description": "Issued at.",
-          "$ref": "common.schema.json#/$defs/timestamp"
+          "description": "Issued at. Receivers reject a token or link whose iat is later than the verification time plus max_clock_skew (SK-COM section A5), with refusal code not-yet-valid (SK-COM section A6).",
+          "$ref": "common.schema.json#/$defs/signedTimestamp"
         },
         "nbf": {
           "description": "Not valid before.",
-          "$ref": "common.schema.json#/$defs/timestamp"
+          "$ref": "common.schema.json#/$defs/signedTimestamp"
         },
         "exp": {
           "description": "Expiry. At most 1 hour after iat; owner policy MAY set a shorter maximum (SK-COM section A6). Checked by tools/validate.",
-          "$ref": "common.schema.json#/$defs/timestamp"
+          "$ref": "common.schema.json#/$defs/signedTimestamp"
         },
         "cnf": {
           "description": "Proof-of-possession confirmation (sender binding), modelled on RFC 7800. At least one member is required.",

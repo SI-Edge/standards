@@ -26,9 +26,9 @@ Machine-readable versions of the data structures defined in the drafts, written 
 - **Versioning.** `v` is `MAJOR.MINOR`, and these schemas accept exactly `0.1`. A document using a later minor version is checked against that version's schemas (SK-COM A5.2).
 - **Registries.** Data classes, intents, and refusal reasons are restricted to [../registries](../registries/README.md) or `x-` private codes. The tests check that registries and schemas list the same codes.
 
-## CBOR Encoding (non-normative note)
+## CBOR Encoding
 
-The JSON Schemas define the data model. A CBOR encoding follows the same data model, encoded as deterministic CBOR as defined in RFC 8949 section 4.2 (Core Deterministic Encoding Requirements), so that signatures over the canonical form are reproducible. Member names stay text strings, timestamps may be carried as CBOR tag 1 (epoch seconds), and binary values that JSON carries as base64url may be carried as CBOR byte strings. This note is non-normative; a normative CBOR profile, including the exact type mappings, is future work. Signatures already use deterministic CBOR (`canon: dcbor`) as the mandatory-to-implement encoding (SK-COM A5.1).
+The JSON Schemas define the data model. The `dcbor` signing input is the RFC 8949 section 4.2.1 core deterministic encoding of that data model, with no type mapping: timestamps, identifiers, and base64url values stay text strings, and a number with an integral value is encoded as an integer (the numeric rule of SK-COM §A5.1 and Appendix F). Timestamps in signed objects use `signedTimestamp` (UTC, `Z`, whole seconds). No other CBOR wire encoding is defined in this version.
 
 ## Validate
 

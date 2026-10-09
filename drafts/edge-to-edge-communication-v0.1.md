@@ -88,13 +88,14 @@ Fields:
 | `payload_type` | When `data` is present, and only then | Media type or schema URI of `data` |
 | `residency` | Always | Residency tags (SK-RT §11) and data classes ([registries/data-classes.md](../registries/data-classes.md)) of the content |
 | `idem_key` | Whenever `instructions` is present; **MAY** be used on other messages | Idempotency key so retries do not repeat an action |
-| `nonce` / `issued` / `expires` | Always | Replay protection and freshness. `nonce` has at least 128 bits of randomness. Timestamps are RFC 3339 with an explicit offset (CBOR tag 1 in CBOR) |
+| `nonce` / `issued` / `expires` | Always | Replay protection and freshness. `nonce` has at least 128 bits of randomness. Timestamps are RFC 3339 in UTC with whole seconds, `YYYY-MM-DDTHH:MM:SSZ` (§A5.1) |
 | `provenance` | Always; empty if there is no prior hop | Prior hops, oldest first (F6, F8, B5). Each entry has `role` (`origin`, `delegator`, `proxy`, `relay`, `store-and-forward`, or `legacy-endpoint`), `id`, and optional `device`, `method`, `labels`, and `at` |
 | `model_ref` | When a model produced content | Which agent and model produced the content |
 | `ext` | Optional | Extensions (§A5.2) |
 | `sig` | Always | Signature block by the agent key (§A5.1) |
 
 - **[C1]** Receivers **MUST** reject envelopes that are unsigned, expired, replayed, not addressed to them (`aud`), out of sequence beyond a configured window, or of an unknown major version. *Rationale: fail closed.*
+- **[C1]** `max_clock_skew` is 30 seconds. A rule that allows for clock differences between parties names `max_clock_skew`, and a receiver **MUST NOT** allow more than that; where a rule does not name it, no skew is allowed. *Rationale: one named bound that every time check can reuse, so implementations agree on edge cases.*
 - **[C1]** `instructions` and `data` **MUST** be separate fields, and the receiving Core **MUST NOT** grant any authority based on text inside `data`. *Rationale: a structural mitigation for prompt injection. It is not a complete defence, because a model reading `data` can still be steered; SK-RT §2 requires policy checks on every resulting action.*
 - **[C1]** Every envelope that carries `instructions` **MUST** carry an `idem_key`. *Rationale: any requested action may change state, so retries must be safe by default.*
 - **[C1]** `data` and `payload_type` **MUST** appear together or not at all. *Rationale: untrusted content must always be typed before it is parsed.*
@@ -103,8 +104,13 @@ Fields:
 
 ### A5.1 Canonical Encoding and Signatures
 
-- **[C1]** A signature **MUST** be computed over the canonical encoding of the signed object with its `sig` member removed. The `sig` block contains `alg` (JOSE or COSE algorithm name), `kid` (signing key), `canon`, `value`, and, for manifests, `signer`. `canon` names the encoding: `dcbor` (deterministic CBOR, RFC 8949 §4.2) or `jcs` (JSON Canonicalization Scheme, RFC 8785). *Rationale: both sides must hash exactly the same bytes.*
+- **[C1]** A signature **MUST** be computed over the canonical encoding of the signed object with its `sig` member removed. The `sig` block contains `alg` (JOSE or COSE algorithm name), `kid` (signing key), `canon`, `value`, and, for manifests, `signer`. `canon` names the encoding: `dcbor` (deterministic CBOR: the core deterministic encoding of RFC 8949 §4.2.1 with the rules below and in Appendix F) or `jcs` (JSON Canonicalization Scheme, RFC 8785). *Rationale: both sides must hash exactly the same bytes.*
 - **[C1]** Every runtime **MUST** be able to produce and verify `dcbor` signatures. Senders **MUST** use `dcbor` unless the receiver announced `jcs` support during negotiation (§B7). *Rationale: one mandatory-to-implement encoding guarantees interoperability.*
+- **[C1]** The `dcbor` signing input **MUST** be the core deterministic encoding (RFC 8949 §4.2.1) of the object's JSON data model with `sig` removed, as defined in Appendix F: JSON objects become maps with text-string keys, JSON strings (including timestamps, identifiers, base64url values, and decimal money amounts) become text strings, JSON numbers become numbers as in the next rule, and `true`, `false`, and `null` become the corresponding simple values. Signers and verifiers **MUST NOT** convert any member to another CBOR type (for example CBOR tag 1 for a timestamp or a byte string for a base64url value) before computing or checking the signing input. *Rationale: a signer and a verifier that map types differently hash different bytes, so every signature fails.*
+- **[C1]** In the `dcbor` signing input, a number with an integral value (for example `50`, `50.0`, or `-0.0`) **MUST** be encoded as a CBOR integer, and any other number as the shortest of half, single, or double precision floating point that represents it exactly. *Rationale: JSON does not distinguish `50` from `50.0`, so JSON parsers that read them differently must still produce the same bytes.*
+- **[C1]** In a signed object, every number with an integral value **MUST** lie between -(2^53-1) and 2^53-1, and every text string, including map keys, **MUST** be in Unicode Normalization Form C. Receivers **MUST** refuse an object that breaks this rule with `malformed`, even if its signature verifies. *Rationale: within these limits `dcbor` and `jcs` encode the same data model.*
+- **[C1]** Every timestamp in a signed object (`iat`, `nbf`, `exp`, `issued`, `expires`, provenance `at`, and manifest timestamps) **MUST** be RFC 3339 in UTC with `Z` and whole seconds (`YYYY-MM-DDTHH:MM:SSZ`). Receivers **MUST** refuse other forms with `malformed`. *Rationale: one instant then has exactly one signed form, so no offset or precision choice can change the bytes.*
+- **[C1]** This version defines no CBOR wire encoding other than the data model above. A later version **MAY** define one (for example carrying timestamps as CBOR tag 1), but signatures **MUST** always be computed over the data model form. *Rationale: a transport optimisation must never change what was signed.*
 - **[C1]** `instructions` have no separate signature; they are authenticated only as part of the signed envelope. *Rationale: one signature, one verification path.*
 - The same rules apply to every signed Selfkin object: capability tokens (§A6), module manifests (SK-RT §3), and Provider Manifests (SK-PRV §8).
 
@@ -120,12 +126,15 @@ Fields:
 - **[C1]** Authorization **MUST** be capability-based. A token grants specific actions on specific resources, for a specific audience and time window. *Rationale: least privilege, with no ambient authority.*
 - **[C1]** A Selfkin capability token has the members `v`, `id`, `iss` (issuer), `sub` (holder), `aud` (exactly one audience), `iat`, optional `nbf`, `exp`, `cnf` (proof-of-possession key binding), `rights` (each an `action` on a `resource`, with optional `constraints`), optional `budget`, `chain`, optional `ext`, and `sig` ([schemas/capability-token.schema.json](../schemas/capability-token.schema.json)). *Rationale: one token format that every runtime can verify.*
 - **[C1]** A token's `exp` **MUST** be no more than 1 hour after its `iat`. Owner policy **MAY** set a shorter maximum. Longer tasks **MUST** obtain fresh tokens. *Rationale: a testable bound for "short-lived".*
+- **[C1]** Receivers **MUST** refuse with `unauthorized` a token, or any link in its chain, whose `exp` is not later than its `iat`. *Rationale: such a token is never valid.*
+- **[C1]** Receivers **MUST** refuse with `not-yet-valid` a token, or any link in its chain, whose `iat` is later than the verification time plus `max_clock_skew` (§A5). *Rationale: a future `iat` would let an issuer stretch the 1 hour bound to any length.*
 - **[C1]** When a token authorises an envelope, its `sub` **MUST** equal the envelope's `sender_agent`, its `aud` **MUST** equal the envelope's `aud`, and its rights **MUST** cover the action in `instructions`. *Rationale: a token is useful only to its holder, toward its audience, for its actions.*
 - **[C1]** Other attenuable token formats **MAY** be used, wrapped as `{format, token}` in `cap_token`. The receiver **MUST** verify attenuation natively for that format, and **MUST** refuse with `unsupported-token-format` if it cannot. *Rationale: alternative formats must not bypass attenuation.*
 - **[C1]** Tokens **MUST** be short-lived and sender-bound (proof of possession, for example DPoP, RFC 9449, or mTLS-bound tokens, RFC 8705). They **SHOULD** follow the OAuth 2.0 Security BCP (RFC 9700) or OAuth 2.1 (an IETF Internet-Draft, work in progress), or use an attenuable token format. *Rationale: a stolen token alone is useless.*
 - **[C1]** Below C2, F6 delegation **MUST NOT** cross owners. *Rationale: cross-owner delegation needs verifiable chains.*
 - **[C2]** Delegation (F6) **MUST** only attenuate. Each hop can narrow scope, lifetime, or budget but never widen them, and the full chain **MUST** be verifiable end to end. *Rationale: delegating a task must never escalate privilege.*
 - **[C2]** A delegated token narrows its parent only if all of the following hold, and receivers **MUST** reject it otherwise: (a) its `iss` equals the parent's `sub`; (b) its `aud` equals the parent's `aud`; (c) its `exp` is not later than the parent's; (d) every right has the same `action` as a parent right and a `resource` that is equal to the parent's or lies below a parent resource ending in `/*`; (e) every constraint and budget limit the parent sets is present and not higher, and constrained data classes are a subset; (f) the full chain is carried in `chain`, root first, with at most 16 links. *Rationale: precise rules make attenuation testable.*
+- **[C1]** Every token **MUST** be signed with `chain` set to its ancestors as they are carried (an empty array for a root token), each ancestor without its own `chain` member. To verify link *i* of a presented chain, a verifier **MUST** set that link's `chain` to links 0 to *i*-1 as carried and verify the result; the presented token is verified as received. *Rationale: a link was signed with its ancestors, and two implementations must rebuild the same bytes to verify delegated tokens.*
 - **[C1]** The owners of `iss` and `sub` are determined from owner-signed statements (§A2); a chain whose links cannot be attributed to owners **MUST** be treated as crossing owners. *Rationale: the cross-owner rule above needs a way to tell owners apart.*
 - **[C1]** Consequential actions requested by another owner (F2, or F6 across owners) **MUST** get human approval on the receiving side, unless the owner has pre-authorised a narrow policy for them. *Rationale: a stranger's agent must not act on your behalf by default.*
 - **[C1]** Every request **MUST** also pass the receiving runtime's local permission checks. Tokens never override local policy. *Rationale: the receiver's owner decides.*
@@ -262,7 +271,50 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 # E. References
 
-BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); deterministic CBOR (RFC 8949 §4.2); JSON Canonicalization Scheme (RFC 8785); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
+BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); CBOR (RFC 8949); dCBOR (draft-mcnally-deterministic-cbor-18, work in progress; informative only); CDDL (RFC 8610); I-JSON (RFC 7493); Unicode Normalization Forms (UAX #15); JSON Canonicalization Scheme (RFC 8785); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
+
+# F. Appendix: `dcbor` Signing Input (normative)
+
+The signing input of a signed object is the core deterministic encoding (RFC 8949 §4.2.1), with the numeric rule of §A5.1, of the data item described below, with the `sig` member removed. The CDDL (RFC 8610) describes the data model after the rules of §A5.1; per-object members are defined by the JSON Schemas in [schemas/](../schemas/).
+
+```cddl
+; Signing input: the signed object without "sig", deterministically encoded (A5.1).
+signing-input = json-map  ; "sig" never present at the top level
+
+; The JSON data model. No tags, no byte strings, no undefined.
+json-value = tstr / safe-int / json-float / bool / null / json-array / json-map
+json-array = [ * json-value ]
+json-map = { * tstr => json-value }
+
+; Integral numbers, after the numeric rule of A5.1 (I-JSON range).
+safe-int = (uint .le 9007199254740991) / (nint .ge -9007199254740991)
+
+; Numbers with a non-zero fractional part, in preferred serialization.
+json-float = float16 / float32 / float64
+
+; Text form of every timestamp in a signed object (A5.1).
+signed-timestamp = tstr .regexp "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"
+
+; A capability token as signed (A6): chain holds the ancestors as carried.
+token-signing-input = {
+  "v": tstr, "id": tstr, "iss": tstr, "sub": tstr, "aud": tstr,
+  "iat": signed-timestamp, ? "nbf": signed-timestamp, "exp": signed-timestamp,
+  "cnf": { * tstr => tstr },
+  "rights": [ + json-map ],
+  ? "budget": json-map,
+  "chain": [ * carried-link ],
+  ? "ext": json-map,
+}
+
+; A link as carried in "chain": a complete signed token without "chain".
+carried-link = json-map
+```
+
+Text strings are in Unicode Normalization Form C (§A5.1). Map keys are sorted in bytewise lexicographic order of their encodings, as RFC 8949 §4.2.1 requires. A number with an integral value, such as `50.0`, is encoded as the integer `50`.
+
+*Note (informative): the numeric rule follows the same approach as numeric reduction in dCBOR (draft-mcnally-deterministic-cbor-18, work in progress), which is cited as prior art only. This document does not depend on that draft; where they differ, §A5.1 and this appendix apply.*
 
 ---
+*Proposed revision (2026-10-09, #10, #17, #47): `dcbor` is the RFC 8949 §4.2.1 core deterministic encoding of the JSON data model with no type mapping and with numeric reduction, timestamps in signed objects are UTC with whole seconds, numbers and text are restricted so that `dcbor` and `jcs` agree (§A5.1, Appendix F), `max_clock_skew` is defined once (§A5), tokens are signed with `chain` set to their ancestors, and a future `iat` is refused with `not-yet-valid` (§A6).*
+
 *Schema alignment revision (2026-10-09): pairing intents and refusals (§A3, §A7), envelope field formats, `attestation_ref` always present, `idem_key` with `instructions`, intersection of residency tags (§A5), canonical encoding and signatures (§A5.1), versions and the `ext` extension rule (§A5.2), token format, 1 hour maximum lifetime, envelope binding, and precise narrowing rules (§A6), provenance labels for legacy endpoints (§B1, §B5). Full history in [CHANGELOG.md](../CHANGELOG.md).*

@@ -1,0 +1,247 @@
+{
+  "suite": "0.2.0",
+  "category": "envelope",
+  "description": "Timestamp rule for envelopes (SK-COM A5, A5.1). Static checks; signatures are placeholders.",
+  "vectors": [
+    {
+      "id": "envelope.signed-values.001",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "envelope-check",
+      "input": {
+        "envelope": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+          "sender_device": "did:example:device-1",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "session": "sess-0001",
+          "seq": 1,
+          "attestation_ref": null,
+          "cap_token": {
+            "v": "0.1",
+            "id": "tok-deleg-0001",
+            "iss": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+            "sub": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+            "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+            "iat": "2026-10-09T08:05:00Z",
+            "exp": "2026-10-09T08:35:00Z",
+            "cnf": {
+              "jkt": "FVV5umTuau890q59V-4Ga_R6qWb7ON_ivJc4EjvCwTM"
+            },
+            "rights": [
+              {
+                "action": "calendar.propose_meeting",
+                "resource": "urn:example:calendar:bob/work",
+                "constraints": {
+                  "max_uses": 1
+                }
+              }
+            ],
+            "budget": {
+              "messages": 10
+            },
+            "chain": [
+              {
+                "v": "0.1",
+                "id": "tok-root-0001",
+                "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+                "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "iat": "2026-10-09T08:00:00Z",
+                "exp": "2026-10-09T09:00:00Z",
+                "cnf": {
+                  "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+                },
+                "rights": [
+                  {
+                    "action": "calendar.propose_meeting",
+                    "resource": "urn:example:calendar:bob/*",
+                    "constraints": {
+                      "max_uses": 5
+                    }
+                  }
+                ],
+                "budget": {
+                  "messages": 50
+                },
+                "sig": {
+                  "alg": "EdDSA",
+                  "kid": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw#z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                  "canon": "dcbor",
+                  "value": "0FZvR2jGwkYxyAzJxB4oONltskswIk0JqF04wNHlWPBxaUqiAEr6wEdDC55iYWorirp0GIWeGDTgPzQEHCoEDw"
+                }
+              }
+            ],
+            "sig": {
+              "alg": "EdDSA",
+              "kid": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT#z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+              "canon": "dcbor",
+              "value": "C03QHF_AJEfmELmyMuZ8xSgtA1kqzsMhPyZ9StWo1AhOROAxXxNSW8voJCICMprfTBNJbuCab-7O8OLXV-h0Bw"
+            }
+          },
+          "intent": "scheduling.propose",
+          "instructions": {
+            "action": "calendar.propose_meeting",
+            "resource": "urn:example:calendar:bob/work",
+            "params": {
+              "duration_min": 30
+            },
+            "consequential": false
+          },
+          "residency": {
+            "tags": [
+              "CH-EU"
+            ],
+            "data_classes": [
+              "calendar.availability"
+            ]
+          },
+          "idem_key": "idem-2026-10-09-0001-a7c3",
+          "nonce": "AAECAwQFBgcICQoLDA0ODw",
+          "issued": "2026-10-09T10:10:00+02:00",
+          "expires": "2026-10-09T10:15:00+02:00",
+          "provenance": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "issued and expires with a +02:00 offset; replaces the expectation of envelope.structure.007"
+    },
+    {
+      "id": "envelope.signed-values.002",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "envelope-check",
+      "input": {
+        "envelope": {
+          "v": "0.1",
+          "form": "F2",
+          "sender_agent": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+          "sender_device": "did:example:device-1",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "session": "sess-0001",
+          "seq": 1,
+          "attestation_ref": null,
+          "cap_token": {
+            "v": "0.1",
+            "id": "tok-deleg-0001",
+            "iss": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+            "sub": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+            "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+            "iat": "2026-10-09T08:05:00Z",
+            "exp": "2026-10-09T08:35:00Z",
+            "cnf": {
+              "jkt": "FVV5umTuau890q59V-4Ga_R6qWb7ON_ivJc4EjvCwTM"
+            },
+            "rights": [
+              {
+                "action": "calendar.propose_meeting",
+                "resource": "urn:example:calendar:bob/work",
+                "constraints": {
+                  "max_uses": 1
+                }
+              }
+            ],
+            "budget": {
+              "messages": 10
+            },
+            "chain": [
+              {
+                "v": "0.1",
+                "id": "tok-root-0001",
+                "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+                "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                "iat": "2026-10-09T08:00:00Z",
+                "exp": "2026-10-09T09:00:00Z",
+                "cnf": {
+                  "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+                },
+                "rights": [
+                  {
+                    "action": "calendar.propose_meeting",
+                    "resource": "urn:example:calendar:bob/*",
+                    "constraints": {
+                      "max_uses": 5
+                    }
+                  }
+                ],
+                "budget": {
+                  "messages": 50
+                },
+                "sig": {
+                  "alg": "EdDSA",
+                  "kid": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw#z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+                  "canon": "dcbor",
+                  "value": "0FZvR2jGwkYxyAzJxB4oONltskswIk0JqF04wNHlWPBxaUqiAEr6wEdDC55iYWorirp0GIWeGDTgPzQEHCoEDw"
+                }
+              }
+            ],
+            "sig": {
+              "alg": "EdDSA",
+              "kid": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT#z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+              "canon": "dcbor",
+              "value": "C03QHF_AJEfmELmyMuZ8xSgtA1kqzsMhPyZ9StWo1AhOROAxXxNSW8voJCICMprfTBNJbuCab-7O8OLXV-h0Bw"
+            }
+          },
+          "intent": "scheduling.propose",
+          "instructions": {
+            "action": "calendar.propose_meeting",
+            "resource": "urn:example:calendar:bob/work",
+            "params": {
+              "duration_min": 30
+            },
+            "consequential": false
+          },
+          "residency": {
+            "tags": [
+              "CH-EU"
+            ],
+            "data_classes": [
+              "calendar.availability"
+            ]
+          },
+          "idem_key": "idem-2026-10-09-0001-a7c3",
+          "nonce": "AAECAwQFBgcICQoLDA0ODw",
+          "issued": "2026-10-09T08:10:00.250Z",
+          "expires": "2026-10-09T08:15:00Z",
+          "provenance": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "issued with a fractional second"
+    }
+  ]
+}

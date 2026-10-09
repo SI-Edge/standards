@@ -41,13 +41,16 @@ Each invalid example changes one thing in a valid example. Examples were generat
 | File | Comment: why it must fail |
 |---|---|
 | `capability-token.lifetime-over-one-hour.invalid.json` | Root token valid for 3 hours. The maximum lifetime is 1 hour (SK-COM section A6). Semantic check |
+| `capability-token.offset-timestamp.invalid.json` | `iat` is `2026-10-09T10:00:00+02:00`. Timestamps in signed objects are UTC with `Z` and whole seconds, so one instant has one signed form (SK-COM section A5.1) |
 | `capability-token.longer-lifetime.invalid.json` | Delegated token expires after its parent. Delegation may only shorten lifetime (SK-COM section A6). Semantic check |
 | `capability-token.not-sender-bound.invalid.json` | No `cnf` member, so the token is a bearer token. Tokens must be sender-bound (SK-COM section A6) |
+| `capability-token.unsafe-integer.invalid.json` | `budget.messages` is 2^53. Numbers with an integral value in signed objects stay within the I-JSON safe range so that `dcbor` and `jcs` agree (SK-COM section A5.1). Semantic check |
 | `capability-token.widened-budget.invalid.json` | Delegated token raises the message budget above its parent's. Budgets may only narrow (SK-COM section A6). Semantic check |
 | `capability-token.widened-rights.invalid.json` | Delegated token adds a `payments.send` right the parent never had. Rights may only narrow (SK-COM section A6). Semantic check |
 | `envelope.bad-residency-tag.invalid.json` | Residency tag `switzerland` is neither `CH`, `EU`, `CH-EU`, nor an `x-` owner tag (SK-RT section 11) |
 | `envelope.data-without-payload-type.invalid.json` | `data` is present without `payload_type` (SK-COM section A5) |
 | `envelope.expires-before-issued.invalid.json` | `expires` is earlier than `issued`, so the envelope is never fresh. Semantic check |
+| `envelope.fractional-seconds.invalid.json` | `issued` is `2026-10-09T08:10:00.250Z`. Timestamps in signed objects have whole seconds (SK-COM section A5.1) |
 | `envelope.ext-without-x-prefix.invalid.json` | Extension member `project` without the `x-` prefix (SK-COM section A5.2) |
 | `envelope.higher-minor-version.invalid.json` | `v` is `0.2`, a version these v0.1 schemas do not define. Members and versions beyond the negotiated version are rejected (SK-COM section A5.2) |
 | `envelope.refusal-with-free-text.invalid.json` | Refusal object with a free-text `detail`. Refusals carry codes only (SK-COM section A7) |

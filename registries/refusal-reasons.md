@@ -15,6 +15,7 @@ Reason codes for the refusal object ([schemas/refusal.schema.json](../schemas/re
 | `unsupported-token-format` | Token format whose attenuation the receiver cannot verify | SK-COM §A6 |
 | `unauthorized` | Missing token, or rights do not cover the request | SK-COM §A6 |
 | `expired` | Envelope or token expired | SK-COM §A5, §A6 |
+| `not-yet-valid` | Token or chain link issued in the future (`iat` later than now plus `max_clock_skew`) | SK-COM §A5, §A6 |
 | `replayed` | Nonce or `idem_key` already seen | SK-COM §A5, §A9 |
 | `wrong-audience` | `aud` does not name the receiver | SK-COM §A5 |
 | `out-of-sequence` | `seq` outside the configured window | SK-COM §A5 |

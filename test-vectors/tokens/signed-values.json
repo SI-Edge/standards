@@ -1,0 +1,261 @@
+{
+  "suite": "0.2.0",
+  "category": "tokens",
+  "description": "Value rules for signed objects (SK-COM A5.1): timestamps in UTC with whole seconds, integral numbers in the I-JSON range, text in NFC. Static checks; signatures are placeholders.",
+  "vectors": [
+    {
+      "id": "token.signed-values.001",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T10:00:00+02:00",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 50
+          },
+          "chain": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "iat with a +02:00 offset"
+    },
+    {
+      "id": "token.signed-values.002",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:00:00.000Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 50
+          },
+          "chain": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "iat with a fractional second"
+    },
+    {
+      "id": "token.signed-values.003",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:rené/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 50
+          },
+          "chain": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "Resource text not in NFC (e followed by U+0301)"
+    },
+    {
+      "id": "token.signed-values.004",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 9007199254740992
+          },
+          "chain": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "budget.messages is 2^53"
+    },
+    {
+      "id": "token.signed-values.005",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "token-check",
+      "input": {
+        "token": {
+          "v": "0.1",
+          "id": "tok-root-0001",
+          "iss": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "sub": "did:key:z6MkiaMbhXHNA4eJVCCj8dbzKzTgYDKf6crKgHVHid1F1WCT",
+          "aud": "did:key:z6MktwupdmLXVVqTzCw4i46r4uGyosGXRnR3XjN4Zq7oMMsw",
+          "iat": "2026-10-09T08:00:00Z",
+          "exp": "2026-10-09T09:00:00Z",
+          "cnf": {
+            "jkt": "FtIu-VbGrfe_KB6CH7GNwODB72MNxj_ml11dEvO-7kk"
+          },
+          "rights": [
+            {
+              "action": "calendar.propose_meeting",
+              "resource": "urn:example:calendar:bob/*",
+              "constraints": {
+                "max_uses": 5
+              }
+            }
+          ],
+          "budget": {
+            "messages": 50.0
+          },
+          "chain": [],
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "urn:example:test-key:placeholder",
+            "canon": "dcbor",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          }
+        }
+      },
+      "expected": {
+        "result": "accept"
+      },
+      "status": "normative",
+      "note": "budget.messages written as 50.0 is the integer 50"
+    }
+  ]
+}
