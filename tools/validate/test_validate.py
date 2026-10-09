@@ -130,6 +130,12 @@ class SemanticTests(unittest.TestCase):
         self.assertTrue(validate.resource_covers("urn:a:b", "urn:a:b"))
         self.assertFalse(validate.resource_covers("urn:a:b", "urn:a:b/c"))
         self.assertFalse(validate.resource_covers("urn:a:b/*", "urn:a:bc"))
+        # SK-COM A6 matching rule (issues #23, #48)
+        self.assertTrue(validate.resource_covers("urn:a:b/*", "urn:a:b/c/d"))
+        for child in ("urn:a:b", "urn:a:b/", "urn:a:b//c", "urn:a:b/./c", "urn:a:b/../c",
+                      "urn:a:b/c/..", "urn:a:b/%2e%2e/c", "urn:a:b/c%2Fd"):
+            self.assertFalse(validate.resource_covers("urn:a:b/*", child), child)
+        self.assertFalse(validate.resource_covers("urn:a:*", "urn:a:b"))
 
     def test_money_is_compared_exactly(self):
         # As floats both amounts are 1.0, so the widening went unnoticed.
@@ -178,6 +184,27 @@ class RepositoryStyleTests(unittest.TestCase):
                     text = path.read_text(encoding="utf-8")
                     for dash in FORBIDDEN_DASHES:
                         self.assertNotIn(dash, text)
+
+
+
+class InstructionCoverageTests(unittest.TestCase):
+    """SK-COM A6: one right covers both action and resource (issue #23)."""
+
+    def envelope(self, instructions):
+        token = {"iss": "o", "sub": "a", "aud": "b", "iat": "2026-10-09T09:00:00+02:00",
+                 "exp": "2026-10-09T09:30:00+02:00",
+                 "rights": [{"action": "calendar.read", "resource": "urn:x:cal/*"}]}
+        return {"issued": "2026-10-09T09:00:00+02:00", "expires": "2026-10-09T09:05:00+02:00",
+                "aud": "b", "sender_agent": "a", "cap_token": token, "instructions": instructions}
+
+    def test_covered(self):
+        self.assertEqual(validate.check_envelope(self.envelope({"action": "calendar.read", "resource": "urn:x:cal/work"})), [])
+
+    def test_resource_outside_wildcard(self):
+        self.assertTrue(validate.check_envelope(self.envelope({"action": "calendar.read", "resource": "urn:x:cal/../mail"})))
+
+    def test_missing_resource(self):
+        self.assertTrue(validate.check_envelope(self.envelope({"action": "calendar.read"})))
 
 
 if __name__ == "__main__":

@@ -120,13 +120,21 @@ def decimal(value: str) -> Decimal:
 
 
 def resource_covers(parent: str, child: str) -> bool:
-    """True if the parent resource covers the child resource."""
+    """True if the parent resource covers the child resource (SK-COM A6).
+
+    Exact string comparison, no normalisation. A parent ending in ``/*`` covers
+    a child below that prefix only if the remainder is non-empty and has no
+    empty, ``.`` or ``..`` segment and no ``%``, so ``a/*`` never covers
+    ``a/../b`` (issues #23, #48).
+    """
     if parent == child:
         return True
-    if parent.endswith("/*"):
-        prefix = parent[:-1]
-        return child.startswith(prefix)
-    return False
+    if not parent.endswith("/*") or not child.startswith(parent[:-1]):
+        return False
+    rest = child[len(parent) - 1:]
+    if not rest or "%" in rest:
+        return False
+    return all(segment not in ("", ".", "..") for segment in rest.split("/"))
 
 
 def right_covered(child: dict, parent: dict) -> bool:
@@ -208,8 +216,12 @@ def check_envelope(env: dict) -> list[str]:
         if token["sub"] != env["sender_agent"]:
             problems.append("cap_token.sub must equal sender_agent (token is sender-bound)")
         instr = env.get("instructions")
-        if instr and not any(r["action"] == instr["action"] for r in token["rights"]):
-            problems.append("instructions.action is not granted by cap_token")
+        if instr:
+            if "resource" not in instr:
+                problems.append("instructions without resource are not covered by any right (SK-COM section A6)")
+            elif not any(r["action"] == instr["action"] and resource_covers(r["resource"], instr["resource"])
+                         for r in token["rights"]):
+                problems.append("instructions action and resource are not covered by one cap_token right")
     return problems
 
 
