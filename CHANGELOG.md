@@ -2,6 +2,14 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Cross-owner rule applies to delegated links (proposal, #25)
+
+Normative clarification, open for comments.
+
+### Changed
+
+- SK-COM §A6: below C2, the rule that F6 delegation must not cross owners applies to every delegated link (every link after the root), not to the root link, and applies whatever the envelope's `form`. A root token may still be issued across owners, as in a normal F2 request.
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added
