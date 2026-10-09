@@ -27,6 +27,8 @@ No normative rule changed.
 - `date` (optional, `YYYY-MM-DD`, Europe/Zurich): the date shown in CHANGELOG.md. Without it the release date is used.
 - Body: the CHANGELOG entry text. It must not be empty. Use `###` subheadings (`Added`, `Changed`, `Fixed`,
   `Removed`) with a blank line after each heading. Plain ASCII punctuation, no em-dashes or en-dashes.
+- Write file paths as code (`schemas/README.md`), not as relative links: a link that works from `changes/`
+  breaks once the entry moves into CHANGELOG.md, and the other way round.
 
 ## Assembling a Release
 
