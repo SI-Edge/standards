@@ -2,6 +2,16 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Test vector suite version in one place
+
+Tooling change. No normative rule changed.
+
+### Changed
+
+- `test-vectors/VERSION` is now the only place the suite version is recorded. Vector files no longer carry a `suite` member, and `vector.schema.json` no longer allows it, so two pull requests that both bump the suite only touch `VERSION` and one sentence in `test-vectors/README.md`.
+- `tools/validate/test_vectors.py`: the check that every file's `suite` equals `VERSION` is replaced by checks that `VERSION` is a semantic version, that `test-vectors/README.md` states the same version, and that no vector file carries a `suite` member. `--summary` prints the suite version from `VERSION`.
+- `test-vectors/README.md`: states the current suite version and that `VERSION` is its only source.
+
 ## 2026-10-09: Markdown lint and link check in CI
 
 Tooling change. No normative rule changed.

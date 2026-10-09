@@ -1,5 +1,4 @@
 {
-  "suite": "0.1.0",
   "category": "signatures",
   "description": "Ed25519 known-answer tests copied from RFC 8032 section 7.1, so an implementation can check its primitive and key handling before the Selfkin vectors below.",
   "vectors": [

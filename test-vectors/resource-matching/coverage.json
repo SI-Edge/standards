@@ -1,5 +1,4 @@
 {
-  "suite": "0.1.0",
   "category": "resource-matching",
   "description": "Whether a right resource covers a requested resource (SK-COM A6 (d)). Provisional: follows the rule proposed in PR #58 for issues #23 and #48.",
   "vectors": [
