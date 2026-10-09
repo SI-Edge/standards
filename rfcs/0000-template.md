@@ -3,7 +3,7 @@
 - **RFC number:** 0000 (assigned on acceptance)
 - **Author(s):** name or handle
 - **Status:** Proposed | Accepted | Rejected | Withdrawn
-- **Affected documents:** SIE-RT / SIE-COM / SIE-PRV / other, with section numbers
+- **Affected documents:** SK-RT / SK-COM / SK-PRV / other, with section numbers
 - **Discussion:** link to the proposal issue
 - **Created:** YYYY-MM-DD
 
@@ -33,7 +33,7 @@ Effects on assistive technology, neurodivergent users, and different form factor
 
 ## Compatibility and Migration
 
-Effects on envelope versions, legacy methods, deprecation (SIE-COM §B8).
+Effects on envelope versions, legacy methods, deprecation (SK-COM §B8).
 
 ## Alternatives Considered
 

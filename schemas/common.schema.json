@@ -1,15 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/SI-Edge/standards/schemas/common.schema.json",
-  "title": "SI Edge common definitions (v0.1)",
-  "description": "Shared definitions used by the other SI Edge v0.1 schemas: identifiers, timestamps, durations, digests, signatures, residency tags (SIE-RT section 11, TERMINOLOGY.md), and conformance profile tags (SIE-RT section 21, SIE-COM Part C, SIE-PRV section 11). Status: Draft, not for implementation.",
+  "$id": "https://github.com/selfkin/standards/schemas/common.schema.json",
+  "title": "Selfkin common definitions (v0.1)",
+  "description": "Shared definitions used by the other Selfkin v0.1 schemas: identifiers, timestamps, durations, digests, signatures, residency tags (SK-RT section 11, TERMINOLOGY.md), and conformance profile tags (SK-RT section 21, SK-COM Part C, SK-PRV section 11). Status: Draft, not for implementation.",
   "$defs": {
     "schemaVersion": {
-      "description": "Schema version of this document as MAJOR.MINOR. These schemas describe version 0.1. Members defined in a higher minor version are rejected unless that version was negotiated (SIE-COM section A5.2).",
+      "description": "Schema version of this document as MAJOR.MINOR. These schemas describe version 0.1. Members defined in a higher minor version are rejected unless that version was negotiated (SK-COM section A5.2).",
       "const": "0.1"
     },
     "identifier": {
-      "description": "Identity of an owner, device, agent, provider, module, or registry, expressed as a URI (for example a DID, SIE-COM section A2).",
+      "description": "Identity of an owner, device, agent, provider, module, or registry, expressed as a URI (for example a DID, SK-COM section A2).",
       "type": "string",
       "minLength": 3,
       "maxLength": 2048,
@@ -44,7 +44,7 @@
       "pattern": "^[A-Za-z0-9_-]+$"
     },
     "nonce": {
-      "description": "Random nonce with at least 128 bits of randomness, unpadded base64url (at least 22 characters) (SIE-COM section A5).",
+      "description": "Random nonce with at least 128 bits of randomness, unpadded base64url (at least 22 characters) (SK-COM section A5).",
       "type": "string",
       "minLength": 22,
       "maxLength": 128,
@@ -74,7 +74,7 @@
       }
     },
     "signature": {
-      "description": "Signature block (SIE-COM section A5.1). The signature is computed over the canonical encoding named in canon (dcbor: deterministic CBOR, RFC 8949 section 4.2; jcs: JSON Canonicalization Scheme, RFC 8785) of the enclosing object with the sig member removed. dcbor is mandatory to implement. The signature only proves who signed; trust in the key comes from identity statements (SIE-COM section A2).",
+      "description": "Signature block (SK-COM section A5.1). The signature is computed over the canonical encoding named in canon (dcbor: deterministic CBOR, RFC 8949 section 4.2; jcs: JSON Canonicalization Scheme, RFC 8785) of the enclosing object with the sig member removed. dcbor is mandatory to implement. The signature only proves who signed; trust in the key comes from identity statements (SK-COM section A2).",
       "type": "object",
       "required": [
         "alg",
@@ -95,7 +95,7 @@
           "$ref": "#/$defs/identifier"
         },
         "signer": {
-          "description": "Identity of the signer (agent, publisher, provider). REQUIRED for module and provider manifests so that the Core can show who signed (SIE-RT section 3).",
+          "description": "Identity of the signer (agent, publisher, provider). REQUIRED for module and provider manifests so that the Core can show who signed (SK-RT section 3).",
           "$ref": "#/$defs/identifier"
         },
         "canon": {
@@ -111,7 +111,7 @@
       }
     },
     "residencyTag": {
-      "description": "Residency tag (SIE-RT section 11). CH: Switzerland only. EU: EU and EEA member states only. CH-EU: Switzerland, or EU and EEA member states. Owner-defined tags MUST start with x- (SIE-RT section 11). Several tags on one item combine by intersection. Any tag a runtime or provider does not recognise MUST be treated as not allowed (fail closed); this schema only checks syntax.",
+      "description": "Residency tag (SK-RT section 11). CH: Switzerland only. EU: EU and EEA member states only. CH-EU: Switzerland, or EU and EEA member states. Owner-defined tags MUST start with x- (SK-RT section 11). Several tags on one item combine by intersection. Any tag a runtime or provider does not recognise MUST be treated as not allowed (fail closed); this schema only checks syntax.",
       "type": "string",
       "anyOf": [
         {
@@ -127,7 +127,7 @@
       ]
     },
     "dataClass": {
-      "description": "Data class from registries/data-classes.md: a registered top-level class, optionally followed by dot-separated subclasses, or a private class starting with x- (SIE-RT section 11).",
+      "description": "Data class from registries/data-classes.md: a registered top-level class, optionally followed by dot-separated subclasses, or a private class starting with x- (SK-RT section 11).",
       "type": "string",
       "maxLength": 128,
       "pattern": "^((identity|contacts|communications|calendar|location|health|biometric|finance|documents|media|home|device|query|usage|adaptation|memory|secrets)(\\.[a-z0-9_-]+)*|x-[a-z0-9][a-z0-9-]*(\\.[a-z0-9_-]+)*)$"
@@ -140,7 +140,7 @@
       ]
     },
     "communicationProfile": {
-      "description": "C0 is a legacy hop, not a conformance profile (SIE-COM Part C).",
+      "description": "C0 is a legacy hop, not a conformance profile (SK-COM Part C).",
       "enum": [
         "C0",
         "C1",
@@ -190,25 +190,25 @@
       "pattern": "^[0-9]+\\.[0-9]+$"
     },
     "intent": {
-      "description": "Intent from registries/intents.md (SIE-COM section A5): one of the reserved si.* control intents, a registered application domain followed by at least one label, or a private x- intent.",
+      "description": "Intent from registries/intents.md (SK-COM section A5): one of the reserved sk.* control intents, a registered application domain followed by at least one label, or a private x- intent.",
       "type": "string",
       "maxLength": 128,
       "anyOf": [
         {
           "enum": [
-            "si.pairing.request",
-            "si.pairing.response",
-            "si.pairing.confirm",
-            "si.pairing.reject",
-            "si.negotiate",
-            "si.refused",
-            "si.ack",
-            "si.revocation",
-            "si.statement",
-            "si.stream.setup",
-            "si.stream.rekey",
-            "si.summary",
-            "si.sync"
+            "sk.pairing.request",
+            "sk.pairing.response",
+            "sk.pairing.confirm",
+            "sk.pairing.reject",
+            "sk.negotiate",
+            "sk.refused",
+            "sk.ack",
+            "sk.revocation",
+            "sk.statement",
+            "sk.stream.setup",
+            "sk.stream.rekey",
+            "sk.summary",
+            "sk.sync"
           ]
         },
         {
@@ -220,7 +220,7 @@
       ]
     },
     "refusalReason": {
-      "description": "Refusal reason code from registries/refusal-reasons.md, or a private x- code (SIE-COM section A7).",
+      "description": "Refusal reason code from registries/refusal-reasons.md, or a private x- code (SK-COM section A7).",
       "type": "string",
       "anyOf": [
         {
@@ -258,7 +258,7 @@
       ]
     },
     "ext": {
-      "description": "Extensions (SIE-COM section A5.2). Member names start with x-. Receivers ignore members they do not understand. Extensions never grant authority, relax policy, or change the meaning of standard members, and are covered by the signature like every other member.",
+      "description": "Extensions (SK-COM section A5.2). Member names start with x-. Receivers ignore members they do not understand. Extensions never grant authority, relax policy, or change the meaning of standard members, and are covered by the signature like every other member.",
       "type": "object",
       "maxProperties": 64,
       "propertyNames": {
@@ -266,7 +266,7 @@
       }
     },
     "runtimeRange": {
-      "description": "Range of SIE-RT versions as space-separated comparators, for example >=0.3 <0.4 (SIE-RT section 3).",
+      "description": "Range of SK-RT versions as space-separated comparators, for example >=0.3 <0.4 (SK-RT section 3).",
       "type": "string",
       "maxLength": 64,
       "pattern": "^(>=|<=|>|<|=)?[0-9]+\\.[0-9]+( (>=|<=|>|<|=)[0-9]+\\.[0-9]+)*$"

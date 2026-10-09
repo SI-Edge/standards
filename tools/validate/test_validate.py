@@ -1,4 +1,4 @@
-# Copyright 2026 The SI Edge Standards contributors
+# Copyright 2026 The Selfkin Standards contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for the SI Edge schemas, examples, and validator.
+"""Tests for the Selfkin schemas, examples, and validator.
 
 Run from the repository root:
   python -m unittest discover -s tools/validate -v
@@ -109,11 +109,11 @@ class RegistryTests(unittest.TestCase):
         enum = self.common["refusalReason"]["anyOf"][0]["enum"]
         self.assertEqual(sorted(registry_codes("refusal-reasons.md")), sorted(enum))
 
-    def test_si_intents_and_domains_match(self):
+    def test_sk_intents_and_domains_match(self):
         codes = registry_codes("intents.md")
-        si = [c for c in codes if c.startswith("si.")]
-        domains = [c for c in codes if not c.startswith("si.")]
-        self.assertEqual(sorted(si), sorted(self.common["intent"]["anyOf"][0]["enum"]))
+        reserved = [c for c in codes if c.startswith("sk.")]
+        domains = [c for c in codes if not c.startswith("sk.")]
+        self.assertEqual(sorted(reserved), sorted(self.common["intent"]["anyOf"][0]["enum"]))
         pattern = self.common["intent"]["anyOf"][1]["pattern"]
         self.assertEqual(sorted(domains), sorted(re.match(r"^\^\(([^)]*)\)", pattern).group(1).split("|")))
 

@@ -1,11 +1,11 @@
-# Open Standards for SI Edge Runtimes (Draft v0.3)
+# Open Standards for Selfkin Runtimes (Draft v0.3)
 
 > **Status: Draft, not for implementation. No certification program exists.**
 > Conformance profiles in this document are for discussion only. Before v1.0 any claim of conformance is a self-assessment and must not be presented as a certification. See [TRADEMARKS.md](../TRADEMARKS.md).
 
-**Document:** SI Edge Runtimes (SIE-RT) · Draft v0.3 · roenu (@roenudev), Bern · 2026-10-09 · Supersedes v0.2 · Companions: [SI Edge-to-Edge Communication v0.1](edge-to-edge-communication-v0.1.md) (SIE-COM), [SI Provider Profiles v0.1](provider-v0.1.md) (SIE-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
+**Document:** Selfkin Runtimes (SK-RT) · Draft v0.3 · roenu (@roenudev), Bern · 2026-10-09 · Supersedes v0.2 · Companions: [Selfkin Edge-to-Edge Communication v0.1](edge-to-edge-communication-v0.1.md) (SK-COM), [Selfkin Provider Profiles v0.1](provider-v0.1.md) (SK-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
 
-**Interpretation.** This is an open standard for a **personal SI**: an advanced AI agent runtime that runs natively on user-owned edge devices (phones, PCs, VPS instances, home servers, cars, robots) and **is the primary interface**. "SI" is shorthand used in these drafts for highly capable AI agent systems; it makes no claim that any system is superintelligent. Users talk to the runtime, and the runtime drives tools, apps, files, and hardware for them. The standard aims to be fast, efficient, secure, modular, adaptable, and open to everyone. It is model-agnostic: any local or remote model can be plugged in. Nothing here describes or implies any vendor's actual plans or products.
+**Interpretation.** This is an open standard for a **personal AI**: an advanced AI agent runtime that runs natively on user-owned edge devices (phones, PCs, VPS instances, home servers, cars, robots) and **is the primary interface**. Users talk to the runtime, and the runtime drives tools, apps, files, and hardware for them. The standard aims to be fast, efficient, secure, modular, adaptable, and open to everyone. It is model-agnostic: any local or remote model can be plugged in. Nothing here describes or implies any vendor's actual plans or products.
 
 ## 0. Conventions
 
@@ -17,13 +17,13 @@
 
 ## 1. Scope and Terms
 
-- **SI Runtime:** the on-device software that hosts agents, mediates every action, and presents the interface.
+- **Personal AI runtime:** the on-device software that hosts agents, mediates every action, and presents the interface.
 - **Runtime Core (Core):** the trusted part of the runtime. It enforces policy, permissions, egress, logging, and Trusted UI.
-- **Edge Device:** hardware the owner controls that runs an SI Runtime or a shim (SIE-COM §B4).
+- **Edge Device:** hardware the owner controls that runs a personal AI runtime or a shim (SK-COM §B4).
 - **Owner:** the person or organisation that controls a runtime, its policy, and its keys. **User:** a person who interacts with the runtime. On a personal device they are the same; on shared, family, or managed devices they can differ (§19).
 - **Router Model:** a small local decision model ("System One", after the fast, intuitive mode of thinking in dual-process theory) that picks models and tools.
 - **Control Plane:** a remote service that plans, orchestrates, or runs inference for the runtime (§12).
-- **Provider:** any remote service the runtime calls, as defined in SIE-PRV.
+- **Provider:** any remote service the runtime calls, as defined in SK-PRV.
 - **Module:** any installable unit that ships with a signed manifest. Kinds: `feature`, `function`, `model`, `device-adapter` (software that connects to an external device or device API through its own protocol), `hardware` (installed or attached hardware discovered by the runtime, §4), `ui-kit`, and `legacy-adapter`.
 - **Sideloaded module:** a module installed from outside the owner's chosen registries, including any self-signed module.
 - **Capability:** an action exposed by the OS, an app, a module, or hardware.
@@ -44,12 +44,12 @@
 - **[R1]** Everything outside the Core **MUST** be packaged as a module (§3), and the Core **SHOULD** be kept as small as practical. *Rationale: a small trusted base is easier to audit and keeps the system fast.*
 - **[R1]** All model outputs, tool outputs, web content, provider responses, and peer content **MUST** be treated as untrusted data. An action proposed on the basis of untrusted content **MUST** pass Core policy checks and, if consequential, approval (§16). *Rationale: prompt injection can arrive through any content a model reads; this is a mitigation, not a guarantee.*
 
-**Example connectors (non-normative).** The order of this list is not a ranking, and alphabetical order is not implied. Grok (xAI); then other hosted model providers; self-hosted open-weight models served locally (for example with llama.cpp, Ollama, or vLLM); and MCP-compatible tool servers. No vendor is endorsed or required. Examples are illustrative only, and any connector that implements the provider interface is equally conforming.
+**Example connectors (non-normative).** Hosted models, in alphabetical order: Claude (Anthropic), Gemini (Google), GPT models (OpenAI), Grok (xAI), Llama (Meta), Mistral (Mistral AI). Also: self-hosted open-weight models served locally (for example with llama.cpp, Ollama, or vLLM) and MCP-compatible tool servers. Alphabetical order is not a ranking. No vendor is endorsed or required. Examples are illustrative only, and any connector that implements the provider interface is equally conforming.
 
 ## 3. Modularity and Extensions
 
 - **[R1]** Every feature, function, model, device adapter, UI kit, and legacy adapter outside the Core **MUST** be packaged as a module. *Rationale: one model for extending, auditing, and removing anything.*
-- **[R1]** Each module **MUST** ship a signed manifest declaring: identity and publisher, version, kind (§1), compatibility range (a range of SIE-RT versions such as `>=0.3 <0.4`, and the minimum runtime profile), capabilities provided and required, permissions, data classes accessed, egress destinations and residency needs, resource and hardware needs, and an SBOM reference (§17). The machine-readable definition is [schemas/module-manifest.schema.json](../schemas/module-manifest.schema.json); signatures follow SIE-COM §A5.1 and extensions SIE-COM §A5.2. *Rationale: the owner and the Core know the blast radius before installing.*
+- **[R1]** Each module **MUST** ship a signed manifest declaring: identity and publisher, version, kind (§1), compatibility range (a range of SK-RT versions such as `>=0.3 <0.4`, and the minimum runtime profile), capabilities provided and required, permissions, data classes accessed, egress destinations and residency needs, resource and hardware needs, and an SBOM reference (§17). The machine-readable definition is [schemas/module-manifest.schema.json](../schemas/module-manifest.schema.json); signatures follow SK-COM §A5.1 and extensions SK-COM §A5.2. *Rationale: the owner and the Core know the blast radius before installing.*
 - **[R1]** The Core **MUST** show the owner who signed each manifest (the `signer` in its signature block). Sideloaded modules (§1) **MAY** be self-signed, and **MUST** be labelled `sideloaded` in Trusted UI by the Core. *Rationale: open installation without hiding who vouches for the code.*
 - **[R1]** Installation **MUST** require owner consent to the manifest's permissions. Any later expansion of permissions **MUST** require consent again. *Rationale: no silent privilege creep.*
 - **[R1]** Modules **MUST** run sandboxed and limited to their manifest. Access beyond the manifest **MUST** be denied and logged. *Rationale: least privilege, enforced in practice.*
@@ -58,7 +58,7 @@
 - **[R2]** Module registries **MUST** be open: anyone **MAY** run one, and runtimes **MUST** let the owner choose and add registries, including local sideloading. *Rationale: no single gatekeeper.*
 - **[R2]** Registries **SHOULD** publish signatures to a public transparency log and publish revocation lists, and the runtime **MUST** honour revocations from the registries the owner uses. *Rationale: a compromised module needs a kill path.*
 - **[R3]** Core and module builds **SHOULD** be reproducible and **SHOULD** publish build provenance (for example at a SLSA build level). *Rationale: attested devices need attestable inputs.*
-- **[R1]** Legacy adapters (Methods 1 to 5, SIE-COM §B2 to §B6) **MUST** be modules and **MUST** carry the `legacy` and `unattested` labels defined there. *Rationale: compatibility code is held to the same rules.*
+- **[R1]** Legacy adapters (Methods 1 to 5, SK-COM §B2 to §B6) **MUST** be modules and **MUST** carry the `legacy` and `unattested` labels defined there. *Rationale: compatibility code is held to the same rules.*
 
 ## 4. Hardware Discovery and Compatibility
 
@@ -107,7 +107,7 @@
 
 ## 9. Multi-Device Continuity
 
-- **[R2]** A user's devices **MAY** form one runtime mesh with shared identity, policy, memory, and Adaptation Profile. If they do, sync **MUST** be end-to-end encrypted with keys only the owner's devices hold, and **SHOULD** be peer-to-peer where possible, as defined in SIE-COM (form F1). *Rationale: one assistant across many devices, without giving up sovereignty.*
+- **[R2]** A user's devices **MAY** form one runtime mesh with shared identity, policy, memory, and Adaptation Profile. If they do, sync **MUST** be end-to-end encrypted with keys only the owner's devices hold, and **SHOULD** be peer-to-peer where possible, as defined in SK-COM (form F1). *Rationale: one assistant across many devices, without giving up sovereignty.*
 - **[R1]** Each device **MUST** be individually revocable. *Rationale: losing one device must not compromise the others.*
 - **[R2]** Policy **MUST** be able to restrict data by device (for example "health data never syncs to the VPS"). *Rationale: devices differ in trust and jurisdiction.*
 
@@ -121,7 +121,7 @@
 - **[R1]** The owner key **MUST** be distinct from device keys and **SHOULD** be held on a separate device or hardware token, or protected by a recovery scheme (for example threshold or social recovery), so that losing one device does not lose ownership. *Rationale: ownership must survive the loss of any single device.*
 - **[R1]** The runtime **MUST** document a recovery path for the loss of all devices (for example restoring the §8 backup with an owner-held recovery secret). If the owner declines recovery, the runtime **MUST** warn at onboarding that data cannot be recovered. *Rationale: honest trade-off between security and loss.*
 - **[R2]** When a device is revoked, the remaining mesh **MUST** rotate shared sync and group keys so the revoked device cannot read later data. *Rationale: revocation must cut off future access, not only new sessions.*
-- **[R2]** The runtime **MUST** support a documented owner-key rotation that re-issues device and agent statements and notifies paired peers (SIE-COM §A2). *Rationale: a compromised owner key must be replaceable without starting over.*
+- **[R2]** The runtime **MUST** support a documented owner-key rotation that re-issues device and agent statements and notifies paired peers (SK-COM §A2). *Rationale: a compromised owner key must be replaceable without starting over.*
 
 ## 11. Data Sovereignty, Egress, and Residency
 
@@ -129,7 +129,7 @@
 - **[R2]** Egress **MUST** follow an explicit, user-editable policy covering destination, data class, purpose, and residency tag. *Rationale: sharing is a deliberate, reviewable choice.*
 - **[R2]** The Core **MUST** keep an append-only egress log. *Rationale: claims have to be checkable.*
 - **[R2]** Egress and audit logs **MUST** be encrypted at rest, **MUST** have an owner-configurable retention period, and **MUST** support deleting entry content (for example by destroying per-entry keys) while keeping the hash chain verifiable. *Rationale: append-only logs must not defeat erasure or become a surveillance tool.*
-- **[R2]** The runtime **MUST** record each provider's declared retention window (SIE-PRV §3) in the privacy report, and owner policy **MAY** block providers with any retention window. *Rationale: retention by remote parties is governed by the provider standard; the runtime makes it visible.*
+- **[R2]** The runtime **MUST** record each provider's declared retention window (SK-PRV §3) in the privacy report, and owner policy **MAY** block providers with any retention window. *Rationale: retention by remote parties is governed by the provider standard; the runtime makes it visible.*
 
 **Residency tags.** Residency tags express the owner's policy about where data may be processed and stored. They are a policy choice and are stricter than the default rules of the Swiss nFADP and the EU GDPR, which allow transfers abroad under conditions such as adequacy decisions or appropriate safeguards. Tags can help an owner meet those rules; they are not a statement of what the law requires.
 
@@ -140,7 +140,7 @@
 
 ## 12. Remote Models and Control Plane
 
-- **[R1]** Connections to a Control Plane or remote model **MUST** be initiated outbound by the device and mutually authenticated (mTLS with TLS 1.3, or SSH), with no open inbound port required. Peer-to-peer and mesh connections are governed by SIE-COM. *Rationale: small attack surface, works behind NAT.*
+- **[R1]** Connections to a Control Plane or remote model **MUST** be initiated outbound by the device and mutually authenticated (mTLS with TLS 1.3, or SSH), with no open inbound port required. Peer-to-peer and mesh connections are governed by SK-COM. *Rationale: small attack surface, works behind NAT.*
 - **[R1]** Capabilities, the egress-policy hash, and the conformance profile **MUST** be negotiated on connect. *Rationale: limits agreed up front.*
 - **[R1]** Every control-plane request **MUST** pass local permission checks, and the user **MUST** be able to detach instantly, falling back to local mode. *Rationale: a remote planner is an untrusted caller, and being able to leave is part of ownership.*
 
@@ -150,7 +150,7 @@
 - **[R1]** **Full gateway mode** means the Gateway applies all of the following: minimal context selection; local redaction and pseudonymisation of personal data in the data classes the policy marks as sensitive; stripping of tracking parameters and identifying headers; no account and no persistent identifiers across calls; a fresh anonymous credential per call where the provider supports one; and routing through a privacy relay (for example an Oblivious HTTP relay or an IP-hiding proxy). *Rationale: a precise baseline for untrusted providers.*
 - **[R1]** If no relay is available, the runtime **MUST** warn the user and **MUST** block calls that contain data classes the policy marks as relay-required. *Rationale: "when available" must not silently become "never".*
 - **[R1]** The Router **SHOULD** prefer local inference for tasks containing sensitive data classes, and owner policy **MAY** require it. *Rationale: the best protection is not sending data at all.*
-- **[R1]** Runtimes **MUST** treat every provider as P0 (SIE-PRV §11) unless they have verified its profile as defined in SIE-PRV §12. Verification is REQUIRED at R3 and OPTIONAL below. *Rationale: trust is verified, not assumed.*
+- **[R1]** Runtimes **MUST** treat every provider as P0 (SK-PRV §11) unless they have verified its profile as defined in SK-PRV §12. Verification is REQUIRED at R3 and OPTIONAL below. *Rationale: trust is verified, not assumed.*
 - **[R1]** For P0 providers the runtime **MUST** use full gateway mode, or let the user explicitly choose their own API key or account. Under that choice it **MUST** label clearly that the provider can link requests to that account. *Rationale: informed choice, never silent exposure.*
 - **[R1]** Each call **MUST** produce a user-visible **privacy report** ([schemas/privacy-report.schema.json](../schemas/privacy-report.schema.json)): provider, provider profile (claimed, effective, and whether verified, with any downgrade), gateway mode, relay used, network identity exposed (relay or direct), account linkage, data classes and field names sent after redaction, data classes and field names redacted or pseudonymised, minimisation steps applied, a hash of the exact outbound payload, residency tags, the provider's declared retention window (an ISO 8601 duration, or `undeclared`), and the model identity when the provider returns one. Reports **MUST** list field names and data classes, never values, and **MUST NOT** contain redaction maps. *Rationale: the user can judge each call, from the same profile at which the Gateway is required.*
 - **[R2]** Runtimes **MUST** provide **verifiable minimisation**: for each call the Gateway logs the exact outbound payload, or a reproducible hash plus redaction map, under the log protections in §11, and the privacy report's payload hash **MUST** match that log entry. Redaction maps **MUST NOT** leave the device. *Rationale: honesty, backed by evidence.*
@@ -178,7 +178,7 @@
 ## 17. Safety, Updates, and Supply Chain
 
 - **[R1]** Core and module updates **MUST** be signed, verified, consented to by policy, and possible to roll back. *Rationale: the supply chain is an attack surface, and a bad update must not lock the user out.*
-- **[R1]** Rollback **MUST NOT** install a version that is revoked or marked `sunset` (SIE-COM §B8). *Rationale: rollback must not become a downgrade attack.*
+- **[R1]** Rollback **MUST NOT** install a version that is revoked or marked `sunset` (SK-COM §B8). *Rationale: rollback must not become a downgrade attack.*
 - **[R1]** Packages **MUST** ship SBOMs (SPDX or CycloneDX), referenced with a digest from the module manifest (§3). *Rationale: you cannot audit what you cannot list, and the manifest already requires the reference at R1.*
 
 *Note (non-normative): module publishers and remote providers may need to document how their offerings map to EU AI Act obligations, using the Act's own roles (such as provider and deployer). This standard does not provide compliance with the Act.*
@@ -201,8 +201,8 @@
 ## 20. Security and Privacy Considerations (non-normative)
 
 - Adversaries, assets, and the rules that address them are listed in [THREAT-MODEL.md](../THREAT-MODEL.md).
-- Instruction and data separation (§2, SIE-COM §A5) reduces prompt injection but cannot remove it. Core policy checks and approvals are the backstop.
-- Metadata (timing, sizes, DNS, sync patterns, writing style) can reveal behaviour even when content is protected. §7, §13, and SIE-COM §A8 address parts of this; complete metadata privacy is out of scope.
+- Instruction and data separation (§2, SK-COM §A5) reduces prompt injection but cannot remove it. Core policy checks and approvals are the backstop.
+- Metadata (timing, sizes, DNS, sync patterns, writing style) can reveal behaviour even when content is protected. §7, §13, and SK-COM §A8 address parts of this; complete metadata privacy is out of scope.
 - Logs, memory, and Adaptation Profiles are among the most sensitive data a runtime holds. Their protection (§11, §19) matters as much as protection against remote parties.
 
 ## 21. Conformance Profiles
@@ -214,7 +214,7 @@
 | **R3** | Attested | R2 + every rule tagged [R3]: reproducible builds (§3), hardware-backed keys, measured boot and remote attestation (§10), provider profile verification (§13), hardware-backed secrets (§15), resource reporting (§18); communication at C3 |
 
 - Before v1.0, any claim of conformance is a **self-assessment** only. It **MUST NOT** be presented as a certification, and it **SHOULD** be published together with the evidence for each rule. *Rationale: there is no certification program, and claims must not imply one.*
-- A self-assessment **SHOULD** be phrased as "Self-assessed against SI Edge Runtimes draft v0.3, profile R2". *Rationale: neutral wording that cannot be mistaken for a seal.*
+- A self-assessment **SHOULD** be phrased as "Self-assessed against Selfkin Runtimes draft v0.3, profile R2". *Rationale: neutral wording that cannot be mistaken for a seal.*
 - How R, C, and P profiles combine for one session is defined in the README ("How They Fit Together").
 
 ## 22. Open Questions

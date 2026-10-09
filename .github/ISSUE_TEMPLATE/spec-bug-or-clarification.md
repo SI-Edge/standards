@@ -8,7 +8,7 @@ labels: ["bug", "needs-triage"]
 <!-- Security or privacy flaws: do NOT use this form. See SECURITY.md. -->
 
 **Document and section**
-<!-- For example: drafts/runtime-v0.3.md §13, or SIE-COM §A5 -->
+<!-- For example: drafts/runtime-v0.3.md §13, or SK-COM §A5 -->
 
 **Quoted text**
 > paste the exact rule or sentence

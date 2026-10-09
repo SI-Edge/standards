@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2026 The SI Edge Standards contributors
+# Copyright 2026 The Selfkin Standards contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Validate SI Edge JSON documents against the v0.1 JSON Schemas.
+"""Validate Selfkin JSON documents against the v0.1 JSON Schemas.
 
 Two layers of checks:
 
 1. Structural checks with JSON Schema 2020-12 (schemas/*.schema.json).
 2. Semantic checks that JSON Schema cannot express, for example that a
-   delegated capability token only narrows its parent (SIE-COM section A6).
+   delegated capability token only narrows its parent (SK-COM section A6).
 
 The validator does not check signatures, clocks, revocation, or replay.
 Those depend on keys and receiver state and belong to a runtime.
@@ -43,7 +43,7 @@ from referencing.jsonschema import DRAFT202012
 REPO = Path(__file__).resolve().parents[2]
 SCHEMA_DIR = REPO / "schemas"
 EXAMPLE_DIR = REPO / "examples"
-ID_PREFIX = "https://github.com/SI-Edge/standards/schemas/"
+ID_PREFIX = "https://github.com/selfkin/standards/schemas/"
 SCHEMA_NAMES = (
     "envelope",
     "capability-token",
@@ -52,7 +52,7 @@ SCHEMA_NAMES = (
     "provider-manifest",
     "refusal",
 )
-MAX_TOKEN_LIFETIME = timedelta(hours=1)  # SIE-COM section A6
+MAX_TOKEN_LIFETIME = timedelta(hours=1)  # SK-COM section A6
 
 
 # ---------------------------------------------------------------- loading
@@ -165,7 +165,7 @@ def budget_problems(child: dict, parent: dict) -> list[str]:
 
 
 def check_token(token: dict, where: str = "token") -> list[str]:
-    """Attenuation and lifetime checks for an SI capability token (SIE-COM A6)."""
+    """Attenuation and lifetime checks for a Selfkin capability token (SK-COM A6)."""
     problems = []
     links = list(token.get("chain", [])) + [token]
     for index, link in enumerate(links):
@@ -173,7 +173,7 @@ def check_token(token: dict, where: str = "token") -> list[str]:
         if parse_time(link["exp"]) <= parse_time(link["iat"]):
             problems.append(f"{label}: exp must be later than iat")
         elif parse_time(link["exp"]) - parse_time(link["iat"]) > MAX_TOKEN_LIFETIME:
-            problems.append(f"{label}: lifetime exceeds the 1 hour maximum (SIE-COM section A6)")
+            problems.append(f"{label}: lifetime exceeds the 1 hour maximum (SK-COM section A6)")
         if "nbf" in link and parse_time(link["nbf"]) >= parse_time(link["exp"]):
             problems.append(f"{label}: nbf must be earlier than exp")
     for index in range(1, len(links)):
@@ -230,7 +230,7 @@ def check_provider_manifest(manifest: dict) -> list[str]:
         if until <= issued:
             problems.append("audit.valid_until must be later than audit.issued")
         if until > issued + timedelta(days=731):
-            problems.append("audit must be renewed at least every two years (SIE-PRV section 10)")
+            problems.append("audit must be renewed at least every two years (SK-PRV section 10)")
     return problems
 
 

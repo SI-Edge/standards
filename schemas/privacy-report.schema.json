@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/SI-Edge/standards/schemas/privacy-report.schema.json",
-  "title": "SI Privacy Report (v0.1)",
-  "description": "User-visible report produced by the Privacy Gateway for each cloud call (SIE-RT section 13, REQUIRED at R1, the same profile as the Privacy Gateway). It states the provider, provider profile (P0 to P3), relay used, data classes and fields sent after redaction, what was redacted, network identity exposed (relay or direct), account linkage, and the provider's declared retention window (SIE-RT section 11, section 13; SIE-PRV section 3). It lists field names and data classes, never values, plus residency, model identity where returned, and a hash of the exact outbound payload, which links to the protected egress log at R2 (verifiable minimisation, SIE-RT section 13). Redaction maps MUST NOT leave the device and are never part of a report. A profile downgrade is shown here (SIE-PRV section 12). The report is itself sensitive and is stored under the log protections of SIE-RT section 11. Status: Draft, not for implementation.",
+  "$id": "https://github.com/selfkin/standards/schemas/privacy-report.schema.json",
+  "title": "Selfkin Privacy Report (v0.1)",
+  "description": "User-visible report produced by the Privacy Gateway for each cloud call (SK-RT section 13, REQUIRED at R1, the same profile as the Privacy Gateway). It states the provider, provider profile (P0 to P3), relay used, data classes and fields sent after redaction, what was redacted, network identity exposed (relay or direct), account linkage, and the provider's declared retention window (SK-RT section 11, section 13; SK-PRV section 3). It lists field names and data classes, never values, plus residency, model identity where returned, and a hash of the exact outbound payload, which links to the protected egress log at R2 (verifiable minimisation, SK-RT section 13). Redaction maps MUST NOT leave the device and are never part of a report. A profile downgrade is shown here (SK-PRV section 12). The report is itself sensitive and is stored under the log protections of SK-RT section 11. Status: Draft, not for implementation.",
   "type": "object",
   "required": [
     "v",
@@ -61,7 +61,7 @@
       }
     },
     "provider_profile": {
-      "description": "Profile used for this call. effective is P0 unless the runtime verified the claim (SIE-RT section 13, SIE-PRV section 12).",
+      "description": "Profile used for this call. effective is P0 unless the runtime verified the claim (SK-RT section 13, SK-PRV section 12).",
       "type": "object",
       "required": [
         "claimed",
@@ -88,7 +88,7 @@
           "type": "boolean"
         },
         "downgrade": {
-          "description": "Present when the effective profile is lower than the pinned or claimed profile (SIE-PRV section 12).",
+          "description": "Present when the effective profile is lower than the pinned or claimed profile (SK-PRV section 12).",
           "type": "object",
           "required": [
             "from",
@@ -140,7 +140,7 @@
       "maximum": 3
     },
     "gateway_mode": {
-      "description": "full: full gateway mode (SIE-RT section 13). verified-provider: reduced protections allowed by a verified P1 to P3 profile and owner policy.",
+      "description": "full: full gateway mode (SK-RT section 13). verified-provider: reduced protections allowed by a verified P1 to P3 profile and owner policy.",
       "enum": [
         "full",
         "verified-provider"
@@ -196,7 +196,7 @@
       ]
     },
     "account": {
-      "description": "Account linkage (SIE-PRV section 1, section 2). In identified mode the provider can link requests to the account, and the runtime labels this clearly (SIE-RT section 13).",
+      "description": "Account linkage (SK-PRV section 1, section 2). In identified mode the provider can link requests to the account, and the runtime labels this clearly (SK-RT section 13).",
       "type": "object",
       "required": [
         "mode",
@@ -316,7 +316,7 @@
       "additionalProperties": false,
       "properties": {
         "steps": {
-          "description": "Minimisation steps applied (SIE-RT section 13 full gateway mode list).",
+          "description": "Minimisation steps applied (SK-RT section 13 full gateway mode list).",
           "type": "array",
           "uniqueItems": true,
           "items": {
@@ -333,7 +333,7 @@
           }
         },
         "payload_digest": {
-          "description": "Hash of the exact outbound payload, linking this report to the protected egress log entry (SIE-RT section 13 verifiable minimisation).",
+          "description": "Hash of the exact outbound payload, linking this report to the protected egress log entry (SK-RT section 13 verifiable minimisation).",
           "$ref": "common.schema.json#/$defs/digest"
         },
         "egress_log_ref": {
@@ -366,7 +366,7 @@
       }
     },
     "retention": {
-      "description": "Provider's declared retention window (SIE-PRV section 3) as an ISO 8601 duration (PT0S for none), or undeclared when the provider publishes no manifest or no window (SIE-RT section 13).",
+      "description": "Provider's declared retention window (SK-PRV section 3) as an ISO 8601 duration (PT0S for none), or undeclared when the provider publishes no manifest or no window (SK-RT section 13).",
       "type": "object",
       "required": [
         "declared"
@@ -396,7 +396,7 @@
       }
     },
     "model": {
-      "description": "Model identity returned with the response (SIE-PRV section 7, SIE-RT section 14). Below P3 this is an unverified declaration.",
+      "description": "Model identity returned with the response (SK-PRV section 7, SK-RT section 14). Below P3 this is an unverified declaration.",
       "type": "object",
       "required": [
         "name",
@@ -424,7 +424,7 @@
   },
   "allOf": [
     {
-      "description": "SIE-RT section 13: a P0 provider is called in full gateway mode, or in identified mode by explicit user choice.",
+      "description": "SK-RT section 13: a P0 provider is called in full gateway mode, or in identified mode by explicit user choice.",
       "if": {
         "properties": {
           "provider_profile": {
@@ -460,7 +460,7 @@
       }
     },
     {
-      "description": "Full gateway mode means no account and no persistent identifiers (SIE-RT section 13). If no relay was available the call still appears here with relay.used false and network_identity direct, so the missing relay is visible.",
+      "description": "Full gateway mode means no account and no persistent identifiers (SK-RT section 13). If no relay was available the call still appears here with relay.used false and network_identity direct, so the missing relay is visible.",
       "if": {
         "properties": {
           "gateway_mode": {

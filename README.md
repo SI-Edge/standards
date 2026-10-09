@@ -1,23 +1,23 @@
-# Personal SI Open Standards: Overview
+# Selfkin: Open standards for personal AI on your own devices
 
-[![Validate schemas and examples](https://github.com/SI-Edge/standards/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/SI-Edge/standards/actions/workflows/validate.yml)
+[![Validate schemas and examples](https://github.com/selfkin/standards/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/selfkin/standards/actions/workflows/validate.yml)
 
 > **Status: Draft, not for implementation. No certification program exists.**
-> These are early drafts for discussion. Conformance profiles are not certifications, and before v1.0 any claim of conformance is a self-assessment only. The "SI Edge" names are provisional (see [TRADEMARKS.md](TRADEMARKS.md)).
+> These are early drafts for discussion. Conformance profiles are not certifications, and before v1.0 any claim of conformance is a self-assessment only. A trademark check for the name "Selfkin" is pending (see [TRADEMARKS.md](TRADEMARKS.md)).
 
 **Maintainer:** roenu (@roenudev), Bern · Working index · 2026-10-09
 
 ## Goal
 
-A **personal SI** is an advanced AI agent runtime that runs on hardware the user owns and becomes their primary interface to devices, apps, services, and other agents. ("SI" is shorthand used in these drafts for highly capable AI agent systems; it makes no claim that any system is superintelligent.) These drafts define open standards so that such runtimes are fast, efficient, secure, modular, adaptable, and open to everyone, whatever model, vendor, or device they use. Data, credentials, and memory stay with the user by default. Remote models and services are used only through verifiable, minimal, user-visible channels.
+A **personal AI** is an advanced AI agent runtime that runs on hardware the user owns and becomes their primary interface to devices, apps, services, and other agents. These drafts define open standards so that such runtimes are fast, efficient, secure, modular, adaptable, and open to everyone, whatever model, vendor, or device they use. Data, credentials, and memory stay with the user by default. Remote models and services are used only through verifiable, minimal, user-visible channels.
 
 ## Documents
 
 | Document | File | Scope |
 |---|---|---|
-| **SI Edge Runtimes v0.3** (SIE-RT, current) | [drafts/runtime-v0.3.md](drafts/runtime-v0.3.md) | The on-device runtime: Core, modules, hardware, interface and Trusted UI, adaptation, memory, key recovery, Privacy Gateway, approvals, shared devices. Profiles **R1 to R3** |
-| **SI Edge-to-Edge Communication v0.1** (SIE-COM) | [drafts/edge-to-edge-communication-v0.1.md](drafts/edge-to-edge-communication-v0.1.md) | All communication forms (F1 to F9), identity, pairing, E2E crypto, the signed SI Envelope, delegation, agent-to-agent safety, legacy compatibility Methods 1 to 5. Profiles **C1 to C3** |
-| **SI Provider Profiles v0.1** (SIE-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3**. Claims are worded "self-assessed against SIE-PRV profile P0 to P3" |
+| **Selfkin Runtimes v0.3** (SK-RT, current) | [drafts/runtime-v0.3.md](drafts/runtime-v0.3.md) | The on-device runtime: Core, modules, hardware, interface and Trusted UI, adaptation, memory, key recovery, Privacy Gateway, approvals, shared devices. Profiles **R1 to R3** |
+| **Selfkin Edge-to-Edge Communication v0.1** (SK-COM) | [drafts/edge-to-edge-communication-v0.1.md](drafts/edge-to-edge-communication-v0.1.md) | All communication forms (F1 to F9), identity, pairing, E2E crypto, the signed Selfkin Envelope, delegation, agent-to-agent safety, legacy compatibility Methods 1 to 5. Profiles **C1 to C3** |
+| **Selfkin Provider Profiles v0.1** (SK-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3**. Claims are worded "self-assessed against SK-PRV profile P0 to P3" |
 | Terminology | [TERMINOLOGY.md](TERMINOLOGY.md) | Shared glossary, residency tags, profile tiers |
 | Threat model | [THREAT-MODEL.md](THREAT-MODEL.md) | Adversaries, assets, and the rules that address them |
 | Registries | [registries/](registries/README.md) | Data classes, intents, and refusal reasons shared by all drafts |
@@ -44,7 +44,7 @@ A session's **effective tier** is the lowest tier of the runtime, of every commu
 
 ## Schemas and Tooling
 
-- [schemas/](schemas/): JSON Schema 2020-12 files for the SI Envelope, capability token, module manifest, privacy report, refusal, and Provider Manifest, with a [map to the draft sections](schemas/README.md) and the [open questions](schemas/OPEN-QUESTIONS.md) that remain. The schemas follow the drafts; where they disagree, the draft wins.
+- [schemas/](schemas/): JSON Schema 2020-12 files for the Selfkin Envelope, capability token, module manifest, privacy report, refusal, and Provider Manifest, with a [map to the draft sections](schemas/README.md) and the [open questions](schemas/OPEN-QUESTIONS.md) that remain. The schemas follow the drafts; where they disagree, the draft wins.
 - [registries/](registries/README.md): minimal data-class, intent, and refusal-reason vocabularies, kept in sync with the schemas by the tests.
 - [examples/](examples/): valid and deliberately invalid examples for every schema, with the reason each invalid one fails.
 - [tools/validate/](tools/validate/): a small Python validator (JSON Schema plus semantic checks such as capability attenuation) and its tests. A GitHub Actions workflow in [.github/workflows/validate.yml](.github/workflows/validate.yml) runs them on every push and pull request.
@@ -66,7 +66,7 @@ python tools/validate/validate.py
 - [TRADEMARKS.md](TRADEMARKS.md): status of names, third-party marks, no endorsement
 - [PATENT-POLICY.md](PATENT-POLICY.md): interim royalty-free patent policy for contributions
 - [CITATION.cff](CITATION.cff): how to cite this repository
-- [docs/](docs/): source of the project web page at https://si-edge.github.io/standards/ (no trackers, no cookies, no third-party assets)
+- [docs/](docs/): source of the project web page at https://selfkin.github.io/standards/ (no trackers, no cookies, no third-party assets)
 
 ## License
 
@@ -78,7 +78,7 @@ python tools/validate/validate.py
 
 ## Next Steps / Roadmap
 
-1. **Envelope schema:** publish the SI Envelope, module manifest, capability descriptor, open memory format, and Provider Manifest as JSON Schema plus a deterministic CBOR profile. *Started in v0.1 of [schemas/](schemas/): envelope, capability token, module manifest (with capability descriptor), privacy report, refusal, and Provider Manifest, aligned with the drafts. Still open: open memory format, normative CBOR profile.*
+1. **Envelope schema:** publish the Selfkin Envelope, module manifest, capability descriptor, open memory format, and Provider Manifest as JSON Schema plus a deterministic CBOR profile. *Started in v0.1 of [schemas/](schemas/): envelope, capability token, module manifest (with capability descriptor), privacy report, refusal, and Provider Manifest, aligned with the drafts. Still open: open memory format, normative CBOR profile.*
 2. **Reference implementation:** a minimal Core prototype with a local router model, MCP tool layer, Privacy Gateway, Trusted UI components, and one proxy module for a legacy device. Start on a PC and a VPS, then add a phone.
 3. **Test suite:** conformance tests for R1, C1, and P1 first, including downgrade, prompt-injection, and Trusted UI spoofing tests.
 4. **Governance:** the RFC process in [GOVERNANCE.md](GOVERNANCE.md), an open module registry template, and neutral maintainership before v1.0.

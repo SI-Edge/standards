@@ -1,4 +1,4 @@
-# SI Edge Validator
+# Selfkin Validator
 
 > **Status: Draft, not for implementation.** Licensed under Apache-2.0 ([LICENSE-CODE](../../LICENSE-CODE)).
 
@@ -15,4 +15,4 @@ The tests check that every schema is valid JSON Schema 2020-12 with the required
 
 ## Continuous Integration
 
-[ci/validate.yml](ci/validate.yml) is a GitHub Actions workflow that runs the validator and the tests on every push and pull request. To activate it, move it to `.github/workflows/validate.yml`. It is kept here for now because adding files under `.github/workflows/` needs a token with the GitHub "Workflows" permission.
+[.github/workflows/validate.yml](../../.github/workflows/validate.yml) is the GitHub Actions workflow that runs the validator and the tests on every push and pull request.

@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve the SI Edge drafts. All drafts are early and **not for implementation**; feedback of every size is welcome.
+Thank you for helping improve the Selfkin drafts. All drafts are early and **not for implementation**; feedback of every size is welcome.
 
 ## Ways to Contribute
 

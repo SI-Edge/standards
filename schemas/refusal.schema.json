@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/SI-Edge/standards/schemas/refusal.schema.json",
-  "title": "SI Refusal (v0.1)",
-  "description": "Standard machine-readable refusal (SIE-COM section A7; SIE-PRV section 6, section 9). Sent as the data of an envelope with intent si.refused and payload_type application/vnd.si-edge.refusal+json, or, by a provider without envelope support, as an HTTP response body with that media type. A refusal carries a reason code and references to the refused message, never free text, so it cannot include memory, Adaptation Profile data, or other content not already in the request. Status: Draft, not for implementation.",
+  "$id": "https://github.com/selfkin/standards/schemas/refusal.schema.json",
+  "title": "Selfkin Refusal (v0.1)",
+  "description": "Standard machine-readable refusal (SK-COM section A7; SK-PRV section 6, section 9). Sent as the data of an envelope with intent sk.refused and payload_type application/vnd.selfkin.refusal+json, or, by a provider without envelope support, as an HTTP response body with that media type. A refusal carries a reason code and references to the refused message, never free text, so it cannot include memory, Adaptation Profile data, or other content not already in the request. Status: Draft, not for implementation.",
   "type": "object",
   "required": [
     "v",

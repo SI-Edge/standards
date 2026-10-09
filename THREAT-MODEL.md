@@ -2,7 +2,7 @@
 
 > **Status: Draft, not for implementation. No certification program exists.**
 
-This document lists the assets the SI Edge drafts protect, the adversaries they consider, and the rules that address each threat. It is non-normative; the rules live in the drafts. Section references: **RT** = [runtime v0.3](drafts/runtime-v0.3.md), **COM** = [communication v0.1](drafts/edge-to-edge-communication-v0.1.md), **PRV** = [provider v0.1](drafts/provider-v0.1.md).
+This document lists the assets the Selfkin drafts protect, the adversaries they consider, and the rules that address each threat. It is non-normative; the rules live in the drafts. Section references: **RT** = [runtime v0.3](drafts/runtime-v0.3.md), **COM** = [communication v0.1](drafts/edge-to-edge-communication-v0.1.md), **PRV** = [provider v0.1](drafts/provider-v0.1.md).
 
 ## Assets
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/SI-Edge/standards/schemas/module-manifest.schema.json",
-  "title": "SI Module Manifest (v0.1)",
-  "description": "Signed manifest that every module ships with (SIE-RT section 3). It declares identity and publisher, version, compatibility range (runtime version and conformance profile), capabilities provided and required, permissions, data classes accessed, egress destinations and residency needs, resource and hardware needs, and an SBOM reference. Model modules identify their weights by hash (SIE-RT section 3); hardware modules carry a capability descriptor (SIE-RT section 4); actuator modules declare safe-stop behaviour (SIE-RT section 4); legacy adapters carry the legacy and unattested labels (SIE-RT section 3, SIE-COM section B1). Installation requires owner consent to the permissions, and any later expansion needs consent again. Status: Draft, not for implementation.",
+  "$id": "https://github.com/selfkin/standards/schemas/module-manifest.schema.json",
+  "title": "Selfkin Module Manifest (v0.1)",
+  "description": "Signed manifest that every module ships with (SK-RT section 3). It declares identity and publisher, version, compatibility range (runtime version and conformance profile), capabilities provided and required, permissions, data classes accessed, egress destinations and residency needs, resource and hardware needs, and an SBOM reference. Model modules identify their weights by hash (SK-RT section 3); hardware modules carry a capability descriptor (SK-RT section 4); actuator modules declare safe-stop behaviour (SK-RT section 4); legacy adapters carry the legacy and unattested labels (SK-RT section 3, SK-COM section B1). Installation requires owner consent to the permissions, and any later expansion needs consent again. Status: Draft, not for implementation.",
   "type": "object",
   "required": [
     "v",
@@ -44,7 +44,7 @@
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$"
     },
     "kind": {
-      "description": "Module kind (SIE-RT section 1, section 3, section 4). hardware: installed or attached hardware discovered by the runtime, described by a capability descriptor. device-adapter: software that connects to an external device or device API through its own protocol.",
+      "description": "Module kind (SK-RT section 1, section 3, section 4). hardware: installed or attached hardware discovered by the runtime, described by a capability descriptor. device-adapter: software that connects to an external device or device API through its own protocol.",
       "enum": [
         "feature",
         "function",
@@ -86,7 +86,7 @@
       "additionalProperties": false,
       "properties": {
         "runtime": {
-          "description": "Supported SIE-RT standard versions (SIE-RT section 3).",
+          "description": "Supported SK-RT standard versions (SK-RT section 3).",
           "$ref": "common.schema.json#/$defs/runtimeRange"
         },
         "min_profile": {
@@ -120,7 +120,7 @@
       }
     },
     "permissions": {
-      "description": "Permissions the owner consents to at installation. Access beyond this list is denied and logged (SIE-RT section 3).",
+      "description": "Permissions the owner consents to at installation. Access beyond this list is denied and logged (SK-RT section 3).",
       "type": "array",
       "items": {
         "$ref": "#/$defs/permission"
@@ -184,7 +184,7 @@
       }
     },
     "model": {
-      "description": "Required for kind model: weights identified by cryptographic hash, verified by the Core before loading (SIE-RT section 3).",
+      "description": "Required for kind model: weights identified by cryptographic hash, verified by the Core before loading (SK-RT section 3).",
       "type": "object",
       "required": [
         "weights"
@@ -220,11 +220,11 @@
       }
     },
     "hardware": {
-      "description": "Required for kind hardware: capability descriptor (SIE-RT section 4).",
+      "description": "Required for kind hardware: capability descriptor (SK-RT section 4).",
       "$ref": "#/$defs/capabilityDescriptor"
     },
     "legacy": {
-      "description": "Required for kind legacy-adapter (SIE-COM Part B).",
+      "description": "Required for kind legacy-adapter (SK-COM Part B).",
       "type": "object",
       "required": [
         "method",
@@ -264,7 +264,7 @@
       }
     },
     "sbom": {
-      "description": "SBOM reference (SPDX or CycloneDX), REQUIRED at R1 (SIE-RT section 3, section 17).",
+      "description": "SBOM reference (SPDX or CycloneDX), REQUIRED at R1 (SK-RT section 3, section 17).",
       "type": "object",
       "required": [
         "format",
@@ -288,7 +288,7 @@
       }
     },
     "provenance": {
-      "description": "Build provenance (RECOMMENDED at R3, SIE-RT section 3), for example a SLSA provenance attestation.",
+      "description": "Build provenance (RECOMMENDED at R3, SK-RT section 3), for example a SLSA provenance attestation.",
       "type": "object",
       "required": [
         "uri",
@@ -315,7 +315,7 @@
       "$ref": "common.schema.json#/$defs/ext"
     },
     "sig": {
-      "description": "Manifest signature (SIE-COM section A5.1). signer is required so the Core can show who signed (SIE-RT section 3). Modules installed from outside the owner's chosen registries, including self-signed ones, are labelled sideloaded by the Core, not by the manifest.",
+      "description": "Manifest signature (SK-COM section A5.1). signer is required so the Core can show who signed (SK-RT section 3). Modules installed from outside the owner's chosen registries, including self-signed ones, are labelled sideloaded by the Core, not by the manifest.",
       "allOf": [
         {
           "$ref": "common.schema.json#/$defs/signature"
@@ -418,7 +418,7 @@
           "maxLength": 2048
         },
         "consequential": {
-          "description": "Whether using this permission is a consequential action (SIE-RT section 1). Consequential actions still need approval (SIE-RT section 16).",
+          "description": "Whether using this permission is a consequential action (SK-RT section 1). Consequential actions still need approval (SK-RT section 16).",
           "type": "boolean"
         },
         "reason": {
@@ -466,7 +466,7 @@
       }
     },
     "capabilityDescriptor": {
-      "description": "Hardware capability descriptor: type, functions, performance class, safety constraints, and whether it is attested (SIE-RT section 4).",
+      "description": "Hardware capability descriptor: type, functions, performance class, safety constraints, and whether it is attested (SK-RT section 4).",
       "type": "object",
       "required": [
         "type",
@@ -491,7 +491,7 @@
           "uniqueItems": true
         },
         "performance_class": {
-          "description": "Performance class (SIE-RT section 4): constrained (microcontrollers, simple sensors), standard (typical consumer device), high (dedicated accelerators or industrial hardware).",
+          "description": "Performance class (SK-RT section 4): constrained (microcontrollers, simple sensors), standard (typical consumer device), high (dedicated accelerators or industrial hardware).",
           "enum": [
             "constrained",
             "standard",
@@ -509,7 +509,7 @@
               "type": "boolean"
             },
             "safe_stop": {
-              "description": "Declared safe-stop behaviour. Required for actuators (SIE-RT section 4).",
+              "description": "Declared safe-stop behaviour. Required for actuators (SK-RT section 4).",
               "type": "string",
               "minLength": 1,
               "maxLength": 1000

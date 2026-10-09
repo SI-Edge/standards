@@ -1,4 +1,4 @@
-# SI Edge Registries
+# Selfkin Registries
 
 > **Status: Draft, not for implementation. No certification program exists.**
 
@@ -6,9 +6,9 @@ Minimal shared vocabularies referenced by the drafts. Each registry lists codes 
 
 | Registry | Used by |
 |---|---|
-| [data-classes.md](data-classes.md) | `residency.data_classes` and egress policy (SIE-RT §11, §13), module manifests (SIE-RT §3), privacy reports (SIE-RT §13), capability token constraints (SIE-COM §A6) |
-| [intents.md](intents.md) | Envelope `intent` (SIE-COM §A5), pairing (SIE-COM §A3), refusals (SIE-COM §A7) |
-| [refusal-reasons.md](refusal-reasons.md) | Refusal object (SIE-COM §A7, SIE-PRV §6, §9) |
+| [data-classes.md](data-classes.md) | `residency.data_classes` and egress policy (SK-RT §11, §13), module manifests (SK-RT §3), privacy reports (SK-RT §13), capability token constraints (SK-COM §A6) |
+| [intents.md](intents.md) | Envelope `intent` (SK-COM §A5), pairing (SK-COM §A3), refusals (SK-COM §A7) |
+| [refusal-reasons.md](refusal-reasons.md) | Refusal object (SK-COM §A7, SK-PRV §6, §9) |
 
 ## Rules
 

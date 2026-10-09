@@ -5,7 +5,7 @@
 
 ## 1. Purpose
 
-The SI Edge drafts aim to be open to everyone. Anyone should be able to build a conforming runtime, device, or provider without asking for permission and without paying patent royalties. This policy asks everyone who contributes to the specifications to promise not to use their patents against people who implement them.
+The Selfkin drafts aim to be open to everyone. Anyone should be able to build a conforming runtime, device, or provider without asking for permission and without paying patent royalties. This policy asks everyone who contributes to the specifications to promise not to use their patents against people who implement them.
 
 The policy is modelled on two well-known approaches:
 

@@ -7,13 +7,13 @@
   "session": "sess-4b1d0e9a77",
   "seq": 4,
   "attestation_ref": null,
-  "intent": "si.refused",
+  "intent": "sk.refused",
   "data": {
     "v": "0.1",
     "reason": "rate-limited",
     "detail": "Bob is busy"
   },
-  "payload_type": "application/vnd.si-edge.refusal+json",
+  "payload_type": "application/vnd.selfkin.refusal+json",
   "residency": {
     "tags": [],
     "data_classes": []

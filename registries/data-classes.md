@@ -2,11 +2,11 @@
 
 > **Status: Draft, not for implementation.** See [README.md](README.md) for registry rules.
 
-Data classes label personal data for egress policy, residency, redaction, and reporting (SIE-RT §11, §13). A data class is a registered top-level class, optionally followed by dot-separated subclasses (`location.precise`, `contacts.email`). Subclasses need no registration; the ones listed below are recommended so that runtimes agree. Classes not in this registry start with `x-`.
+Data classes label personal data for egress policy, residency, redaction, and reporting (SK-RT §11, §13). A data class is a registered top-level class, optionally followed by dot-separated subclasses (`location.precise`, `contacts.email`). Subclasses need no registration; the ones listed below are recommended so that runtimes agree. Classes not in this registry start with `x-`.
 
 A message, manifest, or report lists every class its content contains. A subclass is covered by its top-level class: a policy on `contacts` applies to `contacts.email`.
 
-The **suggested default** column is non-normative. It is what a runtime SHOULD propose at onboarding (SIE-RT §7) for the "sensitive" and "relay-required" policy marks used in SIE-RT §13; the owner decides.
+The **suggested default** column is non-normative. It is what a runtime SHOULD propose at onboarding (SK-RT §7) for the "sensitive" and "relay-required" policy marks used in SK-RT §13; the owner decides.
 
 | Class | Meaning | Recommended subclasses | Suggested default |
 |---|---|---|---|
@@ -24,6 +24,6 @@ The **suggested default** column is non-normative. It is what a runtime SHOULD p
 | `device` | Device telemetry and configuration | `device.telemetry`, `device.config` | normal |
 | `query` | Text written for one call (prompts, searches) without other classes | `query.general` | normal |
 | `usage` | Activity, app usage, and behaviour patterns | `usage.activity`, `usage.history` | sensitive |
-| `adaptation` | Adaptation Profile settings and derived style instructions (SIE-RT §7) | | sensitive, local-only proposed |
-| `memory` | Stored agent memory (SIE-RT §8) | `memory.facts`, `memory.episodes` | sensitive |
-| `secrets` | Credentials, keys, tokens, one-time codes | | never leaves the device (SIE-RT §15) |
+| `adaptation` | Adaptation Profile settings and derived style instructions (SK-RT §7) | | sensitive, local-only proposed |
+| `memory` | Stored agent memory (SK-RT §8) | `memory.facts`, `memory.episodes` | sensitive |
+| `secrets` | Credentials, keys, tokens, one-time codes | | never leaves the device (SK-RT §15) |

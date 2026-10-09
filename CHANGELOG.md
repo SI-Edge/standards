@@ -1,6 +1,20 @@
 # Changelog
 
-All notable changes to the SI Edge drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
+All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
+
+## 2026-10-09: Renamed to Selfkin
+
+Naming change, prepared for the move of the repository to https://github.com/selfkin/standards. No normative rule changed in substance.
+
+### Changed
+- Project name "SI Edge" is now **Selfkin**, with the tagline "Open standards for personal AI on your own devices". Documents: Selfkin Runtimes (SK-RT), Selfkin Edge-to-Edge Communication (SK-COM), Selfkin Provider Profiles (SK-PRV). Identifiers SIE-RT, SIE-COM, and SIE-PRV became SK-RT, SK-COM, and SK-PRV throughout, including earlier entries of this changelog.
+- The neutral term is now **personal AI runtime**; "SI" is no longer used as shorthand. TERMINOLOGY notes that US federal usage since Executive Order 14434 (29 September 2026) may call such systems "SI".
+- The "SI Envelope" is now the **Selfkin Envelope**; schema titles use "Selfkin".
+- Wire identifiers: reserved intents `si.*` became `sk.*` (for example `sk.pairing.request`, `sk.refused`), the refusal media type became `application/vnd.selfkin.refusal+json`, the Provider Manifest field `si_request_header` became `runtime_request_header`, the reserved other-token format name `si-cap` became `sk-cap`, example URLs use `/selfkin/` paths, and the example headers became `Selfkin-Request` and `Selfkin-Model`. The defined term "SI request" in SK-PRV became "runtime request".
+- Schema `$id` values, the CI badge, CITATION.cff, and the Pages site point to `github.com/selfkin/standards` and `selfkin.github.io/standards`.
+- Example connector lists in SK-RT §2 and SK-PRV are in alphabetical order, with the neutrality note kept.
+- Example `envelope.unknown-si-intent.invalid.json` renamed to `envelope.unknown-reserved-intent.invalid.json`.
+- Superseded drafts in `drafts/history/` keep their original names as a historical record.
 
 ## 2026-10-09: Launch readiness
 
@@ -11,14 +25,14 @@ Repository change. No normative text changed.
 - [CITATION.cff](CITATION.cff) (version `v0.1-draft`, CC BY 4.0).
 - [docs/](docs/): minimal project web page for GitHub Pages (Jekyll, own layout, no external scripts, fonts, analytics, or cookies; brand strings kept in `docs/_config.yml`).
 
-## 2026-10-09: Provider document renamed to SI Provider Profiles
+## 2026-10-09: Provider document renamed to Selfkin Provider Profiles
 
-Editorial and naming change. No normative rule changed; identifiers `SIE-PRV` and profiles P0 to P3 are unchanged, and no schema field or enum changed.
+Editorial and naming change. No normative rule changed; identifiers `SK-PRV` and profiles P0 to P3 are unchanged, and no schema field or enum changed.
 
 ### Changed
-- The provider draft is now titled **SI Provider Profiles Standard (SIE-PRV)**, replacing the working name "SI Edge Ready Provider". Conformance claims are worded "self-assessed against SIE-PRV profile P0 to P3" (§11).
+- The provider draft is now titled **Selfkin Provider Profiles Standard (SK-PRV)**, replacing the working name "Selfkin Ready Provider". Conformance claims are worded "self-assessed against SK-PRV profile P0 to P3" (§11).
 - Cross-references in the runtime and communication drafts, README, TERMINOLOGY, and earlier CHANGELOG headings use the new name.
-- [TRADEMARKS.md](TRADEMARKS.md): new section explaining that the project avoids "Edge Ready" style marks because of existing third-party EDGEREADY registrations, and that "SI Edge" is a provisional project name, not a certification mark.
+- [TRADEMARKS.md](TRADEMARKS.md): new section explaining that the project avoids "Edge Ready" style marks because of existing third-party EDGEREADY registrations, and that "Selfkin" is a provisional project name, not a certification mark.
 
 ## 2026-10-09: Interim patent policy
 
@@ -37,23 +51,23 @@ Repository and process change. No normative text changed.
 
 Resolutions of the questions found while writing the v0.1 schemas, folded into the drafts with the stricter choice in each case (owner-approved). Draft version numbers are unchanged. Details and traceability: [schemas/OPEN-QUESTIONS.md](schemas/OPEN-QUESTIONS.md).
 
-### SI Edge-to-Edge Communication v0.1 (SIE-COM)
-- Pairing messages use reserved `si.pairing.*` intents and carry no `instructions` (§A3).
+### Selfkin Edge-to-Edge Communication v0.1 (SK-COM)
+- Pairing messages use reserved `sk.pairing.*` intents and carry no `instructions` (§A3).
 - Envelope table rewritten: exactly one `aud`; `attestation_ref` always present and `null` unless the session is at C3; `cap_token` optional only for pairing and refusals; `idem_key` required with `instructions`; `data` and `payload_type` together; nonce and timestamp formats; provenance entry format; new optional `ext` (§A5). Residency tags combine by intersection.
 - New §A5.1 Canonical Encoding and Signatures (`sig` excluded from signed bytes, `canon` member, `dcbor` mandatory to implement) and §A5.2 Versions and Extensions (`ext` with `x-` members; other unknown members rejected).
-- §A6: SI capability token format, 1 hour maximum lifetime, binding to the envelope, precise narrowing rules, other token formats, owner attribution for cross-owner checks.
+- §A6: Selfkin capability token format, 1 hour maximum lifetime, binding to the envelope, precise narrowing rules, other token formats, owner attribution for cross-owner checks.
 - §A7: refusal object with registered reason codes, no free text.
 - §B1, §B5: legacy labels on `provenance` entries. §B7: canonical encodings negotiated. Two new open questions (§D).
 
-### SI Edge Runtimes v0.3 (SIE-RT)
+### Selfkin Runtimes v0.3 (SK-RT)
 - Module kinds defined, including new `hardware` and `device-adapter` definitions; single definition of sideloaded modules (§1, §3).
 - Manifest contents include kind and a compatibility range syntax (§3); performance classes (§4).
 - `x-` owner residency tags, tag intersection, registered data classes (§11).
 - Privacy reports moved from R2 to R1 with defined contents (names, never values; no redaction maps); verifiable minimisation stays at R2 (§13).
 - SBOMs moved from R2 to R1 (§17); profile table updated (§21).
 
-### SI Provider Profiles v0.1 (SIE-PRV)
-- Retention window format and purpose (§3); the SI Envelope itself is required at P2, equivalent mappings no longer count (§6); residency refusal codes (§6); model identity carrier (§7); manifest schema link (§8); refusal object (§9); audit validity bound (§10); P0 manifests allowed (§11); new open question on streaming (§13).
+### Selfkin Provider Profiles v0.1 (SK-PRV)
+- Retention window format and purpose (§3); the Selfkin Envelope itself is required at P2, equivalent mappings no longer count (§6); residency refusal codes (§6); model identity carrier (§7); manifest schema link (§8); refusal object (§9); audit validity bound (§10); P0 manifests allowed (§11); new open question on streaming (§13).
 
 ### Repository
 - New `registries/`: data classes, intents, refusal reasons.
@@ -66,7 +80,7 @@ Resolutions of the questions found while writing the v0.1 schemas, folded into t
 Roadmap step 1 (first part). No normative text changed.
 
 ### Added
-- `schemas/`: JSON Schema 2020-12 for the SI Envelope (SIE-COM A5), capability token (SIE-COM A6), module manifest with capability descriptor (SIE-RT 3, 4), privacy report (SIE-RT 13), and Provider Manifest (SIE-PRV 8, 11), plus shared definitions. `schemas/README.md` maps each schema to the draft sections.
+- `schemas/`: JSON Schema 2020-12 for the Selfkin Envelope (SK-COM A5), capability token (SK-COM A6), module manifest with capability descriptor (SK-RT 3, 4), privacy report (SK-RT 13), and Provider Manifest (SK-PRV 8, 11), plus shared definitions. `schemas/README.md` maps each schema to the draft sections.
 - `schemas/OPEN-QUESTIONS.md`: ambiguities and inconsistencies found in the drafts while writing the schemas, with the conservative choice each schema makes.
 - `examples/`: valid and deliberately invalid examples for every schema; `examples/README.md` explains why each invalid example fails.
 - `tools/validate/`: Python validator (JSON Schema plus semantic checks such as capability attenuation) and tests (Apache-2.0).
@@ -91,23 +105,23 @@ Repository prepared for public release.
 - Added non-normative "Example connectors" lists to the runtime and provider drafts, with a neutrality note.
 - Added References sections and relative links between documents.
 
-### SI Edge Runtimes v0.3 (SIE-RT)
+### Selfkin Runtimes v0.3 (SK-RT)
 - Defined Owner, User, Edge Device, Control Plane, Provider, full gateway mode, and residency tags.
 - Added rules: untrusted content and prompt injection (§2), sideloaded label and model weight hashes (§3), Trusted UI channel and accessibility-compatible consistency, voice approval step, WCAG 2.2 AA (§5), encrypted backup (§8), key recovery, owner key, mesh re-keying (§10), protected logs with deletable content (§11), relay fallback, metadata (§13), approval fatigue (§16), rollback restrictions (§17).
 - New §19 People, Shared Devices, and Vulnerable Users; new §20 Security and Privacy Considerations.
-- Moved remote retention duties to SIE-PRV; turned the "zero data" statement into a non-normative note; EU AI Act note now uses the Act's own roles.
+- Moved remote retention duties to SK-PRV; turned the "zero data" statement into a non-normative note; EU AI Act note now uses the Act's own roles.
 - Resolved conflicts: Core signing now R1, Privacy Gateway R1 with reports at R2, module packaging MUST with a small-Core SHOULD, outbound rule scoped to the Control Plane, every section now covered by a profile.
 
-### SI Edge-to-Edge Communication v0.1 (SIE-COM)
+### Selfkin Edge-to-Edge Communication v0.1 (SK-COM)
 - Companion reference corrected to runtime v0.3.
 - F5 discovery exempt from E2E encryption (no payload allowed); F7 media frames use AEAD after a signed setup instead of per-frame signatures.
 - Envelope: added `aud`, `session`, `seq`, `idem_key`, and a "Required" column.
 - Legacy endpoints defined as C0; shims are native endpoints that cannot claim R profiles; Method 4 renamed Proxy Method; human-instruction safety rule (§B6); pin reset rules (§B7).
 - Downgrade protection and cross-owner approvals now at C1; delegation chains across owners at C2; revocation bound defined.
 
-### SI Provider Profiles v0.1 (SIE-PRV)
+### Selfkin Provider Profiles v0.1 (SK-PRV)
 - "Certification Levels" renamed to Provider Conformance Profiles; certifiers and certificates replaced by independent audit for P2 and P3; P0 renamed "Unverified".
-- Scoped no-training and no-tracking rules to SI requests and anonymous mode; identified-mode linking must be declared.
+- Scoped no-training and no-tracking rules to runtime requests and anonymous mode; identified-mode linking must be declared.
 - Relay acceptance at P1, Oblivious HTTP gateway at P2.
 - Body rules aligned with the profile table.
 
@@ -116,6 +130,6 @@ Repository prepared for public release.
 
 ## 2026-10-09: Initial drafts
 
-- SI Edge Devices v0.1 (first draft, remote attach).
-- SI Edge Runtimes v0.2 (runtime-as-interface reframing).
-- SI Edge Runtimes v0.3, SI Edge-to-Edge Communication v0.1, SI Provider Profiles v0.1 (then titled with a working name, renamed on 2026-10-09).
+- Selfkin Devices v0.1 (first draft, remote attach).
+- Selfkin Runtimes v0.2 (runtime-as-interface reframing).
+- Selfkin Runtimes v0.3, Selfkin Edge-to-Edge Communication v0.1, Selfkin Provider Profiles v0.1 (then titled with a working name, renamed on 2026-10-09).

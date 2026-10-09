@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/SI-Edge/standards/schemas/provider-manifest.schema.json",
-  "title": "SI Provider Manifest (v0.1)",
-  "description": "Signed, versioned, machine-readable description of a provider (SIE-PRV section 8), published at a well-known location that can be fetched without authentication. It covers capabilities (models, modalities, context limits, tools), pricing, accepted credentials, retention (SIE-PRV section 3), no-training commitment (SIE-PRV section 3), regions and residency support (SIE-PRV section 6), Oblivious HTTP support (SIE-PRV section 4), attestation endpoints (SIE-PRV section 5), identified-mode linking (SIE-PRV section 2, section 4), model identity (SIE-PRV section 7), and the claimed profile as a self-assessment (SIE-PRV section 11). Before v1.0 any claim is a self-assessment only and is not a certification. Runtimes treat the provider as P0 unless they verify the claim (SIE-PRV section 12); this schema only checks that a claim is internally complete. Status: Draft, not for implementation.",
+  "$id": "https://github.com/selfkin/standards/schemas/provider-manifest.schema.json",
+  "title": "Selfkin Provider Manifest (v0.1)",
+  "description": "Signed, versioned, machine-readable description of a provider (SK-PRV section 8), published at a well-known location that can be fetched without authentication. It covers capabilities (models, modalities, context limits, tools), pricing, accepted credentials, retention (SK-PRV section 3), no-training commitment (SK-PRV section 3), regions and residency support (SK-PRV section 6), Oblivious HTTP support (SK-PRV section 4), attestation endpoints (SK-PRV section 5), identified-mode linking (SK-PRV section 2, section 4), model identity (SK-PRV section 7), and the claimed profile as a self-assessment (SK-PRV section 11). Before v1.0 any claim is a self-assessment only and is not a certification. Runtimes treat the provider as P0 unless they verify the claim (SK-PRV section 12); this schema only checks that a claim is internally complete. Status: Draft, not for implementation.",
   "type": "object",
   "required": [
     "v",
@@ -55,7 +55,7 @@
       }
     },
     "manifest_version": {
-      "description": "Manifest version; increases with every change (SIE-PRV section 8).",
+      "description": "Manifest version; increases with every change (SK-PRV section 8).",
       "type": "integer",
       "minimum": 1
     },
@@ -63,7 +63,7 @@
       "$ref": "common.schema.json#/$defs/timestamp"
     },
     "profile_claim": {
-      "description": "Claimed provider profile (SIE-PRV section 11). basis is fixed to self-assessment before v1.0. A manifest MAY claim P0.",
+      "description": "Claimed provider profile (SK-PRV section 11). basis is fixed to self-assessment before v1.0. A manifest MAY claim P0.",
       "type": "object",
       "required": [
         "profile",
@@ -80,7 +80,7 @@
         },
         "against": {
           "description": "Draft the self-assessment refers to.",
-          "const": "SIE-PRV draft v0.1"
+          "const": "SK-PRV draft v0.1"
         },
         "self_assessment": {
           "description": "Link to the published self-assessment with evidence per rule.",
@@ -104,8 +104,8 @@
         ]
       }
     },
-    "si_request_header": {
-      "description": "Request header that marks a request as an SI request (SIE-PRV section 1), if the provider uses one.",
+    "runtime_request_header": {
+      "description": "Request header that marks a request as a runtime request (SK-PRV section 1), if the provider uses one.",
       "type": "string",
       "pattern": "^[A-Za-z0-9-]+$",
       "maxLength": 64
@@ -154,7 +154,7 @@
       }
     },
     "accepted_credentials": {
-      "description": "Credentials accepted for authorisation and quota (SIE-PRV section 2).",
+      "description": "Credentials accepted for authorisation and quota (SK-PRV section 2).",
       "type": "array",
       "items": {
         "enum": [
@@ -170,15 +170,15 @@
       "minItems": 1
     },
     "anonymous_mode": {
-      "description": "Anonymous mode without an account tied to a real-world identity (SIE-PRV section 2).",
+      "description": "Anonymous mode without an account tied to a real-world identity (SK-PRV section 2).",
       "type": "boolean"
     },
     "unlinkable_billing": {
-      "description": "Billing is unlinkable from usage (SIE-PRV section 2, [P2]).",
+      "description": "Billing is unlinkable from usage (SK-PRV section 2, [P2]).",
       "type": "boolean"
     },
     "identified_mode": {
-      "description": "Identified mode and the linking it implies (SIE-PRV section 2, section 4).",
+      "description": "Identified mode and the linking it implies (SK-PRV section 2, section 4).",
       "type": "object",
       "required": [
         "offered"
@@ -209,7 +209,7 @@
       }
     },
     "training": {
-      "description": "Commitment not to train on, fine-tune on, or build profiles from SI requests or responses (SIE-PRV section 3).",
+      "description": "Commitment not to train on, fine-tune on, or build profiles from runtime requests or responses (SK-PRV section 3).",
       "type": "object",
       "required": [
         "no_training",
@@ -226,7 +226,7 @@
       }
     },
     "retention": {
-      "description": "Retention of SI request and response content after delivery (SIE-PRV section 3), as an ISO 8601 duration. PT0S means none. A non-zero window must state its purpose: abuse handling or legal duty.",
+      "description": "Retention of runtime request and response content after delivery (SK-PRV section 3), as an ISO 8601 duration. PT0S means none. A non-zero window must state its purpose: abuse handling or legal duty.",
       "type": "object",
       "required": [
         "content_window",
@@ -280,7 +280,7 @@
       }
     },
     "tracking": {
-      "description": "No tracking or fingerprinting for SI requests, relay acceptance, and clean responses (SIE-PRV section 4).",
+      "description": "No tracking or fingerprinting for runtime requests, relay acceptance, and clean responses (SK-PRV section 4).",
       "type": "object",
       "required": [
         "no_tracking",
@@ -301,7 +301,7 @@
       }
     },
     "regions": {
-      "description": "Regions where SI requests are processed (ISO 3166-1 alpha-2 codes).",
+      "description": "Regions where runtime requests are processed (ISO 3166-1 alpha-2 codes).",
       "type": "array",
       "items": {
         "type": "string",
@@ -311,7 +311,7 @@
       "minItems": 1
     },
     "residency_support": {
-      "description": "Residency tags the provider honours (SIE-PRV section 6). Requests with any other tag are refused.",
+      "description": "Residency tags the provider honours (SK-PRV section 6). Requests with any other tag are refused.",
       "type": "array",
       "items": {
         "$ref": "common.schema.json#/$defs/residencyTag"
@@ -319,7 +319,7 @@
       "uniqueItems": true
     },
     "envelope": {
-      "description": "SI Envelope support (SIE-PRV section 6). P2 and above require the SI Envelope itself; equivalent mappings are not accepted.",
+      "description": "Selfkin Envelope support (SK-PRV section 6). P2 and above require the Selfkin Envelope itself; equivalent mappings are not accepted.",
       "type": "object",
       "required": [
         "accepted"
@@ -355,7 +355,7 @@
       }
     },
     "ohttp": {
-      "description": "Oblivious HTTP gateway (RFC 9458) for non-streaming requests (SIE-PRV section 4, [P2]).",
+      "description": "Oblivious HTTP gateway (RFC 9458) for non-streaming requests (SK-PRV section 4, [P2]).",
       "type": "object",
       "required": [
         "supported"
@@ -388,7 +388,7 @@
       }
     },
     "attestation": {
-      "description": "Confidential and attested inference (SIE-PRV section 5).",
+      "description": "Confidential and attested inference (SK-PRV section 5).",
       "type": "object",
       "required": [
         "confidential_computing",
@@ -417,15 +417,15 @@
       "additionalProperties": false,
       "properties": {
         "log_entry": {
-          "description": "Entry of this manifest in a public transparency log (SIE-PRV section 8, [P2]).",
+          "description": "Entry of this manifest in a public transparency log (SK-PRV section 8, [P2]).",
           "$ref": "common.schema.json#/$defs/uri"
         },
         "reports": {
-          "description": "Periodic transparency reports (SIE-PRV section 7, [P2]).",
+          "description": "Periodic transparency reports (SK-PRV section 7, [P2]).",
           "$ref": "common.schema.json#/$defs/httpsUrl"
         },
         "audit": {
-          "description": "Independent third-party audit (SIE-PRV section 10, [P2]).",
+          "description": "Independent third-party audit (SK-PRV section 10, [P2]).",
           "type": "object",
           "required": [
             "auditor",
@@ -444,14 +444,14 @@
               "$ref": "common.schema.json#/$defs/httpsUrl"
             },
             "credential": {
-              "description": "Audit statement as a Verifiable Credential (SHOULD, SIE-PRV section 10).",
+              "description": "Audit statement as a Verifiable Credential (SHOULD, SK-PRV section 10).",
               "$ref": "common.schema.json#/$defs/uri"
             },
             "issued": {
               "$ref": "common.schema.json#/$defs/timestamp"
             },
             "valid_until": {
-              "description": "At most two years after issued (SIE-PRV section 10; checked by tools/validate).",
+              "description": "At most two years after issued (SK-PRV section 10; checked by tools/validate).",
               "$ref": "common.schema.json#/$defs/timestamp"
             }
           }
@@ -459,7 +459,7 @@
       }
     },
     "planned_changes": {
-      "description": "Material changes to model or policy, announced before they take effect (SIE-PRV section 7), including planned profile drops (SIE-PRV section 12).",
+      "description": "Material changes to model or policy, announced before they take effect (SK-PRV section 7), including planned profile drops (SK-PRV section 12).",
       "type": "array",
       "items": {
         "type": "object",
@@ -484,7 +484,7 @@
       }
     },
     "model_identity": {
-      "description": "How every response carries the model identity (name, version, region) and the currently claimed profile (SIE-PRV section 7): in the response envelope (model_ref) or, without envelope support, in the named response header.",
+      "description": "How every response carries the model identity (name, version, region) and the currently claimed profile (SK-PRV section 7): in the response envelope (model_ref) or, without envelope support, in the named response header.",
       "type": "object",
       "required": [
         "carrier"
@@ -535,7 +535,7 @@
   },
   "allOf": [
     {
-      "description": "P1 and above: every [P1] rule that a manifest can state (SIE-PRV section 11).",
+      "description": "P1 and above: every [P1] rule that a manifest can state (SK-PRV section 11).",
       "if": {
         "properties": {
           "profile_claim": {
@@ -593,7 +593,7 @@
       }
     },
     {
-      "description": "P2 and above: anonymous credentials, unlinkable billing, OHTTP, envelope and residency, transparency log and reports, independent audit (SIE-PRV section 11).",
+      "description": "P2 and above: anonymous credentials, unlinkable billing, OHTTP, envelope and residency, transparency log and reports, independent audit (SK-PRV section 11).",
       "if": {
         "properties": {
           "profile_claim": {
@@ -658,7 +658,7 @@
       }
     },
     {
-      "description": "P3: attested retention and attested confidential inference (SIE-PRV section 3, section 5).",
+      "description": "P3: attested retention and attested confidential inference (SK-PRV section 3, section 5).",
       "if": {
         "properties": {
           "profile_claim": {
@@ -694,7 +694,7 @@
       }
     },
     {
-      "description": "Model identity travels in the envelope only if the provider accepts envelopes (SIE-PRV section 7).",
+      "description": "Model identity travels in the envelope only if the provider accepts envelopes (SK-PRV section 7).",
       "if": {
         "properties": {
           "envelope": {
@@ -721,7 +721,7 @@
   ],
   "$defs": {
     "model": {
-      "description": "Model identity and capabilities (SIE-PRV section 7, section 8).",
+      "description": "Model identity and capabilities (SK-PRV section 7, section 8).",
       "type": "object",
       "required": [
         "id",

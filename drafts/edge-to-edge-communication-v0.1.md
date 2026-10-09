@@ -1,11 +1,11 @@
-# SI Edge-to-Edge Communication Standard (Draft v0.1)
+# Selfkin Edge-to-Edge Communication Standard (Draft v0.1)
 
 > **Status: Draft, not for implementation. No certification program exists.**
 > Conformance profiles in this document are for discussion only. Before v1.0 any claim of conformance is a self-assessment and must not be presented as a certification. See [TRADEMARKS.md](../TRADEMARKS.md).
 
-**Document:** SI Edge-to-Edge Communication (SIE-COM) · Draft v0.1 · roenu (@roenudev), Bern · 2026-10-09 · Companion to [SI Edge Runtimes v0.3](runtime-v0.3.md) (SIE-RT) and [SI Provider Profiles v0.1](provider-v0.1.md) (SIE-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
+**Document:** Selfkin Edge-to-Edge Communication (SK-COM) · Draft v0.1 · roenu (@roenudev), Bern · 2026-10-09 · Companion to [Selfkin Runtimes v0.3](runtime-v0.3.md) (SK-RT) and [Selfkin Provider Profiles v0.1](provider-v0.1.md) (SK-PRV) · Shared terms: [TERMINOLOGY.md](../TERMINOLOGY.md) · Threats: [THREAT-MODEL.md](../THREAT-MODEL.md)
 
-**Purpose.** This document defines secure, model-agnostic rules for every way SI runtimes communicate with each other, with devices, and with people (Part A). It also defines how runtimes interoperate with legacy endpoints that cannot speak the new protocol (Part B). It uses the terms of SIE-RT §1 (Runtime Core, Router Model, Capability, Control Plane, Egress, Consequential Action, Owner, User, residency tag) and its profiles R1 to R3. It does not describe any vendor's plans or products.
+**Purpose.** This document defines secure, model-agnostic rules for every way personal AI runtimes communicate with each other, with devices, and with people (Part A). It also defines how runtimes interoperate with legacy endpoints that cannot speak the new protocol (Part B). It uses the terms of SK-RT §1 (Runtime Core, Router Model, Capability, Control Plane, Egress, Consequential Action, Owner, User, residency tag) and its profiles R1 to R3. It does not describe any vendor's plans or products.
 
 ## Conventions
 
@@ -42,7 +42,7 @@
 - Identities **MAY** be expressed as Decentralized Identifiers (DIDs). Claims such as "owner verified" or "R3 attested" **MAY** be expressed as Verifiable Credentials with selective disclosure (for example SD-JWT VC or BBS signatures). *Rationale: open identity formats with no central registry.*
 - **[C1]** Keys **MUST** be rotatable. A revocation **MUST** be applied by each mesh device no later than its next successful sync, and online mesh devices **SHOULD** apply it within 5 minutes of the owner's action. *Rationale: a lost device must not keep its access.*
 - **[C2]** Peers **MUST** check revocation status before accepting a cross-owner session (F2, F6). *Rationale: revoked keys must not keep working with strangers.*
-- **[C1]** After an owner-key rotation (SIE-RT §10), the runtime **MUST** send re-issued statements to paired peers. *Rationale: peers must learn about the new key from the owner, not by guessing.*
+- **[C1]** After an owner-key rotation (SK-RT §10), the runtime **MUST** send re-issued statements to paired peers. *Rationale: peers must learn about the new key from the owner, not by guessing.*
 - **[C1]** A peer **MUST NOT** need to learn the owner's real-world identity unless the task requires it. *Rationale: pseudonymous by default.*
 
 ## A3. Discovery and Pairing
@@ -50,7 +50,7 @@
 - Local discovery **MAY** use mDNS, BLE, NFC, or QR codes. Remote discovery **MAY** use a rendezvous or relay service. *Rationale: use proven mechanisms.*
 - **[C1]** Discovery advertisements (F5) **MUST** reveal as little as possible (no owner name, agent list, or capabilities in clear text) and **MUST NOT** carry payload data. *Rationale: broadcasts reach everyone nearby and cannot be end-to-end encrypted.*
 - **[C1]** Pairing **MUST** require explicit owner consent on at least one side, and on both sides for F1 and F2. *Rationale: no silent trust relationships.*
-- **[C1]** Pairing messages **MUST** use an `intent` from the reserved `si.pairing.*` namespace ([registries/intents.md](../registries/intents.md)) and **MUST NOT** carry `instructions`. Together with refusals (§A7), they are the only envelopes that **MAY** omit `cap_token`. *Rationale: before pairing there is no capability to present, so pairing must not be able to request actions.*
+- **[C1]** Pairing messages **MUST** use an `intent` from the reserved `sk.pairing.*` namespace ([registries/intents.md](../registries/intents.md)) and **MUST NOT** carry `instructions`. Together with refusals (§A7), they are the only envelopes that **MAY** omit `cap_token`. *Rationale: before pairing there is no capability to present, so pairing must not be able to request actions.*
 - **[C1]** Pairing **MUST** include out-of-band verification: a short authentication string, a QR scan, or NFC proximity. *Rationale: defeats man-in-the-middle attacks at the moment trust is set up.*
 - **[C1]** A pairing record **MUST** state the forms and capabilities it allows, and it **SHOULD** expire unless renewed. *Rationale: trust should be specific and time-bound.*
 
@@ -61,12 +61,12 @@
 - **[C1]** Key exchange **MUST** provide forward secrecy. *Rationale: protects past traffic if a key is later stolen.*
 - **[C3]** Key exchange **MUST** use a hybrid classical plus post-quantum construction. Below C3 it is RECOMMENDED where implementations are available. *Rationale: protects against attacks that record traffic now and decrypt it later.*
 - Implementations **SHOULD** build on established building blocks: TLS 1.3 or QUIC for client/server and relay paths, the Noise Protocol Framework for peer-to-peer and constrained links, and MLS for group messaging within a mesh or multi-party sessions. *Rationale: do not invent your own cryptography.*
-- **[C1]** Streams (F7) **MUST** be set up with a signed SI Envelope that establishes per-session keys. Media frames **MUST** then be protected with authenticated encryption under those keys (for example SRTP or QUIC). Per-frame signatures are not required. Streams **SHOULD** support rekeying during long sessions. *Rationale: strong protection without signing every frame.*
+- **[C1]** Streams (F7) **MUST** be set up with a signed Selfkin Envelope that establishes per-session keys. Media frames **MUST** then be protected with authenticated encryption under those keys (for example SRTP or QUIC). Per-frame signatures are not required. Streams **SHOULD** support rekeying during long sessions. *Rationale: strong protection without signing every frame.*
 - **[C1]** Cipher suite negotiation **MUST** be protected against downgrade (B7). *Rationale: attackers target negotiation.*
 
 ## A5. Message Envelope
 
-**[C1]** Every message **MUST** use a common, signed **SI Envelope** with a versioned schema and a canonical encoding (§A5.1). The only exceptions are F5 advertisements (A3) and F7 media frames after stream setup (A4); the form F5 therefore never appears in an envelope. *Rationale: one structure to verify, log, and enforce.*
+**[C1]** Every message **MUST** use a common, signed **Selfkin Envelope** with a versioned schema and a canonical encoding (§A5.1). The only exceptions are F5 advertisements (A3) and F7 media frames after stream setup (A4); the form F5 therefore never appears in an envelope. *Rationale: one structure to verify, log, and enforce.*
 
 The machine-readable definition is [schemas/envelope.schema.json](../schemas/envelope.schema.json). Where the schema and this text disagree, this text wins.
 
@@ -86,7 +86,7 @@ Fields:
 | `instructions` | When an action is requested | Requested action, structured (`action`, optional `resource`, `params`, `consequential`). Authenticated by `sig`; there is no separate signature (§A5.1) |
 | `data` | When there is content | Payload content, always treated as untrusted data |
 | `payload_type` | When `data` is present, and only then | Media type or schema URI of `data` |
-| `residency` | Always | Residency tags (SIE-RT §11) and data classes ([registries/data-classes.md](../registries/data-classes.md)) of the content |
+| `residency` | Always | Residency tags (SK-RT §11) and data classes ([registries/data-classes.md](../registries/data-classes.md)) of the content |
 | `idem_key` | Whenever `instructions` is present; **MAY** be used on other messages | Idempotency key so retries do not repeat an action |
 | `nonce` / `issued` / `expires` | Always | Replay protection and freshness. `nonce` has at least 128 bits of randomness. Timestamps are RFC 3339 with an explicit offset (CBOR tag 1 in CBOR) |
 | `provenance` | Always; empty if there is no prior hop | Prior hops, oldest first (F6, F8, B5). Each entry has `role` (`origin`, `delegator`, `proxy`, `relay`, `store-and-forward`, or `legacy-endpoint`), `id`, and optional `device`, `method`, `labels`, and `at` |
@@ -95,7 +95,7 @@ Fields:
 | `sig` | Always | Signature block by the agent key (§A5.1) |
 
 - **[C1]** Receivers **MUST** reject envelopes that are unsigned, expired, replayed, not addressed to them (`aud`), out of sequence beyond a configured window, or of an unknown major version. *Rationale: fail closed.*
-- **[C1]** `instructions` and `data` **MUST** be separate fields, and the receiving Core **MUST NOT** grant any authority based on text inside `data`. *Rationale: a structural mitigation for prompt injection. It is not a complete defence, because a model reading `data` can still be steered; SIE-RT §2 requires policy checks on every resulting action.*
+- **[C1]** `instructions` and `data` **MUST** be separate fields, and the receiving Core **MUST NOT** grant any authority based on text inside `data`. *Rationale: a structural mitigation for prompt injection. It is not a complete defence, because a model reading `data` can still be steered; SK-RT §2 requires policy checks on every resulting action.*
 - **[C1]** Every envelope that carries `instructions` **MUST** carry an `idem_key`. *Rationale: any requested action may change state, so retries must be safe by default.*
 - **[C1]** `data` and `payload_type` **MUST** appear together or not at all. *Rationale: untrusted content must always be typed before it is parsed.*
 - **[C1]** In a session negotiated at C3, receivers **MUST** reject envelopes whose `attestation_ref` is `null`. *Rationale: the negotiated profile is bound to the session by the signed transcript (§B7), so the receiver knows when attestation is required.*
@@ -106,19 +106,19 @@ Fields:
 - **[C1]** A signature **MUST** be computed over the canonical encoding of the signed object with its `sig` member removed. The `sig` block contains `alg` (JOSE or COSE algorithm name), `kid` (signing key), `canon`, `value`, and, for manifests, `signer`. `canon` names the encoding: `dcbor` (deterministic CBOR, RFC 8949 §4.2) or `jcs` (JSON Canonicalization Scheme, RFC 8785). *Rationale: both sides must hash exactly the same bytes.*
 - **[C1]** Every runtime **MUST** be able to produce and verify `dcbor` signatures. Senders **MUST** use `dcbor` unless the receiver announced `jcs` support during negotiation (§B7). *Rationale: one mandatory-to-implement encoding guarantees interoperability.*
 - **[C1]** `instructions` have no separate signature; they are authenticated only as part of the signed envelope. *Rationale: one signature, one verification path.*
-- The same rules apply to every signed SI object: capability tokens (§A6), module manifests (SIE-RT §3), and Provider Manifests (SIE-PRV §8).
+- The same rules apply to every signed Selfkin object: capability tokens (§A6), module manifests (SK-RT §3), and Provider Manifests (SK-PRV §8).
 
 ### A5.2 Versions and Extensions
 
 - **[C1]** `v` is `MAJOR.MINOR`. Senders **MUST NOT** use members defined in a minor version higher than the one negotiated (§B7). *Rationale: a receiver must understand every standard member it is given.*
 - **[C1]** Receivers **MUST** reject envelopes that contain members which are neither defined for the negotiated version nor inside `ext`. *Rationale: fail closed.*
 - **[C1]** Extensions **MUST** be placed in the `ext` object, with member names that start with `x-`. Receivers **MUST** ignore `ext` members they do not understand. `ext` content **MUST NOT** grant authority, relax policy, or change the meaning of standard members. *Rationale: room to experiment without weakening the core.*
-- These rules apply to every SI schema object (capability tokens, module manifests, privacy reports, refusals, Provider Manifests). *Rationale: one extension rule for the whole ecosystem.*
+- These rules apply to every Selfkin schema object (capability tokens, module manifests, privacy reports, refusals, Provider Manifests). *Rationale: one extension rule for the whole ecosystem.*
 
 ## A6. Authorization
 
 - **[C1]** Authorization **MUST** be capability-based. A token grants specific actions on specific resources, for a specific audience and time window. *Rationale: least privilege, with no ambient authority.*
-- **[C1]** An SI capability token has the members `v`, `id`, `iss` (issuer), `sub` (holder), `aud` (exactly one audience), `iat`, optional `nbf`, `exp`, `cnf` (proof-of-possession key binding), `rights` (each an `action` on a `resource`, with optional `constraints`), optional `budget`, `chain`, optional `ext`, and `sig` ([schemas/capability-token.schema.json](../schemas/capability-token.schema.json)). *Rationale: one token format that every runtime can verify.*
+- **[C1]** An Selfkin capability token has the members `v`, `id`, `iss` (issuer), `sub` (holder), `aud` (exactly one audience), `iat`, optional `nbf`, `exp`, `cnf` (proof-of-possession key binding), `rights` (each an `action` on a `resource`, with optional `constraints`), optional `budget`, `chain`, optional `ext`, and `sig` ([schemas/capability-token.schema.json](../schemas/capability-token.schema.json)). *Rationale: one token format that every runtime can verify.*
 - **[C1]** A token's `exp` **MUST** be no more than 1 hour after its `iat`. Owner policy **MAY** set a shorter maximum. Longer tasks **MUST** obtain fresh tokens. *Rationale: a testable bound for "short-lived".*
 - **[C1]** When a token authorises an envelope, its `sub` **MUST** equal the envelope's `sender_agent`, its `aud` **MUST** equal the envelope's `aud`, and its rights **MUST** cover the action in `instructions`. *Rationale: a token is useful only to its holder, toward its audience, for its actions.*
 - **[C1]** Other attenuable token formats **MAY** be used, wrapped as `{format, token}` in `cap_token`. The receiver **MUST** verify attenuation natively for that format, and **MUST** refuse with `unsupported-token-format` if it cannot. *Rationale: alternative formats must not bypass attenuation.*
@@ -135,14 +135,14 @@ Fields:
 - **[C1]** All peer content **MUST** be treated as untrusted data. It **MUST NOT** change the receiving agent's system instructions, permissions, or memory without passing local policy. *Rationale: other agents may be compromised or adversarial.*
 - **[C1]** Runtimes **MUST** enforce per-peer rate limits and budgets (messages, compute, money). *Rationale: limits denial-of-service and runaway loops between agents.*
 - Runtimes **MAY** maintain local reputation scores for peers, and **SHOULD NOT** depend on one central reputation authority. *Rationale: useful signal without a single point of control.*
-- **[C1]** Refusals **MUST** use the refusal object ([schemas/refusal.schema.json](../schemas/refusal.schema.json)) with a reason code from [registries/refusal-reasons.md](../registries/refusal-reasons.md) or a private `x-` code. It is sent as the `data` of an envelope with intent `si.refused` and `payload_type` `application/vnd.si-edge.refusal+json`; such an envelope **MUST NOT** carry `instructions`. A refusal **MUST NOT** include free text, memory, Adaptation Profile data, or other content that was not already in the request. *Rationale: predictable negotiation without accidental disclosure.*
+- **[C1]** Refusals **MUST** use the refusal object ([schemas/refusal.schema.json](../schemas/refusal.schema.json)) with a reason code from [registries/refusal-reasons.md](../registries/refusal-reasons.md) or a private `x-` code. It is sent as the `data` of an envelope with intent `sk.refused` and `payload_type` `application/vnd.selfkin.refusal+json`; such an envelope **MUST NOT** carry `instructions`. A refusal **MUST NOT** include free text, memory, Adaptation Profile data, or other content that was not already in the request. *Rationale: predictable negotiation without accidental disclosure.*
 - **[C1]** Negotiations that commit the owner (purchases, agreements, sharing data) **MUST** produce a signed summary for the human. *Rationale: owners need a clear record of what their agent agreed to.*
 
 ## A8. Privacy
 
 - **[C2]** Metadata **MUST** be minimised. Relays **SHOULD** see only routing identifiers, and implementations **SHOULD** support padding and batching where practical. *Rationale: metadata reveals relationships.*
-- **[C2]** The egress policy (SIE-RT §11) **MUST** be enforced on every hop, including F1 mesh traffic. *Rationale: an owner's own devices can sit in different jurisdictions.*
-- **[C2]** Residency tags **MUST** be honoured with the meanings defined in SIE-RT §11. A runtime **MUST NOT** forward tagged data to a destination outside the tag's region, and **MUST** treat unknown tags as not allowed. *Rationale: residency travels with the data.* Residency tags are an owner policy choice that is stricter than the default transfer rules of the Swiss nFADP and the EU GDPR; they are not a statement of what those laws require.
+- **[C2]** The egress policy (SK-RT §11) **MUST** be enforced on every hop, including F1 mesh traffic. *Rationale: an owner's own devices can sit in different jurisdictions.*
+- **[C2]** Residency tags **MUST** be honoured with the meanings defined in SK-RT §11. A runtime **MUST NOT** forward tagged data to a destination outside the tag's region, and **MUST** treat unknown tags as not allowed. *Rationale: residency travels with the data.* Residency tags are an owner policy choice that is stricter than the default transfer rules of the Swiss nFADP and the EU GDPR; they are not a statement of what those laws require.
 - Runtimes **SHOULD** use selective disclosure (proving a claim without revealing the underlying data) where formats support it. *Rationale: share the minimum.*
 
 ## A9. Reliability
@@ -155,21 +155,21 @@ Fields:
 ## A10. Audit and Transparency
 
 - **[C1]** Every runtime **MUST** keep a local log of envelopes sent and received, with their form, peer, intent, and decision. Logs **MUST NOT** contain secrets. *Rationale: accountability across agents depends on evidence.*
-- **[C2]** The log **MUST** be tamper-evident (hash-chained), **MUST** include `model_ref`, and **MUST** follow the log protections in SIE-RT §11 (encryption at rest, retention period, deletable content). *Rationale: evidence that cannot be quietly edited, without becoming a surveillance store.*
+- **[C2]** The log **MUST** be tamper-evident (hash-chained), **MUST** include `model_ref`, and **MUST** follow the log protections in SK-RT §11 (encryption at rest, retention period, deletable content). *Rationale: evidence that cannot be quietly edited, without becoming a surveillance store.*
 - **[C1]** Users **MUST** be able to see which agent and model produced every message, sent or received. *Rationale: provenance is part of the interface.*
 - Logs **SHOULD** be exportable as OpenTelemetry traces. *Rationale: use standard tooling.*
 
 ## A11. Existing Protocols as Carriers
 
-- MCP **SHOULD** be used as the carrier for tool and capability calls, with the SI Envelope carried inside or alongside it. *Rationale: reuse the open tool protocol.*
-- Other agent-to-agent protocols **MAY** carry SI Envelopes, provided the security properties in A4 to A10 are preserved end to end. *Rationale: stay compatible without depending on any single protocol.*
+- MCP **SHOULD** be used as the carrier for tool and capability calls, with the Selfkin Envelope carried inside or alongside it. *Rationale: reuse the open tool protocol.*
+- Other agent-to-agent protocols **MAY** carry Selfkin Envelopes, provided the security properties in A4 to A10 are preserved end to end. *Rationale: stay compatible without depending on any single protocol.*
 - **[C1]** A carrier **MUST NOT** be treated as providing security that the envelope itself does not provide. *Rationale: the envelope is the trust anchor.*
 
 ---
 
 # Part B: Backward Compatibility with Legacy Endpoints
 
-A **legacy endpoint** is any device, app, or OS that does not itself sign and verify SI Envelopes. An endpoint running a shim (Method 3) that implements the envelope is a native endpoint with a shim profile, not a legacy endpoint.
+A **legacy endpoint** is any device, app, or OS that does not itself sign and verify Selfkin Envelopes. An endpoint running a shim (Method 3) that implements the envelope is a native endpoint with a shim profile, not a legacy endpoint.
 
 Legacy endpoints are below C1. The hop to a legacy endpoint has the effective profile **C0 (legacy)**. This does not lower the runtime's own profile for other sessions.
 
@@ -177,12 +177,12 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 
 - **[C1]** Every legacy endpoint **MUST** be labelled `legacy` and `unattested` in the envelope (on its `provenance` entry, role `legacy-endpoint`, §A5), the logs, and the interface. Any endpoint without verified attestation **MUST** be labelled `unattested`. *Rationale: users have to see where trust is weaker.*
 - **[C1]** An adapter **MUST** generate a permission manifest for each legacy endpoint before first use, and the owner **MUST** approve it. *Rationale: same consent model as native capabilities.*
-- **[C1]** Egress policy and approvals **MUST** be enforced by the SI runtime on the adapter side, since a legacy endpoint cannot enforce them. *Rationale: enforcement lives where trust lives.*
+- **[C1]** Egress policy and approvals **MUST** be enforced by the personal AI runtime on the adapter side, since a legacy endpoint cannot enforce them. *Rationale: enforcement lives where trust lives.*
 - When several methods are possible, runtimes **SHOULD** prefer, in order: native, Method 3, Method 2, Method 4, Method 1, Method 5. *Rationale: prefer structured, enforceable paths over brittle ones.*
 
 ## B2. Method 1: App Method
 
-**When to use:** the device runs a modern OS, but the target app has no SI support.
+**When to use:** the device runs a modern OS, but the target app has no Selfkin support.
 - The runtime **MAY** drive apps through app intents, shortcuts, deep links, accessibility APIs, or, as a last resort, UI automation. *Rationale: it reaches existing apps today.*
 - **[C1]** UI automation **MUST** be limited to the approved app and **MUST** run every action through the Core's permission checks. *Rationale: screen control is powerful and brittle.*
 - **[C1]** Content read from the app's screen **MUST** be treated as untrusted data. *Rationale: on-screen text can carry injected instructions.*
@@ -200,7 +200,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 ## B4. Method 3: Runtime Method (Shim)
 
 **When to use:** the endpoint can install software but cannot run a full runtime (older PCs, low-end phones, small servers).
-- **[C1]** A lightweight **shim** **MUST** implement the SI Envelope, mutual authentication, and local permission checks for the capabilities it exposes. *Rationale: lets old hardware become a real endpoint.*
+- **[C1]** A lightweight **shim** **MUST** implement the Selfkin Envelope, mutual authentication, and local permission checks for the capabilities it exposes. *Rationale: lets old hardware become a real endpoint.*
 - **[C1]** The shim **MUST** be signed, updatable, and possible to roll back (never to a revoked or `sunset` version), and it **MUST NOT** run models unless it meets the full runtime standard. *Rationale: a minimal, auditable surface.*
 - **[C1]** A shim without a hardware root of trust **MUST** label itself `unattested`. *Rationale: honest profile claims.*
 - **Profile:** a shim **MUST NOT** claim any R profile, because it is not a runtime. Without hardware-backed keys it can reach at most C2; with hardware-backed keys and verified attestation it **MAY** reach C3. *Rationale: capability depends on the hardware.*
@@ -208,7 +208,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 ## B5. Method 4: Proxy Method
 
 **When to use:** the endpoint cannot run anything new, such as old IoT, HTTP APIs, Bluetooth peripherals, Matter, Modbus, and other legacy protocols.
-- A nearby SI runtime acts as a **proxy**. It translates legacy protocols into capabilities and wraps every exchange in the SI Envelope on the SI side. *Rationale: brings legacy endpoints under one policy.*
+- A nearby personal AI runtime acts as a **proxy**. It translates legacy protocols into capabilities and wraps every exchange in the Selfkin Envelope on the Selfkin side. *Rationale: brings legacy endpoints under one policy.*
 - **[C1]** The proxy **MUST** be treated as holding the trust for its legacy endpoints. Its identity **MUST** appear in every envelope's `provenance` with role `proxy`, and the legacy endpoint **MUST** appear there with role `legacy-endpoint` and the labels `legacy` and `unattested`. *Rationale: trust must be explicit about who actually vouches.*
 - **[C1]** The proxy **MUST** isolate each legacy endpoint (separate credentials, and a separate network segment where possible) and **MUST** keep legacy credentials in its own keystore. *Rationale: one weak device must not compromise others.*
 - **[C1]** Consequential and physical actions through a proxy **MUST** require approval unless pre-authorised. *Rationale: legacy devices have weak safety interlocks.*
@@ -219,7 +219,7 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 **When to use:** no automated path exists or the risk is too high.
 - **[C1]** The runtime **MUST** be able to give the human clear, step-by-step instructions and record the outcome they confirm. *Rationale: the human is always the final compatibility layer.*
 - **[C1]** The runtime **MUST NOT** pretend that a step done by a human was automated, or the reverse. *Rationale: honest audit trail.*
-- **[C1]** Instructions to a human that originate from another owner's agent (F2, F6) **MUST** be shown in Trusted UI with their origin, and **MUST NOT** ask the human to reveal secrets, codes, or credentials, or to approve payments, outside the normal approval flow (SIE-RT §16). *Rationale: a malicious peer must not use the human as an attack path.*
+- **[C1]** Instructions to a human that originate from another owner's agent (F2, F6) **MUST** be shown in Trusted UI with their origin, and **MUST NOT** ask the human to reveal secrets, codes, or credentials, or to approve payments, outside the normal approval flow (SK-RT §16). *Rationale: a malicious peer must not use the human as an attack path.*
 
 ## B7. Negotiation, Version Fallback, and Downgrade Protection
 
@@ -243,12 +243,12 @@ Legacy endpoints are below C1. The hop to a legacy endpoint has the effective pr
 | Profile | Aligned with | Requires |
 |---|---|---|
 | **C0** | n/a | Legacy hop (Part B). Not a conformance profile; shown to the user as `legacy` |
-| **C1 Basic** | R1 | Every rule tagged [C1]. In summary: forms (A1), device, agent, and owner identity (A2), minimal discovery and consented pairing (A3), E2E encryption with mutual auth and forward secrecy, stream protection, downgrade protection (A4, B7), signed SI Envelope with `aud`, `seq`, `idem_key` (A5), capability tokens, cross-owner approvals, local checks (A6), untrusted-data handling (A7), reliability (A9), local logs (A10), legacy labelling and human-fallback safety (Part B) |
+| **C1 Basic** | R1 | Every rule tagged [C1]. In summary: forms (A1), device, agent, and owner identity (A2), minimal discovery and consented pairing (A3), E2E encryption with mutual auth and forward secrecy, stream protection, downgrade protection (A4, B7), signed Selfkin Envelope with `aud`, `seq`, `idem_key` (A5), capability tokens, cross-owner approvals, local checks (A6), untrusted-data handling (A7), reliability (A9), local logs (A10), legacy labelling and human-fallback safety (Part B) |
 | **C2 Sovereign** | R2 | C1 + every rule tagged [C2]: revocation checks (A2), attenuated cross-owner delegation chains (A6), metadata minimisation, egress and residency on every hop (A8), CRDT mesh sync (A9), tamper-evident protected logs with `model_ref` (A10) |
 | **C3 Attested** | R3 | C2 + every rule tagged [C3]: hardware-backed device and agent keys, attestation references verified by peers (A2), hybrid post-quantum key exchange (A4) |
 
 - A session's effective communication profile is the **lowest** profile of any party, shim, or proxy hop in the path. *Rationale: a chain is only as strong as its weakest link.*
-- Before v1.0, any claim of conformance is a **self-assessment** only and **MUST NOT** be presented as a certification. A self-assessment **SHOULD** be phrased as "Self-assessed against SI Edge-to-Edge Communication draft v0.1, profile C2". *Rationale: no certification program exists.*
+- Before v1.0, any claim of conformance is a **self-assessment** only and **MUST NOT** be presented as a certification. A self-assessment **SHOULD** be phrased as "Self-assessed against Selfkin Edge-to-Edge Communication draft v0.1, profile C2". *Rationale: no certification program exists.*
 
 # D. Open Questions
 

@@ -9,10 +9,10 @@
   "profile_claim": {
     "profile": "P2",
     "basis": "certification",
-    "against": "SIE-PRV draft v0.1",
-    "self_assessment": "https://models.example.net/si/self-assessment-p2.html"
+    "against": "SK-PRV draft v0.1",
+    "self_assessment": "https://models.example.net/selfkin/self-assessment-p2.html"
   },
-  "si_request_header": "SI-Request",
+  "runtime_request_header": "Selfkin-Request",
   "model_identity": {
     "carrier": "envelope"
   },
@@ -81,7 +81,7 @@
     "versions": [
       "0.1"
     ],
-    "endpoint": "https://models.example.net/si/v0"
+    "endpoint": "https://models.example.net/selfkin/v0"
   },
   "ohttp": {
     "supported": true,
@@ -97,7 +97,7 @@
     "reports": "https://models.example.net/transparency",
     "audit": {
       "auditor": "Example Audit GmbH",
-      "summary": "https://models.example.net/si/audit-2026.html",
+      "summary": "https://models.example.net/selfkin/audit-2026.html",
       "issued": "2026-06-01T00:00:00Z",
       "valid_until": "2028-06-01T00:00:00Z"
     }

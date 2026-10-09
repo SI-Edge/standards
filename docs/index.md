@@ -4,20 +4,22 @@ layout: default
 
 # {{ site.title }}
 
+**{{ site.tagline }}**
+
 <div class="banner" markdown="1">
 **Status: Draft, not for implementation. No certification program exists.**
-Conformance profiles are not certifications; before v1.0 any claim of conformance is a self-assessment only. The project names are provisional (see [TRADEMARKS.md]({{ site.repo_url }}/blob/main/TRADEMARKS.md)).
+Conformance profiles are not certifications; before v1.0 any claim of conformance is a self-assessment only. A trademark check for the project name is pending (see [TRADEMARKS.md]({{ site.repo_url }}/blob/main/TRADEMARKS.md)).
 </div>
 
-A **personal SI** is an advanced AI agent runtime that runs on hardware you own (phone, PC, VPS, home server) and becomes your interface to devices, apps, services, and other agents. These drafts define open, model-agnostic, vendor-neutral standards so that such runtimes are fast, secure, modular, adaptable, and open to everyone. Data, credentials, and memory stay with the user by default. ("SI" is shorthand for highly capable AI agent systems; it makes no claim that any system is superintelligent.)
+A **personal AI** is an advanced AI agent runtime that runs on hardware you own (phone, PC, VPS, home server) and becomes your interface to devices, apps, services, and other agents. These drafts define open, model-agnostic, vendor-neutral standards so that such runtimes are fast, secure, modular, adaptable, and open to everyone. Data, credentials, and memory stay with the user by default.
 
 ## The Drafts
 
 | Document | Version | Scope |
 |---|---|---|
-| [SI Edge Runtimes (SIE-RT)]({{ site.repo_url }}/blob/main/drafts/runtime-v0.3.md) | Draft v0.3 | The on-device runtime: Core, modules, hardware, Trusted UI, adaptation, memory, Privacy Gateway. Profiles R1 to R3 |
-| [SI Edge-to-Edge Communication (SIE-COM)]({{ site.repo_url }}/blob/main/drafts/edge-to-edge-communication-v0.1.md) | Draft v0.1 | Identity, pairing, end-to-end encryption, the signed SI Envelope, delegation, legacy compatibility. Profiles C1 to C3 |
-| [SI Provider Profiles (SIE-PRV)]({{ site.repo_url }}/blob/main/drafts/provider-v0.1.md) | Draft v0.1 | What cloud models and services should offer: anonymous access, no training or retention, no tracking. Profiles P0 to P3, self-assessed only |
+| [Selfkin Runtimes (SK-RT)]({{ site.repo_url }}/blob/main/drafts/runtime-v0.3.md) | Draft v0.3 | The on-device runtime: Core, modules, hardware, Trusted UI, adaptation, memory, Privacy Gateway. Profiles R1 to R3 |
+| [Selfkin Edge-to-Edge Communication (SK-COM)]({{ site.repo_url }}/blob/main/drafts/edge-to-edge-communication-v0.1.md) | Draft v0.1 | Identity, pairing, end-to-end encryption, the signed Selfkin Envelope, delegation, legacy compatibility. Profiles C1 to C3 |
+| [Selfkin Provider Profiles (SK-PRV)]({{ site.repo_url }}/blob/main/drafts/provider-v0.1.md) | Draft v0.1 | What cloud models and services should offer: anonymous access, no training or retention, no tracking. Profiles P0 to P3, self-assessed only |
 
 Supporting material: [overview and how the drafts fit together]({{ site.repo_url }}#readme), [terminology]({{ site.repo_url }}/blob/main/TERMINOLOGY.md), [threat model]({{ site.repo_url }}/blob/main/THREAT-MODEL.md), [JSON Schemas]({{ site.repo_url }}/tree/main/schemas), [examples]({{ site.repo_url }}/tree/main/examples), [registries]({{ site.repo_url }}/tree/main/registries), [validator]({{ site.repo_url }}/tree/main/tools/validate), [open questions]({{ site.repo_url }}/blob/main/schemas/OPEN-QUESTIONS.md), [changelog]({{ site.repo_url }}/blob/main/CHANGELOG.md).
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/SI-Edge/standards/schemas/capability-token.schema.json",
-  "title": "SI Capability Token (v0.1)",
-  "description": "Capability token that grants specific actions on specific resources for a specific audience and time window (SIE-COM section A6). Tokens are short-lived and sender-bound through the cnf member (proof of possession, for example DPoP RFC 9449 or mTLS-bound RFC 8705). On delegation (F6) each hop may only narrow rights, lifetime, and budget, and the full chain is carried so it can be verified end to end (SIE-COM section A6, [C2]). The narrowing rules and the 1 hour maximum lifetime are defined in SIE-COM section A6; they cannot be fully expressed in JSON Schema, so tools/validate performs them as semantic checks. Tokens never override the receiver's local policy. Status: Draft, not for implementation.",
+  "$id": "https://github.com/selfkin/standards/schemas/capability-token.schema.json",
+  "title": "Selfkin Capability Token (v0.1)",
+  "description": "Capability token that grants specific actions on specific resources for a specific audience and time window (SK-COM section A6). Tokens are short-lived and sender-bound through the cnf member (proof of possession, for example DPoP RFC 9449 or mTLS-bound RFC 8705). On delegation (F6) each hop may only narrow rights, lifetime, and budget, and the full chain is carried so it can be verified end to end (SK-COM section A6, [C2]). The narrowing rules and the 1 hour maximum lifetime are defined in SK-COM section A6; they cannot be fully expressed in JSON Schema, so tools/validate performs them as semantic checks. Tokens never override the receiver's local policy. Status: Draft, not for implementation.",
   "type": "object",
   "$ref": "#/$defs/tokenFields",
   "properties": {
@@ -59,7 +59,7 @@
           "$ref": "common.schema.json#/$defs/identifier"
         },
         "aud": {
-          "description": "Audience: exactly one agent, device, or provider that accepts the token. Unchanged along a delegation chain (SIE-COM section A6).",
+          "description": "Audience: exactly one agent, device, or provider that accepts the token. Unchanged along a delegation chain (SK-COM section A6).",
           "$ref": "common.schema.json#/$defs/identifier"
         },
         "iat": {
@@ -71,7 +71,7 @@
           "$ref": "common.schema.json#/$defs/timestamp"
         },
         "exp": {
-          "description": "Expiry. At most 1 hour after iat; owner policy MAY set a shorter maximum (SIE-COM section A6). Checked by tools/validate.",
+          "description": "Expiry. At most 1 hour after iat; owner policy MAY set a shorter maximum (SK-COM section A6). Checked by tools/validate.",
           "$ref": "common.schema.json#/$defs/timestamp"
         },
         "cnf": {
@@ -159,7 +159,7 @@
       }
     },
     "budget": {
-      "description": "Per-token budget (SIE-COM section A7 rate limits and budgets). A delegated token may only lower each limit, and may not drop a limit the parent set.",
+      "description": "Per-token budget (SK-COM section A7 rate limits and budgets). A delegated token may only lower each limit, and may not drop a limit the parent set.",
       "type": "object",
       "minProperties": 1,
       "additionalProperties": false,

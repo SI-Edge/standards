@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you refer to these drafts, please cite them as below. They are drafts, not for implementation."
 type: software
-title: "SI Edge Open Standards: draft open standards for personal SI runtimes on user-owned edge devices"
-abstract: "Draft open standards for a personal SI runtime that runs on devices the user owns: SI Edge Runtimes (SIE-RT), SI Edge-to-Edge Communication (SIE-COM), and SI Provider Profiles (SIE-PRV), with JSON Schemas, examples, registries, and a validator. Draft, not for implementation. No certification program exists."
+title: "Selfkin: Open standards for personal AI on your own devices"
+abstract: "Draft open standards for a personal AI runtime that runs on devices the user owns: Selfkin Runtimes (SK-RT), Selfkin Edge-to-Edge Communication (SK-COM), and Selfkin Provider Profiles (SK-PRV), with JSON Schemas, examples, registries, and a validator. Draft, not for implementation. No certification program exists."
 authors:
   - alias: "roenudev"
     name: "roenu"
@@ -10,8 +10,8 @@ authors:
 version: "v0.1-draft"
 date-released: "2026-10-09"
 license: CC-BY-4.0
-repository-code: "https://github.com/SI-Edge/standards"
-url: "https://si-edge.github.io/standards/"
+repository-code: "https://github.com/selfkin/standards"
+url: "https://selfkin.github.io/standards/"
 keywords:
   - open-standards
   - personal-ai

@@ -11,8 +11,8 @@ This repository contains specifications, not running software. A "vulnerability"
 
 Please report privately through **GitHub private vulnerability reporting** on this repository:
 
-1. Go to the [Security tab of SI-Edge/standards](https://github.com/SI-Edge/standards/security).
-2. Choose **Report a vulnerability** (opens a private security advisory: <https://github.com/SI-Edge/standards/security/advisories/new>).
+1. Go to the [Security tab of selfkin/standards](https://github.com/selfkin/standards/security).
+2. Choose **Report a vulnerability** (opens a private security advisory: <https://github.com/selfkin/standards/security/advisories/new>).
 3. Describe the affected document, section, and rule, the attack or leak, and a suggested fix if you have one.
 
 Do not open public issues or pull requests for unfixed security or privacy flaws. Do not send reports by email.
