@@ -14,6 +14,14 @@ Tooling change. No normative rule changed.
 - `.gitleaks.toml`: default rules, with `test-vectors/` allowlisted for the published test keys.
 - Pointers from README.md, the project web page, and `tools/validate/README.md`.
 
+## 2026-10-09: Owner residency tag length
+
+Schema fix. No normative rule changed.
+
+### Fixed
+
+- `common.schema.json` `residencyTag`: owner-defined tags are limited to 64 characters in total, as SK-RT §11 says; the pattern accepted 65. Validator test covers exactly 64 (valid) and 65 (invalid).
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added
