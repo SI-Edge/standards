@@ -4,6 +4,7 @@ project_name: "Selfkin"
 description: "Open standards for personal AI on your own devices (draft)."
 tagline: "Open standards for personal AI on your own devices"
 repo_url: "https://github.com/selfkin/standards"
+reference_url: "https://github.com/selfkin/reference"
 maintainer: "roenu (@roenudev), Bern"
 baseurl: "/standards"
 markdown: kramdown

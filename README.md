@@ -48,6 +48,7 @@ A session's **effective tier** is the lowest tier of the runtime, of every commu
 - [registries/](registries/README.md): minimal data-class, intent, and refusal-reason vocabularies, kept in sync with the schemas by the tests.
 - [examples/](examples/): valid and deliberately invalid examples for every schema, with the reason each invalid one fails.
 - [tools/validate/](tools/validate/): a small Python validator (JSON Schema plus semantic checks such as capability attenuation) and its tests. A GitHub Actions workflow in [.github/workflows/validate.yml](.github/workflows/validate.yml) runs them on every push and pull request.
+- [selfkin/reference](https://github.com/selfkin/reference): a draft Python reference implementation of identities, the signed Selfkin Envelope, capability tokens with delegation, refusals, privacy reports, and a simplified end-to-end session, with a runnable demo (`python -m selfkin_ref.demo`). Not for production. Where the drafts leave details open, its interpretation choices are tracked as [open questions](https://github.com/selfkin/standards/issues?q=is%3Aissue+label%3Aopen-question).
 - CBOR (non-normative): a CBOR encoding follows the same data model, encoded as deterministic CBOR (RFC 8949 section 4.2). A normative CBOR profile is future work.
 
 ```

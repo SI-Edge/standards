@@ -2,6 +2,17 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Reference implementation linked
+
+Repository and editorial change. No normative rule changed.
+
+### Added
+- Links to [selfkin/reference](https://github.com/selfkin/reference), a draft Python reference implementation (not for production), from [README.md](README.md) and the project web page.
+- Open questions found while building it: issues #17 to #28, and a comment on #10 about timestamps in the dcbor signing input.
+
+### Fixed
+- "An Selfkin capability token" now reads "A Selfkin capability token" in SK-COM §A6 and in the `cap_token` description of `envelope.schema.json`.
+
 ## 2026-10-09: Renamed to Selfkin
 
 Naming change, prepared for the move of the repository to https://github.com/selfkin/standards. No normative rule changed in substance.
