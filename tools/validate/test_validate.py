@@ -179,5 +179,23 @@ class RepositoryStyleTests(unittest.TestCase):
                         self.assertNotIn(dash, text)
 
 
+
+class PseudonymisedReportTests(unittest.TestCase):
+    """SK-RT section 13: pseudonymised fields are sent, their class is redacted (issue #28)."""
+
+    def report(self, sent, redacted, pseudonymised):
+        return {"sent": {"data_classes": [], "fields": sent},
+                "redacted": {"data_classes": ["contacts.name"], "fields": redacted, "pseudonymised": pseudonymised}}
+
+    def test_pseudonymised_listed_as_sent(self):
+        self.assertEqual(validate.check_privacy_report(self.report(["q", "friend"], [], ["friend"])), [])
+
+    def test_pseudonymised_missing_from_sent(self):
+        self.assertTrue(validate.check_privacy_report(self.report(["q"], [], ["friend"])))
+
+    def test_pseudonymised_also_redacted(self):
+        self.assertTrue(validate.check_privacy_report(self.report(["q", "friend"], ["friend"], ["friend"])))
+
+
 if __name__ == "__main__":
     unittest.main()

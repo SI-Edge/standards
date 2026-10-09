@@ -2,6 +2,21 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Pseudonymised fields in privacy reports (proposal, #28)
+
+Normative clarification, open for comments.
+
+### Changed
+
+- SK-RT §13: a pseudonymised field is listed in `sent.fields` and `redacted.pseudonymised`, never in `redacted.fields`; its data class is listed in `redacted.data_classes`, and in `sent.data_classes` only if another sent field carries that class.
+- `privacy-report.schema.json`: descriptions of `sent.fields`, `redacted.fields`, and `redacted.pseudonymised` state the rule.
+- `examples/privacy-report.p0-full-gateway.json` and the invalid privacy report examples based on it list `friend_name` in `sent.fields`.
+
+### Added
+
+- `tools/validate`: privacy reports are checked for the pseudonymised listing rule, with tests.
+- `examples/privacy-report.pseudonymised-not-sent.invalid.json`.
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added

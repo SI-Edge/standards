@@ -71,6 +71,7 @@ Each invalid example changes one thing in a valid example. Examples were generat
 | `module-manifest.undeclared-egress-data.invalid.json` | Egress sends the data class `health`, which the manifest does not declare. Semantic check |
 | `privacy-report.direct-but-says-relay.invalid.json` | No relay was used but the report claims the network identity was hidden by a relay |
 | `privacy-report.p0-without-full-gateway.invalid.json` | P0 provider called anonymously without full gateway mode (SK-RT section 13) |
+| `privacy-report.pseudonymised-not-sent.invalid.json` | Pseudonymised field `friend_name` is missing from `sent.fields`, although its pseudonym was sent (SK-RT section 13). Semantic check |
 | `privacy-report.redaction-map-included.invalid.json` | Contains a redaction map. Redaction maps must not leave the device and are never part of a report (SK-RT section 13) |
 | `privacy-report.retention-missing.invalid.json` | No retention declaration; the report must show it, even if `undeclared` (SK-RT section 11, section 13) |
 | `privacy-report.unverified-claim-used.invalid.json` | Effective profile P2 although the claim was not verified. Unverified providers are P0 (SK-RT section 13, SK-PRV section 12) |
