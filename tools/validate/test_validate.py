@@ -82,9 +82,10 @@ class SchemaTests(unittest.TestCase):
         from jsonschema import Draft202012Validator
 
         checker = Draft202012Validator(tag_schema, registry=self.registry)
-        for good in ("CH", "EU", "CH-EU", "x-home-only"):
+        for good in ("CH", "EU", "CH-EU", "x-home-only", "x-" + "a" * 62):
             self.assertTrue(checker.is_valid(good), good)
-        for bad in ("ch", "EU-CH", "Switzerland", "x-", ""):
+        # SK-RT section 11: owner-defined tags have at most 64 characters in total.
+        for bad in ("ch", "EU-CH", "Switzerland", "x-", "", "x-" + "a" * 63):
             self.assertFalse(checker.is_valid(bad), bad)
 
 
@@ -172,7 +173,7 @@ class SemanticTests(unittest.TestCase):
 
 class RepositoryStyleTests(unittest.TestCase):
     def test_no_em_or_en_dashes(self):
-        roots = [validate.REPO / d for d in ("schemas", "examples", "tools", "registries", "drafts")]
+        roots = [validate.REPO / d for d in ("schemas", "examples", "tools", "registries", "drafts", "test-vectors")]
         roots += sorted(validate.REPO.glob("*.md"))
         for root in roots:
             paths = [root] if root.is_file() else [p for p in root.rglob("*") if p.is_file()]

@@ -1,0 +1,425 @@
+{
+  "suite": "0.1.0",
+  "category": "resource-matching",
+  "description": "Whether a right resource covers a requested resource (SK-COM A6 (d)). Provisional: follows the rule proposed in PR #58 for issues #23 and #48.",
+  "vectors": [
+    {
+      "id": "resource.coverage.001",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/b",
+        "resource": "urn:x:a/b"
+      },
+      "expected": {
+        "value": true
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Equal strings. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.002",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/b"
+      },
+      "expected": {
+        "value": true
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "One segment below the wildcard prefix. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.003",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/b/c"
+      },
+      "expected": {
+        "value": true
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Several segments below the wildcard prefix. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.004",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/*"
+      },
+      "expected": {
+        "value": true
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Equal strings, including the wildcard. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.005",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "https://example.com/cal/*",
+        "resource": "https://example.com/cal/work"
+      },
+      "expected": {
+        "value": true
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "HTTPS resource below a wildcard. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.006",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "The prefix itself without a slash is not below it. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.007",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Empty remainder. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.008",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:ab"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Shares characters but is not below the prefix. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.009",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a//b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Empty segment in the remainder. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.010",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/./b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Dot segment in the remainder. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.011",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/../b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Dot-dot segment escaping the prefix (#48). Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.012",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/b/.."
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Trailing dot-dot segment. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.013",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/%2e%2e/b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Percent-encoded dot-dot segment (#48). Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.014",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "urn:x:a/b%2Fc"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "Percent-encoded slash. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.015",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/*",
+        "resource": "URN:X:A/b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "No case normalisation. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.016",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a",
+        "resource": "urn:x:a/b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "A resource without a wildcard covers only itself. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.017",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:*",
+        "resource": "urn:x:a"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "A star that is not the final segment /* is literal. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.018",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:*/b",
+        "resource": "urn:x:a/b"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "A star inside the resource is literal. Provisional until the matching rule in PR #58 is merged."
+    },
+    {
+      "id": "resource.coverage.019",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A6",
+          "tag": "C2"
+        }
+      ],
+      "operation": "resource-covers",
+      "input": {
+        "right": "urn:x:a/b",
+        "resource": "urn:x:a/b/"
+      },
+      "expected": {
+        "value": false
+      },
+      "status": "provisional",
+      "open_issue": "#23",
+      "note": "No trailing slash normalisation. Provisional until the matching rule in PR #58 is merged."
+    }
+  ]
+}
