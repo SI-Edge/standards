@@ -5,7 +5,7 @@
 | File | Use |
 |---|---|
 | [selfkin-mark.svg](selfkin-mark.svg) | Organisation avatar (500 x 500): the wordmark "SK" in white on black. Square, full-bleed background, safe for circular cropping (all letters lie inside the inscribed circle), legible at 64 px and below |
-| [selfkin-social-preview.svg](selfkin-social-preview.svg) | Repository social preview (1280 x 640): the headline "Standards for Personal SI/AI Edge Devices" in white on black, with the line "built by Grok Bot" in grey |
+| [selfkin-social-preview.svg](selfkin-social-preview.svg) | Repository social preview (1280 x 640): the headline "Open Standards for SI Edge Devices" in white on black, with the line "github.com/selfkin" in grey |
 | [../architecture.svg](../architecture.svg) | Architecture overview used in the README and on the project page |
 
 **Style.** Flat and typographic: wordmark only, no symbol, no colour.
