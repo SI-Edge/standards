@@ -1,20 +1,16 @@
 # Changelog
 
-All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
+All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**. Pending changes live as fragments in [changes/](changes/README.md) until the next release.
 
-## 2026-10-09: Resource matching rule for capability tokens (proposal, #23, #48)
+## 2026-10-09: Test vector suite version in one place
 
-Normative clarification, open for comments.
+Tooling change. No normative rule changed.
 
 ### Changed
 
-- SK-COM §A6: resources are compared as exact strings without normalisation. A trailing `/*` covers only a non-empty remainder with no empty, `.`, or `..` segment and no `%`; `*` has no other meaning. An instruction without `resource` is not covered by any right, and one right must cover both the `action` and the `resource` of `instructions`. Handlers act on exactly the authorised resource string.
-- Schema descriptions of `right.resource` (capability token) and `instructions.resource` (envelope) state the rule.
-
-### Added
-
-- `tools/validate`: `resource_covers` follows the rule, and envelopes are checked for resource coverage, with test vectors.
-- `examples/capability-token.wildcard-dot-segment.invalid.json`.
+- `test-vectors/VERSION` is now the only place the suite version is recorded. Vector files no longer carry a `suite` member, and `vector.schema.json` no longer allows it, so two pull requests that both bump the suite only touch `VERSION` and one sentence in `test-vectors/README.md`.
+- `tools/validate/test_vectors.py`: the check that every file's `suite` equals `VERSION` is replaced by checks that `VERSION` is a semantic version, that `test-vectors/README.md` states the same version, and that no vector file carries a `suite` member. `--summary` prints the suite version from `VERSION`.
+- `test-vectors/README.md`: states the current suite version and that `VERSION` is its only source.
 
 ## 2026-10-09: Markdown lint and link check in CI
 

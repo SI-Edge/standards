@@ -1,5 +1,4 @@
 {
-  "suite": "0.1.0",
   "category": "envelope",
   "description": "Token to envelope binding (SK-COM A6): token sub equals sender_agent, token aud equals envelope aud, rights cover the instruction. Pairing and refusal envelopes carry no token.",
   "vectors": [
