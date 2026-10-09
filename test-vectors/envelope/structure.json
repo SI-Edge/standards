@@ -2474,6 +2474,170 @@
       },
       "status": "normative",
       "note": "Residency tag that is neither standard nor x- prefixed"
+    },
+    {
+      "id": "envelope.structure.017",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B7",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5",
+          "tag": "C1"
+        }
+      ],
+      "operation": "envelope-check",
+      "input": {
+        "envelope": {
+          "v": "0.1",
+          "form": "F1",
+          "sender_agent": "did:example:alice-phone#agent-assistant",
+          "sender_device": "did:example:alice-phone",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "session": "sess-4b1d0e9a77",
+          "seq": 3,
+          "attestation_ref": null,
+          "intent": "sk.negotiate",
+          "residency": {
+            "tags": [
+              "CH-EU"
+            ],
+            "data_classes": [
+              "calendar.availability"
+            ]
+          },
+          "nonce": "q1w2e3r4t5y6u7i8o9p0aSdFgH",
+          "issued": "2026-10-09T08:10:00Z",
+          "expires": "2026-10-09T08:15:00Z",
+          "provenance": [],
+          "model_ref": {
+            "agent": "did:example:alice-phone#agent-assistant",
+            "model": "example-local-8b",
+            "version": "2026.09",
+            "region": "CH",
+            "weights_digest": {
+              "alg": "sha-256",
+              "value": "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg"
+            }
+          },
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "did:example:alice-phone#agent-assistant-key",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          },
+          "payload_type": "application/json",
+          "data": {
+            "phase": "offer",
+            "versions": [
+              "0.1"
+            ],
+            "canons": [
+              "dcbor",
+              "jcs"
+            ],
+            "profiles": [
+              "C1",
+              "C2"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "result": "accept"
+      },
+      "status": "normative",
+      "note": "A negotiation message without cap_token"
+    },
+    {
+      "id": "envelope.structure.018",
+      "spec": [
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "B7",
+          "tag": "C1"
+        },
+        {
+          "doc": "SK-COM",
+          "version": "0.1",
+          "section": "A5",
+          "tag": "C1"
+        }
+      ],
+      "operation": "envelope-check",
+      "input": {
+        "envelope": {
+          "v": "0.1",
+          "form": "F1",
+          "sender_agent": "did:example:alice-phone#agent-assistant",
+          "sender_device": "did:example:alice-phone",
+          "aud": "did:example:bob-homeserver#agent-calendar",
+          "session": "sess-4b1d0e9a77",
+          "seq": 3,
+          "attestation_ref": null,
+          "intent": "sk.negotiate",
+          "residency": {
+            "tags": [
+              "CH-EU"
+            ],
+            "data_classes": [
+              "calendar.availability"
+            ]
+          },
+          "nonce": "q1w2e3r4t5y6u7i8o9p0aSdFgH",
+          "issued": "2026-10-09T08:10:00Z",
+          "expires": "2026-10-09T08:15:00Z",
+          "provenance": [],
+          "model_ref": {
+            "agent": "did:example:alice-phone#agent-assistant",
+            "model": "example-local-8b",
+            "version": "2026.09",
+            "region": "CH",
+            "weights_digest": {
+              "alg": "sha-256",
+              "value": "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg"
+            }
+          },
+          "sig": {
+            "alg": "EdDSA",
+            "kid": "did:example:alice-phone#agent-assistant-key",
+            "canon": "jcs",
+            "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+          },
+          "payload_type": "application/json",
+          "data": {
+            "phase": "offer",
+            "versions": [
+              "0.1"
+            ],
+            "canons": [
+              "dcbor",
+              "jcs"
+            ],
+            "profiles": [
+              "C1",
+              "C2"
+            ]
+          },
+          "instructions": {
+            "action": "calendar.read_availability",
+            "resource": "urn:example:calendar:bob/work"
+          },
+          "idem_key": "idem-2026-10-09-0002-b4d1"
+        }
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "normative",
+      "note": "A negotiation message without cap_token must not carry instructions"
     }
   ]
 }

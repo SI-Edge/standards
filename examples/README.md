@@ -19,6 +19,7 @@ Notes that apply to every example:
 | `capability-token.delegated.json` | F6 delegation one hop down: narrower resource, fewer rights, shorter lifetime, smaller budget, full chain carried |
 | `envelope.f2-action-request.json` | Cross-owner (F2) action request with separate `instructions` and `data`, `aud`, `session`, `seq`, `idem_key`, `CH-EU` residency, delegated `cap_token`, and `model_ref` |
 | `envelope.f1-pairing-request.json` | Pairing message (`sk.pairing.*` intent): no `cap_token`, no `instructions` |
+| `envelope.f1-negotiate-offer.json` | Negotiation offer (`sk.negotiate`) at session start: no `cap_token`, no `instructions` |
 | `envelope.f2-refusal.json` | Refusal (`sk.refused`) with a refusal object as `data`, no `cap_token`, no `instructions` |
 | `envelope.with-extension.json` | The action request with an `ext` member using an `x-` key (SK-COM section A5.2) |
 | `envelope.f3-legacy-via-proxy.json` | Telemetry from a legacy Modbus device through a proxy (Method 4): proxy in `provenance`, legacy endpoint labelled `legacy` and `unattested`, opaque attenuable token |
@@ -64,7 +65,8 @@ Each invalid example changes one thing in a valid example. Examples were generat
 | `envelope.instructions-without-idem-key.invalid.json` | Requests an action without `idem_key`. State-changing messages need one (SK-COM section A9) |
 | `envelope.legacy-not-unattested.invalid.json` | Legacy endpoint in `provenance` is labelled `legacy` but not `unattested` (SK-COM section B1, B5) |
 | `envelope.missing-aud.invalid.json` | No `aud`. Every envelope names its recipient (SK-COM section A5) |
-| `envelope.missing-cap-token.invalid.json` | Non-pairing message without `cap_token` (SK-COM section A5) |
+| `envelope.missing-cap-token.invalid.json` | Message other than pairing, negotiation, or refusal without `cap_token` (SK-COM section A5) |
+| `envelope.negotiate-with-instructions.invalid.json` | Negotiation message without `cap_token` that carries `instructions` (SK-COM section B7) |
 | `envelope.token-not-bound-to-sender.invalid.json` | The capability token's holder (`sub`) is not the sending agent. Semantic check |
 | `envelope.unknown-member.invalid.json` | Unknown top-level member `grant`. Unknown members are rejected (fail closed) |
 | `module-manifest.actuator-without-safe-stop.invalid.json` | Actuator hardware without declared safe-stop behaviour (SK-RT section 4) |

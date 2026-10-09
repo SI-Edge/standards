@@ -24,7 +24,7 @@ Only these `sk.*` intents exist. Any other `sk.*` intent is invalid.
 | `sk.summary` | Signed summary of a negotiation that commits the owner | SK-COM §A7 |
 | `sk.sync` | Mesh synchronisation (F1) | SK-COM §A9 |
 
-Pairing messages (`sk.pairing.*`) and refusals (`sk.refused`) are the only envelopes that may omit `cap_token`, and they never carry `instructions` (SK-COM §A3, §A5, §A7).
+Pairing messages (`sk.pairing.*`), negotiation messages (`sk.negotiate`), and refusals (`sk.refused`) are the only envelopes that may omit `cap_token`, and they never carry `instructions` (SK-COM §A3, §A5, §A7, §B7).
 
 ## Application Domains
 

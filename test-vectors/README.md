@@ -49,7 +49,7 @@ Each vector has one fault, so the expected result does not depend on check order
 | `jcs-signing-input` | `object` | `value`: RFC 8785 canonical JSON of the object without `sig`, as a string |
 | `sign` | `object`, `key`, `canon` | `value`: the resulting `sig.value` (unpadded base64url) |
 | `verify` | `object`, `public_key` (name in the key file) | accept or refuse with `bad-signature`. Whether the key belongs to the signer is out of scope |
-| `receive` (sequence steps) | `envelope`; state `receiver` (its identity), optional `seen_nonces` | accept or refuse, and `executed`. Everything `envelope-check` covers, plus `aud` against the receiver, `expires` against `now`, replayed nonces, `idem_key` at most once, and usage counting. Signatures, sender identity, pairing, residency, `cnf`, root issuer trust, and local policy are assumed to pass; the requested action has a local handler |
+| `receive` (sequence steps) | `envelope`, optional `delivery` (`direct`, the default, or `store-and-forward`); state `receiver` (its identity), optional `seen_nonces`, optional `revoked` (identities and token ids revoked before the first step) | accept or refuse, and `executed`. Everything `envelope-check` covers, plus `aud` against the receiver, `expires` against `now`, the time validity of the token and its chain at `now` (at the envelope's `issued` for `store-and-forward` delivery without `instructions`, SK-COM §A9), the 7-day lifetime and `issued` not after `now` for `store-and-forward`, revocation, replayed nonces, `idem_key` at most once, and usage counting. Signatures, sender identity, pairing, residency, `cnf`, root issuer trust, and local policy are assumed to pass; the requested action has a local handler |
 
 ## Keys
 
@@ -69,14 +69,14 @@ The validator runs `resource-covers`, `token-check`, `envelope-check`, and `resi
 
 ## Status and Versioning
 
-The suite has 171 vectors: 144 normative, 25 provisional, and 2 withdrawn.
+The suite has 179 vectors: 152 normative, 25 provisional, and 2 withdrawn.
 
 | Category | Normative | Provisional | Withdrawn |
 |---|---|---|---|
 | Resource matching | 0 | 19 (#23) | 0 |
 | Tokens | 54 | 0 | 1 |
-| Envelope (single) | 25 | 2 (#23) | 1 |
-| Envelope (receive sequences) | 4 | 4 (#22, #24) | 0 |
+| Envelope (single) | 27 | 2 (#23) | 1 |
+| Envelope (receive sequences) | 10 | 4 (#22, #24) | 0 |
 | Residency | 24 | 0 | 0 |
 | Signatures | 37 | 0 | 0 |
 
@@ -84,4 +84,4 @@ The resource-matching vectors, and two binding vectors that depend on them, are 
 
 Also in 0.2.0: `envelope.structure.007` and `token.lifetime.003` accepted timestamps with an offset in signed objects and are `withdrawn`; `envelope.signed-values.001` and `token.signed-values.001` replace them.
 
-The current suite version is `0.2.1`. `VERSION` is its only source, and a test checks that this sentence matches it, so a version bump changes `VERSION` and this line and nothing else. The suite follows semantic versioning: patch for new vectors, minor for new operations or fields. A changed expectation is a major change from 1.0; while the suite is 0.x, it takes a minor bump and a change note instead. A vector whose expectation changes is marked `withdrawn` and replaced by a vector with a new `id`; old ids are never reused. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.
+The current suite version is `0.3.0`. `VERSION` is its only source, and a test checks that this sentence matches it, so a version bump changes `VERSION` and this line and nothing else. The suite follows semantic versioning: patch for new vectors, minor for new operations or fields. A changed expectation is a major change from 1.0; while the suite is 0.x, it takes a minor bump and a change note instead. A vector whose expectation changes is marked `withdrawn` and replaced by a vector with a new `id`; old ids are never reused. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.

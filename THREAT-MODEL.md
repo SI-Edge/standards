@@ -30,7 +30,7 @@ This document lists the assets the Selfkin drafts protect, the adversaries they 
 | T6 | Curious or malicious provider | Logs, trains on, or profiles requests | Privacy Gateway and full gateway mode (RT §13); provider rules and verification (PRV §3, §4, §12) |
 | T7 | Relay colluding with provider | Joins network identity to content | OHTTP separation (PRV §4); privacy report shows exposure (RT §13). Residual risk if both collude |
 | T8 | Network attacker | Man-in-the-middle, replay, downgrade | E2E with mutual auth (COM §A4); envelope `aud`, `nonce`, `seq` (COM §A5); signed transcripts and pinning (COM §B7) |
-| T9 | Lost or stolen device | Thief uses keys or reads memory | Hardware-backed keys, encryption at rest (RT §8, §10); device revocation and mesh re-keying (RT §10, COM §A2); kill switch (RT §16) |
+| T9 | Lost or stolen device | Thief uses keys or reads memory | Hardware-backed keys, encryption at rest (RT §8, §10); device revocation and mesh re-keying (RT §10, COM §A2), checked at receipt for stored deliveries (COM §A9); kill switch (RT §16) |
 | T10 | Owner key loss or compromise | Owner locked out, or attacker takes over the mesh | Separate owner key, recovery scheme, rotation (RT §10) |
 | T11 | Compromised Core update or rollback | Old vulnerable version reinstalled | Signed updates, no rollback to revoked or sunset versions (RT §17, COM §B8); measured boot at R3 (RT §10) |
 | T12 | Trusted UI spoofing | Generated UI or synthetic voice imitates an approval prompt | Core-only rendering on a reserved channel, anti-spoofing, voice approval step (RT §5) |

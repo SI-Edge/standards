@@ -1,0 +1,49 @@
+{
+  "v": "0.1",
+  "form": "F1",
+  "sender_agent": "did:example:alice-phone#agent-assistant",
+  "sender_device": "did:example:alice-phone",
+  "aud": "did:example:alice-homeserver#agent-planner",
+  "session": "sess-negotiate-01",
+  "seq": 0,
+  "attestation_ref": null,
+  "intent": "sk.negotiate",
+  "residency": {
+    "tags": [],
+    "data_classes": []
+  },
+  "nonce": "TmVnb3RpYXRlT2ZmZXIwMDAx",
+  "issued": "2026-10-09T08:00:00Z",
+  "expires": "2026-10-09T08:05:00Z",
+  "data": {
+    "phase": "offer",
+    "versions": [
+      "0.1"
+    ],
+    "canons": [
+      "dcbor",
+      "jcs"
+    ],
+    "forms": [
+      "F1",
+      "F6"
+    ],
+    "profiles": [
+      "C1",
+      "C2"
+    ]
+  },
+  "payload_type": "application/json",
+  "provenance": [],
+  "sig": {
+    "alg": "EdDSA",
+    "kid": "did:example:alice-phone#agent-assistant-key",
+    "canon": "jcs",
+    "value": "EXAMPLE-NOT-A-REAL-SIGNATURE-c2lnbmF0dXJlLXBsYWNlaG9sZGVy"
+  },
+  "instructions": {
+    "action": "calendar.read_availability",
+    "resource": "urn:example:calendar:alice/*"
+  },
+  "idem_key": "idem-2026-10-09-0002-b4d1"
+}
