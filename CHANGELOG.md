@@ -2,6 +2,18 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Validator and CI review fixes
+
+Tooling change. No normative rule changed.
+
+### Fixed
+- `tools/validate`: money amounts are compared as exact decimals, not floats (a child limit of `1.0000000000000001` CHF no longer passes under a parent limit of `1` CHF).
+- `tools/validate`: a timestamp that matches the schema pattern but is not a real date is reported as a problem instead of crashing; unreadable or unnamed files on the command line are reported with exit status 2; a schema without `$id` fails with a clear message.
+
+### Added
+- Tests for exact money comparison, impossible timestamps, the egress and `resources.network` rule, and schemas without `$id`.
+- Review issues #47 (future `iat`), #48 (dot segments in wildcard resources), and #49 (pairing session identifier reuse).
+
 ## 2026-10-09: Wording review
 
 Editorial change. No normative rule changed.

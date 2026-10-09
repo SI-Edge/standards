@@ -130,6 +130,34 @@ class SemanticTests(unittest.TestCase):
         self.assertFalse(validate.resource_covers("urn:a:b", "urn:a:b/c"))
         self.assertFalse(validate.resource_covers("urn:a:b/*", "urn:a:bc"))
 
+    def test_money_is_compared_exactly(self):
+        # As floats both amounts are 1.0, so the widening went unnoticed.
+        parent = {"action": "pay", "resource": "urn:x", "constraints": {"max_amount": {"amount": "1", "currency": "CHF"}}}
+        child = {"action": "pay", "resource": "urn:x",
+                 "constraints": {"max_amount": {"amount": "1.0000000000000001", "currency": "CHF"}}}
+        self.assertFalse(validate.right_covered(child, parent))
+        budget_parent = {"budget": {"money": {"amount": "0.3", "currency": "CHF"}}}
+        budget_child = {"budget": {"money": {"amount": "0.30000000000000001", "currency": "CHF"}}}
+        self.assertEqual(len(validate.budget_problems(budget_child, budget_parent)), 1)
+        self.assertEqual(validate.budget_problems(budget_parent, budget_parent), [])
+
+    def test_impossible_timestamp_is_a_problem_not_a_crash(self):
+        schemas = validate.load_schemas()
+        registry = validate.build_registry(schemas)
+        document = validate.load_json(validate.EXAMPLE_DIR / "capability-token.root.json")
+        document["exp"] = "2026-02-30T00:00:00Z"
+        problems = validate.validate_document(document, "capability-token", schemas, registry)
+        self.assertTrue(problems)
+
+    def test_egress_without_network_is_a_problem(self):
+        manifest = {"data_classes": ["calendar.events"], "egress": [{"data_classes": ["calendar.events"]}],
+                    "resources": {"network": False}}
+        self.assertIn("egress is declared but resources.network is false", validate.check_module_manifest(manifest))
+
+    def test_schema_without_id_fails_clearly(self):
+        with self.assertRaises(ValueError):
+            validate.build_registry({"broken": {"title": "x"}})
+
     def test_dropping_a_parent_constraint_widens(self):
         parent = {"action": "pay", "resource": "urn:x", "constraints": {"max_uses": 2}}
         child = {"action": "pay", "resource": "urn:x"}

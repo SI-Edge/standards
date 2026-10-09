@@ -34,6 +34,7 @@ import argparse
 import json
 import sys
 from datetime import datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -72,10 +73,12 @@ def load_schemas(schema_dir: Path = SCHEMA_DIR) -> dict[str, dict]:
 
 
 def build_registry(schemas: dict[str, dict]) -> Registry:
-    resources = [
-        (schema["$id"], Resource.from_contents(schema, default_specification=DRAFT202012))
-        for schema in schemas.values()
-    ]
+    resources = []
+    for name, schema in schemas.items():
+        schema_id = schema.get("$id") if isinstance(schema, dict) else None
+        if not isinstance(schema_id, str) or not schema_id:
+            raise ValueError(f"{name}: schema has no $id, run check_schema_files for details")
+        resources.append((schema_id, Resource.from_contents(schema, default_specification=DRAFT202012)))
     return Registry().with_resources(resources)
 
 
@@ -111,8 +114,9 @@ def parse_time(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def decimal(value: str) -> float:
-    return float(value)
+def decimal(value: str) -> Decimal:
+    """Exact decimal for money amounts (common.schema.json money.amount is a decimal string)."""
+    return Decimal(value)
 
 
 def resource_covers(parent: str, child: str) -> bool:
@@ -139,7 +143,7 @@ def right_covered(child: dict, parent: dict) -> bool:
             return False
         if decimal(cc["max_amount"]["amount"]) > decimal(pc["max_amount"]["amount"]):
             return False
-    if "max_uses" in pc and cc.get("max_uses", float("inf")) > pc["max_uses"]:
+    if "max_uses" in pc and ("max_uses" not in cc or cc["max_uses"] > pc["max_uses"]):
         return False
     if "data_classes" in pc:
         if "data_classes" not in cc or not set(cc["data_classes"]) <= set(pc["data_classes"]):
@@ -152,7 +156,7 @@ def budget_problems(child: dict, parent: dict) -> list[str]:
     pb = parent.get("budget", {})
     cb = child.get("budget", {})
     for key in ("messages", "compute_units"):
-        if key in pb and cb.get(key, float("inf")) > pb[key]:
+        if key in pb and (key not in cb or cb[key] > pb[key]):
             problems.append(f"budget.{key} widens the parent budget")
     if "money" in pb:
         cm = cb.get("money")
@@ -266,7 +270,10 @@ def validate_document(document, name: str, schemas: dict[str, dict], registry: R
             message = f"failed '{error.validator}' check at {'/'.join(str(p) for p in error.absolute_schema_path)}"
         problems.append(f"{location}: {message}")
     if not problems:
-        problems.extend(SEMANTIC[name](document))
+        try:
+            problems.extend(SEMANTIC[name](document))
+        except ValueError as exc:  # for example a timestamp that matches the pattern but is not a real date
+            problems.append(f"(semantic): {exc}")
     return problems
 
 
@@ -281,12 +288,18 @@ def example_files(example_dir: Path = EXAMPLE_DIR) -> list[Path]:
     return sorted(example_dir.glob("*.json"))
 
 
-def run_examples(verbose: bool = True) -> int:
+def load_checked() -> tuple[dict[str, dict], Registry]:
+    """Load the schemas and build the registry, failing with a clear message."""
     schemas = load_schemas()
-    registry = build_registry(schemas)
-    failures = check_schema_files(schemas)
-    for problem in failures:
-        print(f"SCHEMA  {problem}")
+    problems = check_schema_files(schemas)
+    if problems:
+        raise SystemExit("schema problems:\n" + "\n".join(f"SCHEMA  {p}" for p in problems))
+    return schemas, build_registry(schemas)
+
+
+def run_examples(verbose: bool = True) -> int:
+    schemas, registry = load_checked()
+    failures: list[str] = []
     files = example_files()
     if not files:
         failures.append("no examples found")
@@ -315,12 +328,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if not args.files:
         return run_examples(verbose=not args.quiet)
-    schemas = load_schemas()
-    registry = build_registry(schemas)
+    schemas, registry = load_checked()
     status = 0
     for path in args.files:
-        name = args.schema or schema_for_example(path)
-        problems = validate_document(load_json(path), name, schemas, registry)
+        try:
+            name = args.schema or schema_for_example(path)
+            document = load_json(path)
+        except (OSError, ValueError) as exc:  # unreadable file, bad JSON, or unknown file name
+            print(f"ERROR   {path}: {exc}")
+            status |= 2
+            continue
+        problems = validate_document(document, name, schemas, registry)
         print(f"{'valid  ' if not problems else 'INVALID'} {path} ({name})")
         for problem in problems:
             print(f"        - {problem}")
