@@ -16,6 +16,14 @@ Tooling change. No normative rule changed.
 
 - Languages on a few code blocks and angle brackets around a few bare URLs, so the current files pass markdownlint.
 
+## 2026-10-09: Owner residency tag length
+
+Schema fix. No normative rule changed.
+
+### Fixed
+
+- `common.schema.json` `residencyTag`: owner-defined tags are limited to 64 characters in total, as SK-RT §11 says; the pattern accepted 65. Validator test covers exactly 64 (valid) and 65 (invalid).
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added
