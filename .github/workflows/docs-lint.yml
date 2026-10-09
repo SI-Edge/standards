@@ -1,0 +1,65 @@
+# Copyright 2026 The Selfkin Standards contributors
+# SPDX-License-Identifier: Apache-2.0
+name: Lint Markdown and check links
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly link check, Mondays 05:17 UTC, to catch links that break over time.
+    - cron: "17 5 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  markdownlint:
+    name: Markdown lint
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Run markdownlint-cli2
+        # Settings live in .markdownlint-cli2.jsonc.
+        run: npx --yes markdownlint-cli2@0.23.3
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LYCHEE_VERSION: "0.24.2"
+      # SHA-256 of lychee-x86_64-unknown-linux-gnu.tar.gz from the official release.
+      LYCHEE_SHA256: "1f4e0ef7f6554a6ed33dd7ac144fb2e1bbed98598e7af973042fc5cd43951c9a"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install lychee
+        run: |
+          url="https://github.com/lycheeverse/lychee/releases/download/lychee-v${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --silent --show-error --location --retry 3 -o "$RUNNER_TEMP/lychee.tar.gz" "$url"
+          echo "${LYCHEE_SHA256}  $RUNNER_TEMP/lychee.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/lychee"
+          tar -xzf "$RUNNER_TEMP/lychee.tar.gz" -C "$RUNNER_TEMP/lychee" --strip-components=1
+          echo "$RUNNER_TEMP/lychee" >> "$GITHUB_PATH"
+      - name: Restore link cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .lycheecache
+          key: lychee-${{ github.run_id }}
+          restore-keys: lychee-
+      - name: Check links
+        # Settings live in lychee.toml.
+        run: lychee --version && lychee --no-progress --root-dir "$GITHUB_WORKSPACE" './**/*.md' 'docs/**/*.html'

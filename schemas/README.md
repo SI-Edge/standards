@@ -32,7 +32,7 @@ The JSON Schemas define the data model. A CBOR encoding follows the same data mo
 
 ## Validate
 
-```
+```sh
 pip install -r tools/validate/requirements.txt
 python tools/validate/validate.py                         # all examples
 python tools/validate/validate.py my-envelope.json --schema envelope
