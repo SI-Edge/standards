@@ -2,6 +2,20 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Resource matching rule for capability tokens (proposal, #23, #48)
+
+Normative clarification, open for comments.
+
+### Changed
+
+- SK-COM §A6: resources are compared as exact strings without normalisation. A trailing `/*` covers only a non-empty remainder with no empty, `.`, or `..` segment and no `%`; `*` has no other meaning. An instruction without `resource` is not covered by any right, and one right must cover both the `action` and the `resource` of `instructions`. Handlers act on exactly the authorised resource string.
+- Schema descriptions of `right.resource` (capability token) and `instructions.resource` (envelope) state the rule.
+
+### Added
+
+- `tools/validate`: `resource_covers` follows the rule, and envelopes are checked for resource coverage, with test vectors.
+- `examples/capability-token.wildcard-dot-segment.invalid.json`.
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added

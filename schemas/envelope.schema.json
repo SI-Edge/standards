@@ -124,7 +124,7 @@
           "maxLength": 128
         },
         "resource": {
-          "description": "Target resource URI.",
+          "description": "Target resource URI. A right covers it only by the matching rule of SK-COM section A6; instructions without resource are not covered by any right.",
           "$ref": "common.schema.json#/$defs/uri"
         },
         "params": {

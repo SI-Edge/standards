@@ -45,6 +45,7 @@ Each invalid example changes one thing in a valid example. Examples were generat
 | `capability-token.not-sender-bound.invalid.json` | No `cnf` member, so the token is a bearer token. Tokens must be sender-bound (SK-COM section A6) |
 | `capability-token.widened-budget.invalid.json` | Delegated token raises the message budget above its parent's. Budgets may only narrow (SK-COM section A6). Semantic check |
 | `capability-token.widened-rights.invalid.json` | Delegated token adds a `payments.send` right the parent never had. Rights may only narrow (SK-COM section A6). Semantic check |
+| `capability-token.wildcard-dot-segment.invalid.json` | Delegated right on `urn:example:calendar:bob/../alice/work` under a parent `urn:example:calendar:bob/*`. Wildcard coverage fails for `.` and `..` segments (SK-COM section A6). Semantic check |
 | `envelope.bad-residency-tag.invalid.json` | Residency tag `switzerland` is neither `CH`, `EU`, `CH-EU`, nor an `x-` owner tag (SK-RT section 11) |
 | `envelope.data-without-payload-type.invalid.json` | `data` is present without `payload_type` (SK-COM section A5) |
 | `envelope.expires-before-issued.invalid.json` | `expires` is earlier than `issued`, so the envelope is never fresh. Semantic check |

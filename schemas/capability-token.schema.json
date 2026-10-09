@@ -129,7 +129,7 @@
           "maxLength": 128
         },
         "resource": {
-          "description": "Resource the action applies to, as a URI. A trailing /* matches every resource below that prefix. A delegated right narrows a parent right if it has the same action and an equal or narrower resource.",
+          "description": "Resource the action applies to, as a URI, compared as an exact string without normalisation. A trailing /* matches every resource below that prefix with a non-empty remainder that has no empty, . or .. segment and no percent-encoding (SK-COM section A6). A delegated right narrows a parent right if it has the same action and an equal or narrower resource.",
           "type": "string",
           "maxLength": 2048,
           "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]*$"
