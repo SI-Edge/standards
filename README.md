@@ -18,6 +18,7 @@ A **personal AI** is an advanced AI agent runtime that runs on hardware the user
 | **Selfkin Runtimes v0.3** (SK-RT, current) | [drafts/runtime-v0.3.md](drafts/runtime-v0.3.md) | The on-device runtime: Core, modules, hardware, interface and Trusted UI, adaptation, memory, key recovery, Privacy Gateway, approvals, shared devices. Profiles **R1 to R3** |
 | **Selfkin Edge-to-Edge Communication v0.1** (SK-COM) | [drafts/edge-to-edge-communication-v0.1.md](drafts/edge-to-edge-communication-v0.1.md) | All communication forms (F1 to F9), identity, pairing, E2E crypto, the signed Selfkin Envelope, delegation, agent-to-agent safety, legacy compatibility Methods 1 to 5. Profiles **C1 to C3** |
 | **Selfkin Provider Profiles v0.1** (SK-PRV) | [drafts/provider-v0.1.md](drafts/provider-v0.1.md) | What cloud models, APIs, search, and web services should do: anonymous access, no retention or training, no tracking, attested inference, residency. Profiles **P0 to P3**. Claims are worded "self-assessed against SK-PRV profile P0 to P3" |
+| **Selfkin Wire Binding v0.1** (SK-WIRE) | [drafts/sk-wire/wire-binding-v0.1.md](drafts/sk-wire/wire-binding-v0.1.md) | How SK-COM runs on today's networks: QUIC and WebSocket carriers, LAN discovery, QR pairing, message types, and sealed delivery through an owner-run relay and mailbox. Data definitions in CDDL |
 | Terminology | [TERMINOLOGY.md](TERMINOLOGY.md) | Shared glossary, residency tags, profile tiers |
 | Threat model | [THREAT-MODEL.md](THREAT-MODEL.md) | Adversaries, assets, and the rules that address them |
 | Registries | [registries/](registries/README.md) | Data classes, intents, and refusal reasons shared by all drafts |
@@ -100,7 +101,7 @@ python tools/validate/validate.py
 ## License
 
 - Specification text (everything under `drafts/` and the Markdown documentation) is licensed under the **Creative Commons Attribution 4.0 International License** (CC BY 4.0). See [LICENSE](LICENSE).
-- Schemas, test suites, and reference code added to this repository are licensed under the **Apache License, Version 2.0**. See [LICENSE-CODE](LICENSE-CODE).
+- Schemas (including the CDDL files under `drafts/`), test suites, and reference code added to this repository are licensed under the **Apache License, Version 2.0**. See [LICENSE-CODE](LICENSE-CODE).
 - Contributions are accepted under the same licenses with a DCO sign-off (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 - **Patents:** contributors make a royalty-free non-assert commitment for their essential patent claims, with defensive termination only. See the interim [Patent Policy](PATENT-POLICY.md) (draft, not legal advice, to be reviewed by counsel before v1.0).
 - The licenses do not grant rights to use the project names as marks; see [TRADEMARKS.md](TRADEMARKS.md).

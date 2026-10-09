@@ -1,0 +1,21 @@
+{
+  "description": "X25519 test keys copied unchanged from RFC 9180, Appendix A.2.1 (https://www.rfc-editor.org/rfc/rfc9180#appendix-A.2.1). TEST ONLY: these keys are public and must never be used for anything real.",
+  "source": "RFC 9180, Appendix A.2.1 (https://www.rfc-editor.org/rfc/rfc9180#appendix-A.2.1)",
+  "test_only": true,
+  "keys": [
+    {
+      "name": "rfc9180-a21-recipient",
+      "rfc_test": "A.2.1 skRm, pkRm",
+      "algorithm": "X25519",
+      "secret_key_hex": "8057991eef8f1f1af18f4a9491d16a1ce333f695d4db8e38da75975c4478e0fb",
+      "public_key_hex": "4310ee97d88cc1f088a5576c77ab0cf5c3ac797f3d95139c6c84b5429c59662a"
+    },
+    {
+      "name": "rfc9180-a21-ephemeral",
+      "rfc_test": "A.2.1 skEm, pkEm",
+      "algorithm": "X25519",
+      "secret_key_hex": "f4ec9b33b792c372c1d2c2063507b684ef925b8c75a42dbcbf57d63ccd381600",
+      "public_key_hex": "1afa08d3dec047a643885163f1180476fa7ddb54c6a8029ea33f95796bf2ac4a"
+    }
+  ]
+}

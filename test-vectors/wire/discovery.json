@@ -1,0 +1,72 @@
+{
+  "category": "wire",
+  "description": "LAN advertisement names (SK-WIRE section 4.1). adv_key is a test value.",
+  "vectors": [
+    {
+      "id": "wire.adv-name.001",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-adv-name",
+      "input": {
+        "adv_key_hex": "9f3882209dcb0300020671bb15948ae9c13021eecd71d1cdd72f8da75da9c852",
+        "unix_time": 1791532800
+      },
+      "expected": {
+        "value": "be317dee543d3e47"
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "Start of a 900-second window"
+    },
+    {
+      "id": "wire.adv-name.002",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-adv-name",
+      "input": {
+        "adv_key_hex": "9f3882209dcb0300020671bb15948ae9c13021eecd71d1cdd72f8da75da9c852",
+        "unix_time": 1791533699
+      },
+      "expected": {
+        "value": "be317dee543d3e47"
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "Last second of the same window: same name"
+    },
+    {
+      "id": "wire.adv-name.003",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.1",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-adv-name",
+      "input": {
+        "adv_key_hex": "9f3882209dcb0300020671bb15948ae9c13021eecd71d1cdd72f8da75da9c852",
+        "unix_time": 1791533700
+      },
+      "expected": {
+        "value": "dfb3b85708525837"
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "Next window: new name"
+    }
+  ]
+}

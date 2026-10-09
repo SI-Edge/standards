@@ -2,7 +2,7 @@
 
 > **Status: Draft, not for implementation. No certification program exists.**
 
-Shared terms for all Selfkin drafts. Where a draft defines a term normatively, the section is given. Document IDs: **SK-RT** (runtime), **SK-COM** (communication), **SK-PRV** (Selfkin Provider Profiles).
+Shared terms for all Selfkin drafts. Where a draft defines a term normatively, the section is given. Document IDs: **SK-RT** (runtime), **SK-COM** (communication), **SK-PRV** (Selfkin Provider Profiles), **SK-WIRE** (wire binding of SK-COM).
 
 | Term | Meaning | Defined in |
 |---|---|---|

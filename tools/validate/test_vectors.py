@@ -46,7 +46,8 @@ VECTOR_DIR = validate.REPO / "test-vectors"
 VECTOR_SCHEMA = VECTOR_DIR / "vector.schema.json"
 KEY_DIR = VECTOR_DIR / "keys"
 # Published test keys only: the source each key file must cite.
-KEY_SOURCES = {"rfc8032-test-keys.json": "RFC 8032, section 7.1", "rfc7515-test-keys.json": "RFC 7515, Appendix A.3"}
+KEY_SOURCES = {"rfc8032-test-keys.json": "RFC 8032, section 7.1", "rfc7515-test-keys.json": "RFC 7515, Appendix A.3",
+               "rfc9180-test-keys.json": "RFC 9180, Appendix A.2.1"}
 REGISTRY = validate.REPO / "registries" / "refusal-reasons.md"
 
 
@@ -188,7 +189,7 @@ class VectorFileTests(unittest.TestCase):
             names |= {key["name"] for key in keys["keys"]}
         for _, vector in self.vectors:
             for data in [step["input"] for step in vector.get("steps", [])] or [vector["input"]]:
-                for field in ("key", "public_key"):
+                for field in ("key", "public_key", "ephemeral_key"):
                     if field in data:
                         with self.subTest(vector=vector["id"]):
                             self.assertIn(data[field], names)

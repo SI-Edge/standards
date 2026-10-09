@@ -1,0 +1,319 @@
+; SPDX-License-Identifier: Apache-2.0
+; SK-WIRE v0.1, Selfkin wire binding (draft): CDDL (RFC 8610) for
+; the wire frames, the QR pairing payload, the mailbox control messages, and
+; the payloads of the SK-WIRE message types.
+; Envelopes use the JSON data model of SK-COM A5 and are encoded with the
+; dcbor canonical encoding of SK-COM A5.1. Everything outside an envelope
+; (frames, sealed boxes, chunks, control messages, the QR payload) is plain
+; deterministic CBOR (RFC 8949 section 4.2.1) and may use byte strings.
+; All identifiers (ALPN, service names, WebSocket subprotocol, well-known
+; URI, media types, QR prefix) are provisional until v1.0.
+
+wire-start = wire-frame / qr-payload
+
+; ---------------------------------------------------------------------------
+; 1. Frames (wire-binding-v0.1.md section 3.3). One frame per QUIC unidirectional
+;    stream, or per binary WebSocket message.
+; ---------------------------------------------------------------------------
+
+wire-frame = envelope-frame / sealed-frame / chunk-frame / control-frame
+
+envelope-frame = [type: 1, envelope: wire-envelope]
+sealed-frame   = [type: 2, box: sealed-box]
+chunk-frame    = [type: 3, id: chunk-id, ct: chunk-ct]
+control-frame  = [type: 4, ctl: control]
+
+; Content address of an encrypted chunk: SHA-256 of chunk-ct.
+chunk-id = bstr .size 32
+; AEAD ciphertext of at most 262144 plaintext bytes plus a 16-byte tag.
+chunk-ct = bstr .size (16..262160)
+
+; HPKE (RFC 9180) single-shot sealed envelope for relayed and stored
+; delivery (F8, F9). Sign, then encrypt: the relay sees only the members
+; outside "ct" and never the sender identity, intent, or residency.
+sealed-box = {
+  "suite": hpke-suite,
+  "to": bstr .size 16,         ; opaque mailbox handle of the recipient device (section 6.3)
+  "rk": bstr .size 32,         ; SHA-256 of the recipient prekey's raw public key
+  "enc": bstr,                 ; HPKE encapsulated key
+  "ct": bstr,                  ; seal(dcbor(envelope-frame))
+  "exp": uint,                 ; copy of the inner expires, seconds since epoch, for queue expiry
+}
+
+; Suite identifiers as in RFC 9180 section 7: [kem, kdf, aead].
+hpke-suite = [kem: uint, kdf: uint, aead: uint]
+; Mandatory:  [32, 1, 3]     DHKEM(X25519, HKDF-SHA256), HKDF-SHA256, ChaCha20Poly1305.
+; Preferred:  [25722, 1, 3]  MLKEM768-X25519 (0x647a, draft-ietf-hpke-pq-05). The code
+;             point is provisional until that draft is an RFC or its IANA entry is final.
+
+; ---------------------------------------------------------------------------
+; 2. QR pairing payload (section 4.3). Integer keys keep the code small.
+;    Encoded as CBOR, then base45 (RFC 9285), prefixed "SK1:".
+; ---------------------------------------------------------------------------
+
+qr-payload = {
+  1 => 1,                      ; payload version
+  2 => identifier,             ; presenter device identity (did:key)
+  3 => bstr .size 32,          ; SHA-256 of the presenter's TLS SubjectPublicKeyInfo
+  4 => [+ endpoint],           ; where the scanner connects
+  5 => bstr .size 16,          ; one-time pairing secret
+  6 => uint,                   ; expiry, seconds since epoch (at most 300 s after display)
+  ? 7 => [+ form-name],        ; forms the presenter proposes, default ["F1"]
+}
+
+endpoint = [host: tstr, port: uint .le 65535, carrier: carrier-id]
+carrier-id = &(quic: 1, websocket: 2)
+
+; ---------------------------------------------------------------------------
+; 3. Mailbox control messages (section 6.4). Only between a device and the
+;    mailbox host it is paired with, inside a negotiated session.
+; ---------------------------------------------------------------------------
+
+control = put-prekeys / claim / claim-result / deposited / fetch / fetch-end
+        / delete / ctl-error
+
+put-prekeys  = { "op": "put-prekeys", "id": uint, "handle": bstr .size 16,
+                 ? "last_resort": [+ prekey],  ; at most one per suite (section 6.3)
+                 "one_time": [* prekey] }
+; "suites": the sender's supported HPKE suites, most preferred first.
+claim        = { "op": "claim", "id": uint, "device": identifier,
+                 "suites": [+ hpke-suite-text] }
+claim-result = { "op": "claim-result", "id": uint, "device": identifier,
+                 "handle": bstr .size 16, "prekeys": [+ prekey] }
+deposited    = { "op": "deposited", "id": uint, "box": digest-bytes }
+fetch        = { "op": "fetch", "id": uint, ? "max": uint .le 256 }
+fetch-end    = { "op": "fetch-end", "id": uint, "count": uint, "more": bool }
+delete       = { "op": "delete", "id": uint, "boxes": [+ digest-bytes] }
+ctl-error    = { "op": "error", "id": uint, "reason": tstr }
+
+; SHA-256 of the complete sealed-frame bytes, used as the box id.
+digest-bytes = bstr .size 32
+
+; ---------------------------------------------------------------------------
+; 4. Envelope (SK-COM A5) as used by SK-WIRE.
+; ---------------------------------------------------------------------------
+
+wire-envelope = negotiate-env / pairing-env / text-env / offer-env / fetch-env
+              / deliver-env / handoff-req-env / handoff-res-env / ack-env
+              / refusal-env
+
+envelope-common = (
+  "v": "0.1",
+  "form": form-name,
+  "sender_agent": identifier,
+  "sender_device": identifier,
+  "aud": identifier,
+  "session": tstr .regexp "[A-Za-z0-9._:-]{8,128}",
+  "seq": uint,
+  "attestation_ref": null / tstr,
+  "residency": residency,
+  "nonce": nonce,
+  "issued": signed-timestamp,
+  "expires": signed-timestamp,
+  "provenance": [* hop],
+  ? "model_ref": json-map,
+  ? "ext": { * tstr => json-value },
+  "sig": signature,
+)
+
+negotiate-env  = { envelope-common, "intent": "sk.negotiate", ? "cap_token": json-map,
+                   "data": negotiate, "payload_type": "application/vnd.selfkin.wire.negotiate+json" }
+pairing-env    = { envelope-common, "intent": pairing-intent,
+                   "data": pairing, "payload_type": "application/vnd.selfkin.wire.pairing+json" }
+text-env       = { envelope-common, "intent": "messaging.send", "cap_token": json-map, ? "idem_key": idem-key,
+                   "data": text-message, "payload_type": "application/vnd.selfkin.wire.text+json" }
+offer-env      = { envelope-common, "intent": "share.offer", "cap_token": json-map, ? "idem_key": idem-key,
+                   "data": photo-offer, "payload_type": "application/vnd.selfkin.wire.photo-offer+json" }
+fetch-env      = { envelope-common, "intent": "share.fetch", "cap_token": json-map,
+                   "instructions": fetch-instructions, "idem_key": idem-key }
+deliver-env    = { envelope-common, "intent": "share.deliver", "cap_token": json-map,
+                   "data": deliver, "payload_type": "application/vnd.selfkin.wire.deliver+json" }
+handoff-req-env = { envelope-common, "intent": "handoff.request", "cap_token": json-map,
+                   "instructions": handoff-instructions, "idem_key": idem-key,
+                   ? "data": handoff-inputs, ? "payload_type": "application/vnd.selfkin.wire.handoff-inputs+json" }
+handoff-res-env = { envelope-common, "intent": "handoff.result", "cap_token": json-map,
+                   "data": handoff-result, "payload_type": "application/vnd.selfkin.wire.handoff-result+json" }
+ack-env        = { envelope-common, "intent": "sk.ack", "cap_token": json-map,
+                   "data": ack, "payload_type": "application/vnd.selfkin.wire.ack+json" }
+refusal-env    = { envelope-common, "intent": "sk.refused",
+                   "data": json-map, "payload_type": "application/vnd.selfkin.refusal+json" }
+
+pairing-intent = "sk.pairing.request" / "sk.pairing.response"
+               / "sk.pairing.confirm" / "sk.pairing.reject"
+
+; ---------------------------------------------------------------------------
+; 5. Payloads.
+; ---------------------------------------------------------------------------
+
+; 5.1 Negotiation (SK-COM B7), three messages: offer, select, confirm.
+;     "grant" refreshes the session token before it expires.
+negotiate = {
+  "phase": "offer" / "select" / "confirm" / "grant",
+  ? "versions": [+ version-string],
+  ? "canons": [+ ("dcbor" / "jcs")],
+  ? "algs": [+ tstr],                 ; for example "ES256", "Ed25519"
+  ? "hpke_suites": [+ hpke-suite-text],
+  ? "forms": [+ form-name],
+  ? "profiles": [+ comm-profile],      ; offer: all supported; select: exactly one
+  ? "level": "core" / "full",          ; SK-WIRE level (section 7.2)
+  ? "features": [* feature],
+  ? "max_frame": uint .le 1048576,
+  ? "challenge": nonce,                ; fresh nonce the peer must echo
+  ? "echo": nonce,                     ; the peer's challenge
+  ? "transcript": digest,              ; SHA-256 of the dcbor of earlier negotiate envelopes
+  ? "cb": b64u,                        ; RFC 9266 tls-exporter value, when the TLS stack exposes it
+  ? "token": json-map,                 ; capability token granted to the peer (select, confirm, grant)
+  ? "prekey": prekey,                  ; current last-resort prekey of the sender device
+}
+
+hpke-suite-text = tstr .regexp "[0-9]+,[0-9]+,[0-9]+"
+feature = "text" / "photo" / "thumb" / "handoff" / "sealed" / "relay" / "mailbox"
+        / "receipts.read" / "bridge"
+
+; Signed HPKE prekey (section 6.3). Signed by the device key with the
+; SK-COM A5.1 signing input, like every signed Selfkin object.
+prekey = {
+  "kid": b64u,                         ; base64url SHA-256 of the raw public key (equals rk)
+  "device": identifier,                ; device that holds the private key
+  "use": "one-time" / "last-resort",
+  "suite": hpke-suite-text,
+  "pk": b64u,                          ; raw public key: 32 bytes (X25519) or 1216 bytes (MLKEM768-X25519)
+  "not_after": signed-timestamp,       ; at most 7 days after issue
+  "sig": signature,
+}
+
+; 5.2 Pairing (SK-COM A3).
+pairing = {
+  ? "proof": b64u,                     ; HMAC-SHA256 pairing proof (section 4.3)
+  ? "statements": [* json-map],        ; owner-signed device and agent statements (A2)
+  ? "transport_spki": digest,          ; SHA-256 of the sender's TLS SubjectPublicKeyInfo
+  ? "prekey": prekey,                  ; last-resort prekey
+  ? "adv_key": b64u,                   ; 32-byte key for rotating DNS-SD instance names
+  ? "forms": [+ form-name],
+  ? "rights": [* json-map],            ; capabilities the pairing record allows
+  ? "record_expires": signed-timestamp,
+  ? "label": tstr .size (1..64),       ; local display name, never advertised
+}
+
+; 5.3 Text message.
+text-message = {
+  "text": tstr .size (1..16384),
+  ? "lang": tstr .size (2..35),        ; BCP 47 tag
+  ? "reply_to": env-ref,
+  ? "thread": tstr .size (1..128),
+}
+
+; 5.4 Photo offer: a manifest of content-addressed, encrypted renditions.
+photo-offer = {
+  "object": ni-uri,                    ; RFC 6920 name of the original plaintext
+  "media_type": tstr,                  ; of the original, for example "image/jpeg"
+  "renditions": [+ rendition],
+  ? "thumb_inline": b64u,              ; small thumbnail, at most 16384 bytes before encoding
+  ? "caption": tstr .size (1..2048),
+  ? "taken": signed-timestamp,
+  "push": bool,                        ; true: the sender will push "original" chunks unasked
+}
+
+rendition = {
+  "kind": "original" / "preview" / "thumb",
+  "media_type": tstr,
+  "size": uint,                        ; plaintext bytes
+  ? "width": uint,
+  ? "height": uint,
+  "aead": "A256GCM",
+  "key": b64u,                         ; 32-byte content key; never logged (SK-COM A10)
+  "chunk_size": 262144,
+  "chunks": [1*4096 b64u],             ; base64url chunk-id values, in order
+  "digest": digest,                    ; SHA-256 of the rendition plaintext
+}
+
+; 5.5 Fetch: view or thumbnail on demand.
+fetch-instructions = {
+  "action": "share.fetch",
+  "resource": ni-uri,
+  "params": {
+    "kind": "original" / "preview" / "thumb",
+    ? "chunks": [+ uint],              ; indices; absent means all
+  },
+  ? "consequential": false,
+}
+
+; 5.6 Deliver: answer to a fetch. Chunk frames follow on the same channel.
+deliver = {
+  "ref": env-ref,                      ; the fetch request
+  "resource": ni-uri,
+  "kind": "original" / "preview" / "thumb",
+  "chunks": [* uint],                  ; indices that follow as chunk frames
+  ? "inline": b64u,                    ; whole rendition when at most 16384 bytes
+}
+
+; 5.7 Task handoff to a stronger device (F6).
+handoff-instructions = {
+  "action": "handoff.run",
+  "resource": identifier,              ; the receiving agent (its did:key)
+  "params": {
+    "task": tstr .size (1..64),        ; for example "audio.transcribe", "photo.describe"
+    "deadline": signed-timestamp,
+    ? "priority": "low" / "normal" / "high",
+    ? "result_to": identifier,
+    ? "max_model_class": "local" / "remote-p2" / "remote-p3",
+  },
+  ? "consequential": bool,
+}
+
+handoff-inputs = {
+  ? "prompt": tstr .size (1..16384),   ; untrusted text, never instructions (SK-COM A5)
+  ? "inputs": [* input-ref],
+}
+
+input-ref = { "resource": ni-uri, "offer": env-ref }
+
+handoff-result = {
+  "ref": env-ref,                      ; the handoff request
+  "status": "done" / "failed" / "cancelled" / "partial",
+  ? "text": tstr .size (0..65536),
+  ? "outputs": [* photo-offer],
+  ? "reason": tstr,                    ; refusal reason code when failed
+  ? "usage": { ? "seconds": uint, ? "tokens_in": uint, ? "tokens_out": uint },
+}
+
+; 5.8 Acknowledgement and receipts (SK-COM A9).
+ack = {
+  "ref": env-ref,
+  "status": "received" / "stored" / "processing" / "done" / "read" / "failed",
+  ? "have": [* uint],                  ; chunk indices held, for resumable transfers
+  ? "reason": tstr,                    ; refusal reason code when failed
+}
+
+; Reference to an earlier envelope: its session, seq, and the SHA-256 of its
+; complete dcbor encoding including sig.
+env-ref = { "session": tstr, "seq": uint, "digest": digest }
+
+; ---------------------------------------------------------------------------
+; 6. Shared types (aligned with schemas/common.schema.json).
+; ---------------------------------------------------------------------------
+
+identifier = tstr .regexp "[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+"
+ni-uri = tstr .regexp "ni:///sha-256;[A-Za-z0-9_-]{43}"
+b64u = tstr .regexp "[A-Za-z0-9_-]+"
+nonce = tstr .regexp "[A-Za-z0-9_-]{22,128}"
+idem-key = tstr .regexp "[A-Za-z0-9._:-]{16,128}"
+version-string = tstr .regexp "[0-9]+\\.[0-9]+"
+signed-timestamp = tstr .regexp "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"
+form-name = "F1" / "F2" / "F3" / "F4" / "F6" / "F7" / "F8" / "F9"
+comm-profile = "C1" / "C2" / "C3"
+digest = { "alg": "sha-256", "value": b64u }
+residency = { "tags": [* tstr], "data_classes": [* tstr] }
+hop = {
+  "role": "origin" / "delegator" / "proxy" / "relay" / "store-and-forward" / "legacy-endpoint",
+  "id": identifier,
+  ? "device": identifier,
+  ? "method": "app" / "os" / "shim" / "proxy" / "human",
+  ? "labels": [* ("legacy" / "unattested" / "sideloaded")],
+  ? "at": signed-timestamp,
+}
+signature = { "alg": tstr, "kid": identifier, ? "signer": identifier,
+              "canon": "dcbor" / "jcs", "value": b64u }
+
+json-value = tstr / int / float / bool / null / [* json-value] / json-map
+json-map = { * tstr => json-value }
