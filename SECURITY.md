@@ -27,3 +27,7 @@ Do not open public issues or pull requests for unfixed security or privacy flaws
 ## Scope
 
 In scope: everything under `drafts/`, [TERMINOLOGY.md](TERMINOLOGY.md), [THREAT-MODEL.md](THREAT-MODEL.md), and future schemas and test suites in this repository. Out of scope: third-party implementations (report to their maintainers) and the third-party standards referenced by the drafts.
+
+## Public Design Discussion
+
+The documents here are drafts, and nothing implements them in production. Design level weaknesses in the drafts (for example a missing requirement or an underspecified check) may be filed as public issues with the `review` label, so they can be discussed in the open. Use private reporting for anything that could harm a deployed system, including bugs in the reference implementation once people run it.
