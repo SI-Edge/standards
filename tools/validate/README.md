@@ -13,6 +13,8 @@ python -m unittest discover -s tools/validate -v           # tests
 
 The tests check that every schema is valid JSON Schema 2020-12 with the required `$id`, `title`, and `description`; that every valid example passes and every `*.invalid.json` example fails; that every schema has both kinds of example; that every invalid example is explained in [examples/README.md](../../examples/README.md); and that no em-dashes or en-dashes are used.
 
+`test_vectors.py` runs the shared [test vectors](../../test-vectors/README.md): it checks every vector file against `vector.schema.json` and the refusal-reason registry, and runs the static operations against the validator. Normative vectors must pass; provisional ones are only reported. `python tools/validate/test_vectors.py --summary` prints a per-file summary.
+
 ## Continuous Integration
 
 [.github/workflows/validate.yml](../../.github/workflows/validate.yml) is the GitHub Actions workflow that runs the validator and the tests on every push and pull request.
