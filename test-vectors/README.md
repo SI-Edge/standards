@@ -8,7 +8,7 @@ Each vector is a fixed input with an expected result, so that the validator in [
 
 | Path | Contents |
 |---|---|
-| `VERSION` | Suite version |
+| `VERSION` | Suite version, the only place it is recorded |
 | `vector.schema.json` | JSON Schema 2020-12 for every vector file |
 | `keys/rfc8032-test-keys.json` | Ed25519 test keys copied from [RFC 8032, section 7.1](https://www.rfc-editor.org/rfc/rfc8032#section-7.1). **TEST ONLY** |
 | `keys/rfc7515-test-keys.json` | ECDSA P-256 test key copied from [RFC 7515, Appendix A.3](https://www.rfc-editor.org/rfc/rfc7515#appendix-A.3). **TEST ONLY** |
@@ -22,7 +22,7 @@ Each vector is a fixed input with an expected result, so that the validator in [
 
 ## Vector Format
 
-A file holds `suite`, `category`, `description`, and a list of `vectors`. Each vector has:
+A file holds `category`, `description`, and a list of `vectors`. Files do not record the suite version; it lives only in `VERSION`. Each vector has:
 
 - `id`: stable and never reused, for example `token.narrowing.004`.
 - `spec`: the rules it tests (document, version, section, profile tag).
@@ -98,4 +98,4 @@ The wire vectors (added in 0.4.0) are provisional until SK-WIRE is accepted (#67
 
 Also in 0.2.0: `envelope.structure.007` and `token.lifetime.003` accepted timestamps with an offset in signed objects and are `withdrawn`; `envelope.signed-values.001` and `token.signed-values.001` replace them.
 
-The suite follows semantic versioning in `VERSION`: patch for new vectors, minor for new operations or fields. A changed expectation is a major change from 1.0; while the suite is 0.x, it takes a minor bump and a CHANGELOG note instead. A vector whose expectation changes is marked `withdrawn` and replaced by a vector with a new `id`; old ids are never reused. Every file's `suite` equals `VERSION`. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.
+The current suite version is `0.4.0`. `VERSION` is its only source, and a test checks that this sentence matches it, so a version bump changes `VERSION` and this line and nothing else. The suite follows semantic versioning: patch for new vectors, minor for new operations or fields. A changed expectation is a major change from 1.0; while the suite is 0.x, it takes a minor bump and a change note instead. A vector whose expectation changes is marked `withdrawn` and replaced by a vector with a new `id`; old ids are never reused. [examples/](../examples/) stay as readable whole documents; vectors are minimal checks with expected results and do not refer to example files.

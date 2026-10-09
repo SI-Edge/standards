@@ -51,6 +51,11 @@ KEY_SOURCES = {"rfc8032-test-keys.json": "RFC 8032, section 7.1", "rfc7515-test-
 REGISTRY = validate.REPO / "registries" / "refusal-reasons.md"
 
 
+def suite_version() -> str:
+    """The suite version. test-vectors/VERSION is its only source; vector files carry none."""
+    return (VECTOR_DIR / "VERSION").read_text(encoding="utf-8").strip()
+
+
 def vector_files() -> list[Path]:
     return sorted(p for p in VECTOR_DIR.rglob("*.json") if p != VECTOR_SCHEMA and p.parent.name != "keys")
 
@@ -134,18 +139,26 @@ class VectorFileTests(unittest.TestCase):
         step = {"operation": "receive", "now": "2026-10-09T08:11:00Z", "input": {}, "expected": {"executed": False}}
         sequence = {"id": "x.y.002", "kind": "sequence", "spec": single["spec"], "status": "normative",
                     "state": {}, "steps": [step]}
-        wrap = lambda vector: {"suite": "0.1.0", "category": "envelope", "description": "d", "vectors": [vector]}
+        wrap = lambda vector: {"category": "envelope", "description": "d", "vectors": [vector]}
         self.assertTrue(self.validator.is_valid(wrap(single)))
         self.assertTrue(self.validator.is_valid(wrap(sequence)))
         self.assertFalse(self.validator.is_valid(wrap({**sequence, "input": {}})))
         self.assertFalse(self.validator.is_valid(wrap({**single, "steps": [step]})))
         self.assertFalse(self.validator.is_valid(wrap({**sequence, "steps": [{**step, "expected": {"reason": "replayed"}}]})))
 
-    def test_suite_version_matches(self):
-        version = (VECTOR_DIR / "VERSION").read_text(encoding="utf-8").strip()
+    def test_version_is_semver(self):
+        self.assertRegex(suite_version(), r"^[0-9]+\.[0-9]+\.[0-9]+$")
+
+    def test_readme_states_the_version(self):
+        readme = (VECTOR_DIR / "README.md").read_text(encoding="utf-8")
+        match = re.search(r"current suite version is `([^`]+)`", readme)
+        self.assertIsNotNone(match, "test-vectors/README.md must say: The current suite version is `X.Y.Z`")
+        self.assertEqual(match.group(1), suite_version(), "test-vectors/README.md and VERSION disagree")
+
+    def test_files_carry_no_suite_version(self):
         for path in vector_files():
             with self.subTest(file=str(path.relative_to(validate.REPO))):
-                self.assertEqual(validate.load_json(path)["suite"], version)
+                self.assertFalse("suite" in validate.load_json(path), "the suite version lives only in test-vectors/VERSION")
 
     def test_ids_are_unique(self):
         ids = [vector["id"] for _, vector in self.vectors]
@@ -231,7 +244,7 @@ def summary() -> int:
     for line in failed:
         print("FAIL  " + line)
     normative_failures = [line for line in failed if "[normative]" in line]
-    print(f"\n{sum(totals.values())} vectors, {len(failed)} failed ({len(normative_failures)} normative)")
+    print(f"\nsuite {suite_version()}: {sum(totals.values())} vectors, {len(failed)} failed ({len(normative_failures)} normative)")
     return 1 if normative_failures else 0
 
 

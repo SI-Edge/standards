@@ -1,5 +1,4 @@
 {
-  "suite": "0.4.0",
   "category": "wire",
   "description": "LAN advertisement names (SK-WIRE section 4.1). adv_key is a test value.",
   "vectors": [

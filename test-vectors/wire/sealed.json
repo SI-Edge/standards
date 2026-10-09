@@ -1,5 +1,4 @@
 {
-  "suite": "0.4.0",
   "category": "wire",
   "description": "Sealed frames and prekeys (SK-WIRE section 6.3): HPKE base mode with the X25519 keys of RFC 9180 Appendix A.2.1, prekey selection by the mailbox host, and prekey signatures (dcbor, RFC 8032 TEST 3).",
   "vectors": [

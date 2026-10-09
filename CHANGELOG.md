@@ -1,72 +1,16 @@
 # Changelog
 
-All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
+All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**. Pending changes live as fragments in [changes/](changes/README.md) until the next release.
 
-## 2026-10-09: SK-WIRE v0.1, Selfkin wire binding (proposal, #67)
+## 2026-10-09: Test vector suite version in one place
 
-New document, open for comments.
-
-### Added
-
-- `drafts/sk-wire/wire-binding-v0.1.md`: SK-WIRE v0.1 binds SK-COM to QUIC (ALPN `selfkin/1`) and WebSocket over TLS 1.3, DNS-SD discovery with rotating names, QR pairing, text, photo, view-on-demand and handoff messages, and relay-only delivery of sealed frames (HPKE with signed one-time and last-resort prekeys) through an owner-run mailbox. All identifiers are provisional. Hybrid post-quantum key exchange is preferred; the hybrid HPKE code point is provisional and the X25519 suite must always interoperate.
-- `drafts/sk-wire/wire-binding-v0.1.cddl`: CDDL for frames, the QR payload, mailbox control messages, and SK-WIRE payloads.
-- `test-vectors/` 0.4.0: category `wire` with 42 provisional vectors, operations `wire-frame-check`, `wire-qr-decode`, `wire-pairing-proof`, `wire-sas`, `wire-adv-name`, `wire-chunk-open`, `wire-hpke-seal`, `wire-hpke-open`, `wire-prekey-select`, and the X25519 test keys of RFC 9180 Appendix A.2.1.
+Tooling change. No normative rule changed.
 
 ### Changed
 
-- README.md, TERMINOLOGY.md, docs/index.md: list SK-WIRE. README.md: CDDL files under `drafts/` are Apache-2.0 like schemas.
-
-## 2026-10-09: Negotiation without `cap_token`, store-and-forward token time, Noise optional (proposal)
-
-Normative change, open for comments.
-
-### Changed
-
-- SK-COM §A3, §A5, §B7: negotiation messages (`sk.negotiate`) may omit `cap_token` and never carry `instructions`; they grant no authority.
-- SK-COM §A9: an envelope delivered through a store-and-forward node (F8) lives at most 7 days. Without `instructions`, its token is evaluated at `issued` and revocation is checked at receipt; with `instructions`, everything is evaluated at receipt.
-- SK-COM §A4: TLS 1.3 or QUIC is the default building block also for peer-to-peer paths; the Noise Protocol Framework drops from SHOULD to MAY.
-- `schemas/envelope.schema.json` and `registries/intents.md`: `sk.negotiate` joins pairing and refusals as the envelopes that may omit `cap_token`.
-- THREAT-MODEL.md T9: revocation is checked at receipt for stored deliveries.
-- `test-vectors/` 0.3.0: the `receive` operation gains the input `delivery`, the state `revoked`, and token time checks.
-
-### Added
-
-- Examples `envelope.f1-negotiate-offer.json` and `envelope.negotiate-with-instructions.invalid.json`.
-- Test vectors `envelope.structure.017` and `.018` and `envelope.receive.013` to `.018`.
-
-## 2026-10-09: Signature algorithm allowlist and key binding (proposal, #33)
-
-Normative change, open for comments.
-
-### Changed
-
-- SK-COM §A5.1: `Ed25519` is mandatory to implement; `sig.alg` must be one of the algorithms in the new §B8 table (`Ed25519`, `ES256`, which every runtime must verify and may produce, and the deprecated name `EdDSA`, removed in v1.0), so `none` and MACs are refused with `bad-signature`; `kid` must resolve through the owner statements of `sender_agent`, `iss`, or `signer` to a key whose type matches `alg`.
-- SK-COM §B8: table of signature algorithms with their status, and a non-normative note that ML-DSA is added only once stable JOSE and COSE registrations exist (to be reconsidered for v0.3).
-- `schemas/common.schema.json`: `sig.alg` is an enum.
-
-### Added
-
-- Invalid examples `envelope.alg-none.invalid.json` and `capability-token.alg-hs256.invalid.json`.
-- Test vectors `tokens/algorithms.json` and `signature.verify.013` to `.017` (`.015` and `.016` use the RFC 7515 P-256 test key); suite 0.2.1.
-
-## 2026-10-09: Signing input for `dcbor`, chain links, and future `iat` (proposal, #10, #17, #47)
-
-Normative change, open for comments.
-
-### Changed
-
-- SK-COM §A5.1 and new Appendix F: `dcbor` is the core deterministic encoding of RFC 8949 §4.2.1 over the JSON data model, with no type mapping and with numeric reduction (`50.0` is encoded as the integer `50`). Timestamps and base64url values stay text strings, never CBOR tag 1 or byte strings. dCBOR (draft-mcnally-deterministic-cbor-18) is cited as informative prior art only.
-- SK-COM §A5, §A5.1: timestamps in signed objects are RFC 3339 in UTC with whole seconds (`YYYY-MM-DDTHH:MM:SSZ`); integral numbers stay in the I-JSON safe range and text is in Unicode Normalization Form C, so `dcbor` and `jcs` agree.
-- SK-COM §A5: `max_clock_skew` (30 seconds) is defined once for every rule that allows clock skew.
-- SK-COM §A6: every token is signed with `chain` set to its ancestors as carried; a token or link whose `exp` is not after `iat` is refused with `unauthorized`, and one whose `iat` is later than now plus `max_clock_skew` with the new code `not-yet-valid`.
-- `schemas/common.schema.json`: new `signedTimestamp`, used for every timestamp in capability tokens, envelopes, and Provider Manifests (privacy reports keep `timestamp`); `not-yet-valid` added to the refusal reasons, and to `registries/refusal-reasons.md`.
-- `tools/validate`: checks the number range and NFC in signed objects.
-- `test-vectors/` 0.2.0: new status `withdrawn`; while the suite is 0.x, a changed expectation takes a minor bump and a CHANGELOG note. `envelope.structure.007` and `token.lifetime.003` (offsets in signed timestamps) are withdrawn and replaced by `envelope.signed-values.001` and `token.signed-values.001`. The key test accepts the published RFC 8032 and RFC 7515 test keys.
-
-### Added
-
-- Invalid examples `capability-token.offset-timestamp.invalid.json`, `capability-token.unsafe-integer.invalid.json`, and `envelope.fractional-seconds.invalid.json`.
-- Test vectors: operation `dcbor-signing-input` with `signatures/dcbor-signing-input.json`, `dcbor` signing and verification including chain links (`signatures/sign.json`, `signatures/verify.json`), `tokens/signed-values.json`, and `envelope/signed-values.json`; features `dcbor` and `ES256`; `keys/rfc7515-test-keys.json` (the P-256 key from RFC 7515 Appendix A.3, test only).
+- `test-vectors/VERSION` is now the only place the suite version is recorded. Vector files no longer carry a `suite` member, and `vector.schema.json` no longer allows it, so two pull requests that both bump the suite only touch `VERSION` and one sentence in `test-vectors/README.md`.
+- `tools/validate/test_vectors.py`: the check that every file's `suite` equals `VERSION` is replaced by checks that `VERSION` is a semantic version, that `test-vectors/README.md` states the same version, and that no vector file carries a `suite` member. `--summary` prints the suite version from `VERSION`.
+- `test-vectors/README.md`: states the current suite version and that `VERSION` is its only source.
 
 ## 2026-10-09: Markdown lint and link check in CI
 

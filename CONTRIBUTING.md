@@ -45,7 +45,7 @@ All Contributions are made under the royalty-free [Patent Policy](PATENT-POLICY.
 - Keep the drafts vendor-neutral. Vendor and product names may appear only in clearly marked, non-normative example lists that carry a neutrality note. Never state or imply anything about a vendor's plans, products, or practices.
 - Do not describe legal requirements unless you are sure they are accurate; prefer "can help with" over "required by".
 - Use plain ASCII punctuation. Do not use em-dashes or en-dashes.
-- Update [CHANGELOG.md](CHANGELOG.md) and the change note at the end of the affected draft.
+- Add a change fragment (see [Change Notes](#change-notes)) and update the change note at the end of the affected draft.
 
 ## Checking Your Changes Locally
 
@@ -57,6 +57,15 @@ lychee --root-dir "$PWD" './**/*.md' 'docs/**/*.html'
 ```
 
 markdownlint needs Node.js 22 or later. For lychee, install version 0.24.2 from its [releases page](https://github.com/lycheeverse/lychee/releases). Settings live in `.markdownlint-cli2.jsonc` and `lychee.toml`. Links to reserved example names such as `example.com` are not checked.
+
+## Change Notes
+
+Do not edit [CHANGELOG.md](CHANGELOG.md) in a pull request. Add one file `changes/<pr-number>.md` (or
+`changes/<short-slug>.md` before the pull request exists) with a front matter `title` and `type` and the entry
+text, as described in [changes/README.md](changes/README.md). Maintainers assemble the fragments into
+CHANGELOG.md when they cut a release, so parallel pull requests never conflict in the changelog. CI checks the
+fragment format and that a pull request touching the drafts, schemas, examples, registries, test vectors,
+tooling, or governance documents adds one. Repository-only changes can get the `no-changelog` label.
 
 ## Pull Requests
 

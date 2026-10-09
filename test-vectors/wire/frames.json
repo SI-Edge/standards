@@ -1,5 +1,4 @@
 {
-  "suite": "0.4.0",
   "category": "wire",
   "description": "Frame structure (SK-WIRE section 3.3): each frame_hex is checked against drafts/sk-wire/wire-binding-v0.1.cddl. Structure only: no signatures, tokens, clocks, or state. The envelopes are signed with the RFC 8032 section 7.1 test keys.",
   "vectors": [

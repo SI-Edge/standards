@@ -1,5 +1,4 @@
 {
-  "suite": "0.4.0",
   "category": "envelope",
   "description": "Structural envelope rules (SK-COM A5, A5.2) that a receiver checks before anything else. Static checks; no clock is involved.",
   "vectors": [

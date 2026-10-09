@@ -1,5 +1,4 @@
 {
-  "suite": "0.4.0",
   "category": "wire",
   "description": "QR pairing (SK-WIRE section 4.3): QR decoding, pairing proofs, and the 6-digit comparison code. The secret and the request come from the SK-WIRE example pairing; they are test values.",
   "vectors": [

@@ -1,5 +1,4 @@
 {
-  "suite": "0.4.0",
   "category": "wire",
   "description": "Encrypted chunks (SK-WIRE section 5.2). The content key is a test value.",
   "vectors": [
