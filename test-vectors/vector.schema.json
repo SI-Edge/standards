@@ -23,7 +23,8 @@
         "tokens",
         "envelope",
         "residency",
-        "signatures"
+        "signatures",
+        "wire"
       ]
     },
     "description": {
@@ -77,6 +78,7 @@
                   "SK-RT",
                   "SK-COM",
                   "SK-PRV",
+                  "SK-WIRE",
                   "RFC 8032",
                   "RFC 8785"
                 ]
@@ -108,7 +110,16 @@
             "jcs-signing-input",
             "verify",
             "sign",
-            "receive"
+            "receive",
+            "wire-frame-check",
+            "wire-qr-decode",
+            "wire-pairing-proof",
+            "wire-sas",
+            "wire-adv-name",
+            "wire-chunk-open",
+            "wire-hpke-seal",
+            "wire-hpke-open",
+            "wire-prekey-select"
           ]
         },
         "profile": {

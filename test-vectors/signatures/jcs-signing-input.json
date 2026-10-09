@@ -1,5 +1,5 @@
 {
-  "suite": "0.3.0",
+  "suite": "0.4.0",
   "category": "signatures",
   "description": "Signing input for canon jcs (SK-COM A5.1): the RFC 8785 canonical JSON of the object with its sig member removed, as a UTF-8 string.",
   "vectors": [

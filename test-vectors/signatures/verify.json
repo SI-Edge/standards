@@ -1,5 +1,5 @@
 {
-  "suite": "0.3.0",
+  "suite": "0.4.0",
   "category": "signatures",
   "description": "Verification of jcs signatures (SK-COM A5.1) with the RFC 8032 section 7.1 test keys. public_key names a key in keys/rfc8032-test-keys.json; checking that the key belongs to the expected signer is out of scope here.",
   "vectors": [

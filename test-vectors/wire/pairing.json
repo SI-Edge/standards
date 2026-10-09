@@ -1,0 +1,160 @@
+{
+  "suite": "0.4.0",
+  "category": "wire",
+  "description": "QR pairing (SK-WIRE section 4.3): QR decoding, pairing proofs, and the 6-digit comparison code. The secret and the request come from the SK-WIRE example pairing; they are test values.",
+  "vectors": [
+    {
+      "id": "wire.qr.001",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.3",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-qr-decode",
+      "input": {
+        "qr": "SK1:H:KX50-8FAVC8UC/PDTEFBKFJZ9*7DZYAMJDK4FQZ9R2E ZA179*7BHPEQVELVENJCG8DJIA. C4KC2%EIJC6S6C9D JD1J0K34WL35+OMGTXZH:MEI03PEGG/I1WDEF9F.R/YJY%ANYKG7CQGALMGNUD946Y$5Z$5+96Z$5S36%90R80NUD946Y$5Z$5+96Z$5S36%90MB0ZAALYJ*-0685GJISI8QUL6:S+*BCF3FGP:0"
+      },
+      "expected": {
+        "value": {
+          "version": 1,
+          "presenter": "did:key:z6Mkh7U7jBwoMro3UeHmXes4tKtFbZhMRWejbtunbU4hhvjP",
+          "spki_hex": "3f1b8cc4e5e84b8cc172c817cd811f96016c7649e2dd049c7055eaa445603752",
+          "endpoints": [
+            [
+              "203.0.113.10",
+              443,
+              1
+            ],
+            [
+              "203.0.113.10",
+              443,
+              2
+            ]
+          ],
+          "secret_hex": "ff9c5a075c28fb91c9428eab7de53e5e",
+          "expires": 1791533100
+        }
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "QR payload of the presenter (address from RFC 5737 TEST-NET-3)"
+    },
+    {
+      "id": "wire.qr.002",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.3",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-qr-decode",
+      "input": {
+        "qr": "SK2:H:KX50-8FAVC8UC/PDTEFBKFJZ9*7DZYAMJDK4FQZ9R2E ZA179*7BHPEQVELVENJCG8DJIA. C4KC2%EIJC6S6C9D JD1J0K34WL35+OMGTXZH:MEI03PEGG/I1WDEF9F.R/YJY%ANYKG7CQGALMGNUD946Y$5Z$5+96Z$5S36%90R80NUD946Y$5Z$5+96Z$5S36%90MB0ZAALYJ*-0685GJISI8QUL6:S+*BCF3FGP:0"
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "Unknown prefix"
+    },
+    {
+      "id": "wire.qr.003",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.3",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-qr-decode",
+      "input": {
+        "qr": "SK1:H:KX50-8FAVC8UC/PDTEFBKFJZ9*7DZYAMJDK4FQZ9R2E ZA179*7BHPEQVELVENJCG8DJIA. C4KC2%EIJC6S6C9D JD1J0K34WL35+OMGTXZH:MEI03PEGG/I1WDEF9F.R/YJY%ANYKG7CQGALMGNUD946Y$5Z$5+96Z$5S36%90R80NUD946Y$5Z$5+96Z$5S36%90MB045ALYJ*-0685GJISI8QUL6:SWY0LMD9BK"
+      },
+      "expected": {
+        "result": "refuse",
+        "reason": "malformed"
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "Secret of 15 bytes"
+    },
+    {
+      "id": "wire.pairing-proof.001",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.3",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-pairing-proof",
+      "input": {
+        "secret_hex": "ff9c5a075c28fb91c9428eab7de53e5e",
+        "label": "request",
+        "presenter": "did:key:z6Mkh7U7jBwoMro3UeHmXes4tKtFbZhMRWejbtunbU4hhvjP",
+        "scanner": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+        "spki_hex": "3f1b8cc4e5e84b8cc172c817cd811f96016c7649e2dd049c7055eaa445603752"
+      },
+      "expected": {
+        "value": "0hp7aItTXpbH5_fDA2rHQ6gNLaJ02C4fP4MhjrlA49A"
+      },
+      "status": "provisional",
+      "open_issue": "#67"
+    },
+    {
+      "id": "wire.pairing-proof.002",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.3",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-pairing-proof",
+      "input": {
+        "secret_hex": "ff9c5a075c28fb91c9428eab7de53e5e",
+        "label": "response",
+        "presenter": "did:key:z6Mkh7U7jBwoMro3UeHmXes4tKtFbZhMRWejbtunbU4hhvjP",
+        "scanner": "did:key:z6MkwSD8dBdqcXQzKJZQFPy2hh2izzxskndKCjdmC2dBpfME",
+        "spki_hex": "3f1b8cc4e5e84b8cc172c817cd811f96016c7649e2dd049c7055eaa445603752"
+      },
+      "expected": {
+        "value": "EzIJ43FyXJeJIYV8uzbHWd9suFBXKHZ638De4qhYBQs"
+      },
+      "status": "provisional",
+      "open_issue": "#67"
+    },
+    {
+      "id": "wire.sas.001",
+      "spec": [
+        {
+          "doc": "SK-WIRE",
+          "version": "0.1",
+          "section": "4.3",
+          "tag": "C1"
+        }
+      ],
+      "operation": "wire-sas",
+      "input": {
+        "secret_hex": "ff9c5a075c28fb91c9428eab7de53e5e",
+        "request_hash_hex": "6ccf162d6df41e868940f396c583917c2d68d35a3fe3d4c71722286488c3bc4c"
+      },
+      "expected": {
+        "value": "239087"
+      },
+      "status": "provisional",
+      "open_issue": "#67",
+      "note": "request_hash_hex is the SHA-256 of the dcbor pairing request envelope"
+    }
+  ]
+}

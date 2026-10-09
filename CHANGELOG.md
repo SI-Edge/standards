@@ -2,6 +2,20 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: SK-WIRE v0.1, Selfkin wire binding (proposal, #67)
+
+New document, open for comments.
+
+### Added
+
+- `drafts/sk-wire/wire-binding-v0.1.md`: SK-WIRE v0.1 binds SK-COM to QUIC (ALPN `selfkin/1`) and WebSocket over TLS 1.3, DNS-SD discovery with rotating names, QR pairing, text, photo, view-on-demand and handoff messages, and relay-only delivery of sealed frames (HPKE with signed one-time and last-resort prekeys) through an owner-run mailbox. All identifiers are provisional. Hybrid post-quantum key exchange is preferred; the hybrid HPKE code point is provisional and the X25519 suite must always interoperate.
+- `drafts/sk-wire/wire-binding-v0.1.cddl`: CDDL for frames, the QR payload, mailbox control messages, and SK-WIRE payloads.
+- `test-vectors/` 0.4.0: category `wire` with 42 provisional vectors, operations `wire-frame-check`, `wire-qr-decode`, `wire-pairing-proof`, `wire-sas`, `wire-adv-name`, `wire-chunk-open`, `wire-hpke-seal`, `wire-hpke-open`, `wire-prekey-select`, and the X25519 test keys of RFC 9180 Appendix A.2.1.
+
+### Changed
+
+- README.md, TERMINOLOGY.md, docs/index.md: list SK-WIRE. README.md: CDDL files under `drafts/` are Apache-2.0 like schemas.
+
 ## 2026-10-09: Negotiation without `cap_token`, store-and-forward token time, Noise optional (proposal)
 
 Normative change, open for comments.

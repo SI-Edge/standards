@@ -12,11 +12,13 @@ Each vector is a fixed input with an expected result, so that the validator in [
 | `vector.schema.json` | JSON Schema 2020-12 for every vector file |
 | `keys/rfc8032-test-keys.json` | Ed25519 test keys copied from [RFC 8032, section 7.1](https://www.rfc-editor.org/rfc/rfc8032#section-7.1). **TEST ONLY** |
 | `keys/rfc7515-test-keys.json` | ECDSA P-256 test key copied from [RFC 7515, Appendix A.3](https://www.rfc-editor.org/rfc/rfc7515#appendix-A.3). **TEST ONLY** |
+| `keys/rfc9180-test-keys.json` | X25519 test keys copied from [RFC 9180, Appendix A.2.1](https://www.rfc-editor.org/rfc/rfc9180#appendix-A.2.1). **TEST ONLY** |
 | `resource-matching/` | Whether a right resource covers a requested resource (SK-COM §A6) |
 | `tokens/` | Capability token lifetime, attenuation rules (a) to (f), budgets and constraints (SK-COM §A6) |
 | `envelope/` | Envelope structure and token binding (SK-COM §A5, §A5.2, §A6), and receive sequences (§A5, §A6, §A9) |
 | `residency/` | Residency tag syntax and intersection (SK-RT §11) |
 | `signatures/` | RFC 8032 known answers, `dcbor` and `jcs` signing input, signing, and verification (SK-COM §A5.1, Appendix F) |
+| `wire/` | Frames, QR pairing, advertisement names, chunks, sealed frames, and prekeys of the wire binding ([SK-WIRE](../drafts/sk-wire/wire-binding-v0.1.md)); all provisional |
 
 ## Vector Format
 
@@ -50,10 +52,19 @@ Each vector has one fault, so the expected result does not depend on check order
 | `sign` | `object`, `key`, `canon` | `value`: the resulting `sig.value` (unpadded base64url) |
 | `verify` | `object`, `public_key` (name in the key file) | accept or refuse with `bad-signature`. Whether the key belongs to the signer is out of scope |
 | `receive` (sequence steps) | `envelope`, optional `delivery` (`direct`, the default, or `store-and-forward`); state `receiver` (its identity), optional `seen_nonces`, optional `revoked` (identities and token ids revoked before the first step) | accept or refuse, and `executed`. Everything `envelope-check` covers, plus `aud` against the receiver, `expires` against `now`, the time validity of the token and its chain at `now` (at the envelope's `issued` for `store-and-forward` delivery without `instructions`, SK-COM §A9), the 7-day lifetime and `issued` not after `now` for `store-and-forward`, revocation, replayed nonces, `idem_key` at most once, and usage counting. Signatures, sender identity, pairing, residency, `cnf`, root issuer trust, and local policy are assumed to pass; the requested action has a local handler |
+| `wire-frame-check` | `frame_hex` (CBOR) | accept or refuse with `malformed`: the frame against `wire-frame` in [wire-binding-v0.1.cddl](../drafts/sk-wire/wire-binding-v0.1.cddl). Structure only: no signatures, tokens, clocks, or state |
+| `wire-qr-decode` | `qr` (string) | `value`: `version`, `presenter`, `spki_hex`, `endpoints` (host, port, carrier), `secret_hex`, `expires`; or refuse with `malformed` (prefix other than `SK1:`, invalid base45, or a payload outside `qr-payload`) |
+| `wire-pairing-proof` | `secret_hex`, `label` (`request` or `response`), `presenter`, `scanner`, `spki_hex` | `value`: the pairing proof (SK-WIRE §4.3), unpadded base64url |
+| `wire-sas` | `secret_hex`, `request_hash_hex` (SHA-256 of the `dcbor` pairing request envelope) | `value`: the 6-digit comparison code as a string (SK-WIRE §4.3) |
+| `wire-adv-name` | `adv_key_hex`, `unix_time` | `value`: the 16-character service instance name (SK-WIRE §4.1) |
+| `wire-chunk-open` | `key_hex`, `index`, `count`, `chunk_id_hex`, `ct_hex` | `value`: plaintext as hex, or refuse if the chunk id or the decryption fails (SK-WIRE §5.2) |
+| `wire-hpke-seal` | `suite`, `public_key` (recipient), `ephemeral_key` (names in the key file), `plaintext_hex` | `value`: `enc_hex` and `ct_hex` of HPKE base mode with `info` = "selfkin/1 sealed" followed by the SHA-256 of the recipient public key and empty associated data (SK-WIRE §6.3). Only for known answers: real senders use a fresh ephemeral key |
+| `wire-hpke-open` | `key` (recipient, name in the key file), `frame_hex` (sealed frame) | `value`: the opened envelope frame as hex, or refuse if `rk` does not name the key, the suite is not supported, or opening fails |
+| `wire-prekey-select` | `suites` (the sender's, most preferred first), `stock` (`one_time` and `last_resort` lists of `kid` and `suite`) | `value`: the `kid` the mailbox host returns for a `claim` (SK-WIRE §6.3), or refuse if no prekey matches a listed suite |
 
 ## Keys
 
-The only keys are the Ed25519 test keys published in [RFC 8032, section 7.1](https://www.rfc-editor.org/rfc/rfc8032#section-7.1) (TEST 1, 2, and 3) and the ECDSA P-256 key published in [RFC 7515, Appendix A.3](https://www.rfc-editor.org/rfc/rfc7515#appendix-A.3), copied unchanged. They are public, **for tests only**, and must never be used to sign anything real. Ed25519 signatures are deterministic, so `sign` vectors have exact expected values; ECDSA signatures are randomized, so P-256 keys appear only in `verify` vectors. [../.gitleaks.toml](../.gitleaks.toml) allows these files in secret scans.
+The only keys are the Ed25519 test keys published in [RFC 8032, section 7.1](https://www.rfc-editor.org/rfc/rfc8032#section-7.1) (TEST 1, 2, and 3), the ECDSA P-256 key published in [RFC 7515, Appendix A.3](https://www.rfc-editor.org/rfc/rfc7515#appendix-A.3), and the X25519 keys published in [RFC 9180, Appendix A.2.1](https://www.rfc-editor.org/rfc/rfc9180#appendix-A.2.1), copied unchanged. Wire vectors also carry fixed test secrets inline as hex (a pairing secret, an `adv_key`, a chunk content key), derived from fixed strings; they are test values, not keys. They are public, **for tests only**, and must never be used to sign anything real. Ed25519 signatures are deterministic, so `sign` vectors have exact expected values; ECDSA signatures are randomized, so P-256 keys appear only in `verify` vectors. [../.gitleaks.toml](../.gitleaks.toml) allows these files in secret scans.
 
 Signatures on delegated token chains (#17) are covered by `verify` on a link whose `chain` was already rebuilt; an operation that rebuilds the chain itself is not yet defined.
 
@@ -69,7 +80,7 @@ The validator runs `resource-covers`, `token-check`, `envelope-check`, and `resi
 
 ## Status and Versioning
 
-The suite has 179 vectors: 152 normative, 25 provisional, and 2 withdrawn.
+The suite has 221 vectors: 152 normative, 67 provisional, and 2 withdrawn.
 
 | Category | Normative | Provisional | Withdrawn |
 |---|---|---|---|
@@ -79,8 +90,11 @@ The suite has 179 vectors: 152 normative, 25 provisional, and 2 withdrawn.
 | Envelope (receive sequences) | 10 | 4 (#22, #24) | 0 |
 | Residency | 24 | 0 | 0 |
 | Signatures | 37 | 0 | 0 |
+| Wire binding (SK-WIRE) | 0 | 42 (#67) | 0 |
 
 The resource-matching vectors, and two binding vectors that depend on them, are provisional until the matching rule proposed for #23 and #48 is merged. `open_issue` may name an issue or a pull request. Receive sequences about how a repeated `idem_key` is answered (#22) and how usage is counted (#24) are provisional; replay, expiry, audience, and at-most-once execution are normative. The `dcbor` signing input, `dcbor` signatures, chain link signatures, and the timestamp, number, and text rules for signed objects (#10, #17) were added in 0.2.0. Later phases add freshness checks against a clock, such as a future `iat` (#47) and `max_clock_skew`, root issuers and `cnf` (#19, #20), and more stateful receiver checks such as sequence windows, clock skew, nonce retention, and chain-wide budget counting (#21, #22, #24).
+
+The wire vectors (added in 0.4.0) are provisional until SK-WIRE is accepted (#67). The hybrid HPKE suite has no vector while its code point is provisional.
 
 Also in 0.2.0: `envelope.structure.007` and `token.lifetime.003` accepted timestamps with an offset in signed objects and are `withdrawn`; `envelope.signed-values.001` and `token.signed-values.001` replace them.
 
