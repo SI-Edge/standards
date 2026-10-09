@@ -31,6 +31,27 @@ jobs:
         run: python tools/validate/validate.py --quiet
       - name: Run tests
         run: python -m unittest discover -s tools/validate -v
+      - name: Change fragments are well formed
+        run: python tools/validate/changelog.py check
+
+  changelog:
+    name: Change fragment
+    if: github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'no-changelog')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: The pull request adds a change fragment
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python tools/validate/changelog.py require --base "$BASE_SHA" --head "$HEAD_SHA"
 
   dco:
     name: DCO sign-off
