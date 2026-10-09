@@ -113,6 +113,7 @@ Fields:
 - **[C1]** This version defines no CBOR wire encoding other than the data model above. A later version **MAY** define one (for example carrying timestamps as CBOR tag 1), but signatures **MUST** always be computed over the data model form. *Rationale: a transport optimisation must never change what was signed.*
 - **[C1]** `instructions` have no separate signature; they are authenticated only as part of the signed envelope. *Rationale: one signature, one verification path.*
 - **[C1]** Every runtime **MUST** be able to produce and verify signatures with `Ed25519` (EdDSA with the Ed25519 parameter set, RFC 8032, named as in RFC 9864). *Rationale: one mandatory-to-implement algorithm guarantees that two conforming runtimes can verify each other.*
+- **[C1]** Every runtime **MUST** be able to verify signatures with `ES256` (ECDSA with P-256 and SHA-256, RFC 7518). Producing `ES256` signatures is **OPTIONAL**. *Rationale: some hardware-backed key stores (§A2) hold only P-256 keys, so a device that keeps its keys there can sign only with `ES256`, and every peer must be able to verify it.*
 - **[C1]** `sig.alg` **MUST** name an algorithm listed in §B8 with status `current` or `deprecated`. Receivers **MUST** refuse any other value, including `none` and every message authentication code (for example `HS256`), with `bad-signature`. *Rationale: an open list of algorithm names invites algorithm confusion, and a shared MAC key lets every holder forge.*
 - **[C1]** A verifier **MUST** resolve `kid` only through the owner-signed statements (§A2) of the identity that must have signed: `sender_agent` for an envelope, `iss` for a capability token and for each link in its `chain`, and `signer` for a manifest. It **MUST** check that the resolved key's type matches `alg` (`Ed25519` and `EdDSA`: an Ed25519 key; `ES256`: a P-256 key), and **MUST** refuse with `bad-signature` if `kid` does not resolve that way or the type does not match. *Rationale: a valid signature by a key that belongs to someone else, or used with the wrong algorithm, proves nothing.*
 - The same rules apply to every signed Selfkin object: capability tokens (§A6), module manifests (SK-RT §3), and Provider Manifests (SK-PRV §8).
@@ -253,7 +254,7 @@ Signature algorithms for signed Selfkin objects (§A5.1):
 | `alg` | Key type | Status | Notes |
 |---|---|---|---|
 | `Ed25519` | Ed25519 | `current` | Mandatory to implement |
-| `ES256` | P-256 | `current` | Optional; for hardware-backed keys (§A2) that cannot hold Ed25519 keys |
+| `ES256` | P-256 | `current` | Mandatory to verify, optional to sign; for hardware-backed keys (§A2) that cannot hold Ed25519 keys |
 | `EdDSA` | Ed25519 only | `deprecated` | Polymorphic name deprecated by RFC 9864; accepted until v1.0 and removed in v1.0 |
 
 *Note (non-normative): a post-quantum signature algorithm (ML-DSA, FIPS 204) is expected to be added for long-lived owner statements and manifests at C3. It stays out of this table until stable JOSE and COSE registrations for it exist, and is to be reconsidered for v0.3. No other algorithm may be used until it is added to this table.*
@@ -284,7 +285,7 @@ Signature algorithms for signed Selfkin objects (§A5.1):
 
 # E. References
 
-BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); CBOR (RFC 8949); dCBOR (draft-mcnally-deterministic-cbor-18, work in progress; informative only); CDDL (RFC 8610); I-JSON (RFC 7493); Unicode Normalization Forms (UAX #15); JSON Canonicalization Scheme (RFC 8785); EdDSA (RFC 8032); Fully-Specified Algorithms for JOSE and COSE (RFC 9864); JSON Web Token Best Current Practices (RFC 8725); ML-DSA (FIPS 204); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
+BCP 14 (RFC 2119, RFC 8174); RFC 3339 (timestamps); TLS 1.3 (RFC 8446); QUIC (RFC 9000); Noise Protocol Framework; MLS (RFC 9420); CBOR (RFC 8949); dCBOR (draft-mcnally-deterministic-cbor-18, work in progress; informative only); CDDL (RFC 8610); I-JSON (RFC 7493); Unicode Normalization Forms (UAX #15); JSON Canonicalization Scheme (RFC 8785); EdDSA (RFC 8032); ES256 (RFC 7518); Fully-Specified Algorithms for JOSE and COSE (RFC 9864); JSON Web Token Best Current Practices (RFC 8725); ML-DSA (FIPS 204); DPoP (RFC 9449); OAuth 2.0 mTLS-bound tokens (RFC 8705); OAuth 2.0 Security BCP (RFC 9700); OAuth 2.1 (draft-ietf-oauth-v2-1, work in progress); W3C Decentralized Identifiers (DID) v1.0; W3C Verifiable Credentials Data Model 2.0; SD-JWT VC (IETF, work in progress); Model Context Protocol specification; OpenTelemetry; Swiss nFADP; EU GDPR.
 
 # F. Appendix: `dcbor` Signing Input (normative)
 
@@ -328,7 +329,7 @@ Text strings are in Unicode Normalization Form C (§A5.1). Map keys are sorted i
 *Note (informative): the numeric rule follows the same approach as numeric reduction in dCBOR (draft-mcnally-deterministic-cbor-18, work in progress), which is cited as prior art only. This document does not depend on that draft; where they differ, §A5.1 and this appendix apply.*
 
 ---
-*Proposed revision (2026-10-09, #33): `Ed25519` is mandatory to implement, `ES256` is optional, `EdDSA` is deprecated and removed in v1.0, `sig.alg` is limited to the algorithm table in §B8 (`none` and MACs are never allowed), and `kid` must resolve through the signer's owner statements to a key whose type matches `alg` (§A5.1, §B8).*
+*Proposed revision (2026-10-09, #33): `Ed25519` is mandatory to implement, `ES256` is mandatory to verify and optional to sign, `EdDSA` is deprecated and removed in v1.0, `sig.alg` is limited to the algorithm table in §B8 (`none` and MACs are never allowed), and `kid` must resolve through the signer's owner statements to a key whose type matches `alg` (§A5.1, §B8).*
 
 *Proposed revision (2026-10-09, #10, #17, #47): `dcbor` is the RFC 8949 §4.2.1 core deterministic encoding of the JSON data model with no type mapping and with numeric reduction, timestamps in signed objects are UTC with whole seconds, numbers and text are restricted so that `dcbor` and `jcs` agree (§A5.1, Appendix F), `max_clock_skew` is defined once (§A5), tokens are signed with `chain` set to their ancestors, and a future `iat` is refused with `not-yet-valid` (§A6).*
 

@@ -27,7 +27,7 @@ A file holds `suite`, `category`, `description`, and a list of `vectors`. Each v
 - `operation`: what to run (below), with its `input`.
 - `expected`: `{"result": "accept"}`, `{"result": "refuse", "reason": ...}`, or `{"value": ...}`. A `reason` is a code from [registries/refusal-reasons.md](../registries/refusal-reasons.md), or a list of acceptable codes where the drafts do not fix the order of checks. It is absent where the drafts do not fix a code; then any refusal passes.
 - `status`: `normative` (follows from merged draft text), `provisional` (an interim reading of an open question, named in `open_issue`), or `withdrawn` (no longer valid because the drafts changed; its `note` names the replacement). Provisional failures are reported but should not fail a run. Withdrawn vectors stay in their file so that the id is never reused, and are never run.
-- Optional `requires` (features such as `EdDSA`, `ES256`, `jcs`, or `dcbor`; runners without them skip the vector) and `note` (for readers, never compared).
+- Optional `requires` (features such as `EdDSA`, `ES256` (producing ES256 signatures; verifying them is mandatory), `jcs`, or `dcbor`; runners without them skip the vector) and `note` (for readers, never compared).
 
 ### Sequence Vectors
 

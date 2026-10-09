@@ -8,7 +8,7 @@ Normative change, open for comments.
 
 ### Changed
 
-- SK-COM §A5.1: `Ed25519` is mandatory to implement; `sig.alg` must be one of the algorithms in the new §B8 table (`Ed25519`, the optional `ES256`, and the deprecated name `EdDSA`, removed in v1.0), so `none` and MACs are refused with `bad-signature`; `kid` must resolve through the owner statements of `sender_agent`, `iss`, or `signer` to a key whose type matches `alg`.
+- SK-COM §A5.1: `Ed25519` is mandatory to implement; `sig.alg` must be one of the algorithms in the new §B8 table (`Ed25519`, `ES256`, which every runtime must verify and may produce, and the deprecated name `EdDSA`, removed in v1.0), so `none` and MACs are refused with `bad-signature`; `kid` must resolve through the owner statements of `sender_agent`, `iss`, or `signer` to a key whose type matches `alg`.
 - SK-COM §B8: table of signature algorithms with their status, and a non-normative note that ML-DSA is added only once stable JOSE and COSE registrations exist (to be reconsidered for v0.3).
 - `schemas/common.schema.json`: `sig.alg` is an enum.
 
