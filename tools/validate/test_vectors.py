@@ -14,7 +14,8 @@
 """Run the shared conformance test vectors in test-vectors/ against the validator.
 
 The validator implements the static operations (resource-covers, token-check,
-envelope-check, residency-tag-syntax). It returns problems, not refusal codes,
+envelope-check, residency-tag-syntax, session-check without signature
+verification), and skips every vector that lists requires. It returns problems, not refusal codes,
 so it compares accept or refuse only, and skips the other operations
 (signatures, residency regions, and receive), which need a runtime. A sequence
 vector runs only if the validator supports every step; it keeps no state
@@ -86,6 +87,9 @@ class Runner:
             return self.outcome(data["envelope"], "envelope")
         if operation == "residency-tag-syntax":
             return {"value": self.tag_validator.is_valid(data["tag"])}
+        if operation == "session-check":
+            problems = validate.check_session(data["envelope"], data["core_kid"], self.schemas, self.registry)
+            return {"result": "refuse" if problems else "accept"}
         return None
 
     @staticmethod
@@ -96,6 +100,8 @@ class Runner:
         return "result" not in expected or actual["result"] == expected["result"]
 
     def run(self, vector: dict) -> tuple[str, object]:
+        if vector.get("requires"):
+            return "skip", None  # the validator verifies no signatures and has no jcs
         if vector.get("kind") == "sequence":
             steps = vector["steps"]
         else:

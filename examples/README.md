@@ -33,6 +33,8 @@ Notes that apply to every example:
 | `provider-manifest.p1-search.json` | P1 self-assessment of a search service with a declared 24 hour abuse-handling retention window and identified-mode linking |
 | `provider-manifest.p2-models.json` | P2 self-assessment of a model provider with OHTTP, envelope support, residency, transparency log, and audit |
 | `privacy-report.p1-anonymous.json` | Anonymous call to a verified P1 search provider over a relay, with `EU` residency and declared 24 hour abuse-handling retention |
+| `session-record.r0-prototype.json` | Session record of an R0 (prototype) runtime: one egress linked to its privacy report, and a Core-signed tier display showing tier 0, every profile, and the `prototype` label |
+| `session-record.legacy-hop.json` | Session record with a C0 legacy hop: the Core shows tier 0 and the C0 hop next to it |
 
 ## Invalid examples
 
@@ -85,3 +87,5 @@ Each invalid example changes one thing in a valid example. Examples were generat
 | `provider-manifest.retention-without-purpose.invalid.json` | Non-zero retention window without a stated purpose (abuse handling or legal duty, SK-PRV section 3) |
 | `refusal.free-text.invalid.json` | Free-text `detail` member. A refusal must not include content beyond codes and references (SK-COM section A7) |
 | `refusal.unregistered-reason.invalid.json` | Reason `too-busy` is neither registered nor `x-` prefixed (registries/refusal-reasons.md) |
+| `session-record.hides-c0.invalid.json` | The tier display leaves out the C0 hop of the session. The Core display must not hide a downgrade (SK-RT section 5). Semantic check |
+| `session-record.report-mismatch.invalid.json` | The egress links a report for a different payload, so it has no matching privacy report (SK-RT section 13). Semantic check |

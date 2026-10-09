@@ -2,7 +2,7 @@
 
 > **Status: Draft, not for implementation.** Licensed under Apache-2.0 ([LICENSE-CODE](../../LICENSE-CODE)).
 
-Checks JSON documents against the v0.1 schemas in [../../schemas](../../schemas) in two layers: JSON Schema 2020-12, then semantic checks that JSON Schema cannot express (for example that a delegated capability token only narrows its parent). It does not check signatures, key trust, revocation, replay, or clocks.
+Checks JSON documents against the v0.1 schemas in [../../schemas](../../schemas) in two layers: JSON Schema 2020-12, then semantic checks that JSON Schema cannot express (for example that a delegated capability token only narrows its parent, or that a session record links a privacy report to every egress and carries a tier display signed by the Core key). It does not check signatures, key trust, revocation, replay, or clocks.
 
 ```sh
 pip install -r tools/validate/requirements.txt
