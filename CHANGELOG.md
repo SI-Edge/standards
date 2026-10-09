@@ -2,6 +2,14 @@
 
 All notable changes to the Selfkin drafts. Dates are in Europe/Zurich time. All documents are **Draft, not for implementation**.
 
+## 2026-10-09: Owner residency tag length
+
+Schema fix. No normative rule changed.
+
+### Fixed
+
+- `common.schema.json` `residencyTag`: owner-defined tags are limited to 64 characters in total, as SK-RT §11 says; the pattern accepted 65. Validator test covers exactly 64 (valid) and 65 (invalid).
+
 ## 2026-10-09: P1 anonymous privacy report example
 
 ### Added
